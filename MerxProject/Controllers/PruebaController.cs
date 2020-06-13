@@ -7,5 +7,6 @@ namespace MerxProject.Controllers
 {
     public class PruebaController
     {
+        string Braulio = "De que que nos sirve esto en nuestra area?";
     }
 }
