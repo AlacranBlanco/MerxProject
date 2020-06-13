@@ -1,0 +1,53 @@
+﻿@model MerxProject.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                No existen servicios de autenticación externos configurados. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
+                para obtener información sobre cómo configurar esta aplicación ASP.NET para admitir el inicio de sesión a través de servicios externos.
+            </p>
+        </div>
+    }
+    else
+    {
+
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl, id = "form1" }))
+        {
+            @Html.AntiForgeryToken()
+<div class="social-login">
+    <span class="social-label">O logeate con</span>
+    <ul class="socials">
+
+        <li>
+            <a><button type="submit" class="display-flex-center zmdi zmdi-facebook" id="Facebook" name="provider" value="Facebook" title="Inicie sesión con su cuenta Facebook"></button></a>
+        </li>
+        <li>
+            <a><button type="submit" class="display-flex-center zmdi zmdi-twitter" id="Twiter" name="provider" value="Twiter" title="Inicie sesión con su cuenta Twitter"></button></a>
+        </li>
+        <li>
+            <a><button type="submit" class="display-flex-center zmdi zmdi-google" id="Google" name="provider" value="Google" title="Inicie sesión con su cuenta Google"></button></a>
+        </li>
+
+    </ul>
+
+    
+</div>
+
+        }
+    }
+
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", ".CSSclassonAnchor", function (e) {
+            e.preventDefault();
+            var form = $(this).closest("form");
+            form.submit();
+        });
+    });
+</script>

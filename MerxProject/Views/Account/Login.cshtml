@@ -1,0 +1,108 @@
+﻿@using MerxProject.Models
+@model LoginViewModel
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="~/Content/LoginColorlib/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/Content/LoginColorlib/css/style.css">
+</head>
+<body>
+
+    <div class="main">
+
+
+
+        <!-- Sing in  Form -->
+        <section class="sign-in">
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="~/Content/LoginColorlib/images/signin-image.jpg" alt="sing up image"></figure>
+                        <label for="agree-term" class="label-agree-term"><span><span></span></span>¿No tienes una cuenta?  <a href="/Account/Register" class="term-service">Regístrate</a></label>
+                    </div>
+
+                    <div class="signin-form">
+                        <br/>
+                        <br/>
+
+
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "register-form", role = "login-form" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                            <div class="form-group">
+                                <label><i class="zmdi zmdi-email"></i></label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+
+
+
+
+                            <div class="form-group">
+                                <input type="checkbox" name="RememberMe" id="remember-me" class="agree-term" value="true" />
+                                <label for="remember-me" class="label-agree-term"><span><span></span></span>Recuérdame</label>
+                            </div>
+
+
+
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="Iniciar sesión" />
+                            </div>
+
+
+
+
+
+                            @* Habilite esta opción una vez tenga la confirmación de la cuenta habilitada para la funcionalidad de restablecimiento de contraseña
+                                <p>
+                                    @Html.ActionLink("¿Ha olvidado su contraseña?", "ForgotPassword")
+                                </p>*@
+
+
+                        }
+
+                        
+                                 @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl }) 
+                           
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="~/Content/LoginColorlib/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/LoginColorlib/js/main.js"></script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
+
+</html>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

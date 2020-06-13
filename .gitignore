@@ -348,3 +348,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+# Puede que se vayan a borrar raza
+/obj/Debug
+/obj/Debug/
+Debug/
+obj\Debug

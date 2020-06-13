@@ -1,0 +1,86 @@
+﻿@model MerxProject.Models.RegisterViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="~/Content/LoginColorlib/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/Content/LoginColorlib/css/style.css">
+</head>
+<body>
+
+    <div class="main">
+
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Cree una cuenta nueva.</h2>
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+
+
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
+                               
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Repetir Contraseña" })
+                               
+                            </div>
+
+                            <div class="form-group">
+                                <input type="checkbox" name="agree" id="agree-term" class="agree-term" value="true" />
+                                <label for="agree-term" class="label-agree-term"><span><span></span></span>Acepto  <a href="#" class="term-service">los Términos y Condiciones, la Política de Privacidad y la Política de Cookies</a></label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit" value="Registrar" />
+                            </div>
+                        }
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="~/Content/LoginColorlib/images/signup-image.jpg" alt="sing up image"></figure>
+                        <label for="agree-term" class="label-agree-term"><span><span></span></span>¿Tienes una cuenta?  <a href="/Account/Login" class="term-service">Inicia sesión</a></label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+    <!-- JS -->
+    <script src="~/Content/LoginColorlib/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/LoginColorlib/js/main.js"></script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
