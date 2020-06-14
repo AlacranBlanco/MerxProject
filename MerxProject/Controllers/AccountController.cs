@@ -15,9 +15,12 @@ using System.Collections.Specialized;
 
 namespace MerxProject.Controllers
 {
+
+
     [Authorize]
     public class AccountController : Controller
     {
+
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ILogger<AccountController> logger;
@@ -38,9 +41,9 @@ namespace MerxProject.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -61,8 +64,26 @@ namespace MerxProject.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, int? isEmailVerified)
         {
+            if (isEmailVerified == 1)
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.isRegister = 1;
+                return View();
+            }
+            else if (isEmailVerified == 2)
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.isConfirmed = 2;
+                return View();
+            }
+            else if (isEmailVerified == 3)
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.isLoginFailed = 3;
+                return View();
+            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -76,32 +97,48 @@ namespace MerxProject.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ModelState.AddModelError("", "¡Vaya, parece que el usuario o contraseña que has escrito no son correctos!");
                 return View(model);
             }
 
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
-            if(RememberMe == "true")
+            if (RememberMe == "true")
             {
                 model.RememberMe = true;
-            } else
+            }
+            else
             {
                 model.RememberMe = false;
             }
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            var user = await UserManager.FindByEmailAsync(model.Email);
+
+            if (result == SignInStatus.Success)
             {
-                case SignInStatus.Success:
+                if (user != null && user.EmailConfirmed)
+                {
                     return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Intento de inicio de sesión no válido.");
-                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { isEmailVerified = 3 });
+                }
             }
+            else if (result == SignInStatus.LockedOut)
+            {
+                return View("Lockout");
+            }
+            else if (result == SignInStatus.RequiresVerification)
+            {
+                return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+            }
+
+            // SignInStatus.Failure:
+            ModelState.AddModelError("", "¡Vaya, parece que el usuario o contraseña que has escrito no son correctos!");
+            return View(model);
+
+
         }
 
         //
@@ -133,7 +170,7 @@ namespace MerxProject.Controllers
             // Si un usuario introduce códigos incorrectos durante un intervalo especificado de tiempo, la cuenta del usuario 
             // se bloqueará durante un período de tiempo especificado. 
             // Puede configurar el bloqueo de la cuenta en IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -164,32 +201,32 @@ namespace MerxProject.Controllers
         {
             if (agree != "true")
             {
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            ModelState.AddModelError("", "Debe aceptar los terminos y condiciones");
-            return View(model);
+                // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+                ModelState.AddModelError("", "Debe aceptar los terminos y condiciones");
+                return View(model);
             }
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
                 {
-                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                    var result = await UserManager.CreateAsync(user, model.Password);
-                    if (result.Succeeded)
-                    {
 
 
-                        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-                        // Enviar correo electrónico con este vínculo
-                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                        await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", callbackUrl);
+                    // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Enviar correo electrónico con este vínculo
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", callbackUrl);
+                    return RedirectToAction("Login", "Account", new { isEmailVerified = 1 });
 
-                        return RedirectToAction("EmailVerification", "Account");
 
-                        // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        // return RedirectToAction("Index", "Home");
+                    // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    // return RedirectToAction("Index", "Home");
 
-                    }
-                    AddErrors(result);
-              
+                }
+                AddErrors(result);
+
             }
             return View(model);
         }
@@ -206,7 +243,15 @@ namespace MerxProject.Controllers
                 return View("Error");
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Account", new { isEmailVerified = 2 });
+            }
+            else
+            {
+                return View("Error");
+            }
         }
 
         //
