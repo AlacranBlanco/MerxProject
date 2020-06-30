@@ -12,6 +12,8 @@ using MerxProject.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Owin.Security.Provider;
 using System.Collections.Specialized;
+using NinjaNye.SearchExtensions;
+using System.Data.Entity;
 
 namespace MerxProject.Controllers
 {
@@ -88,6 +90,107 @@ namespace MerxProject.Controllers
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult listaWey()
+        {
+            var users = UserManager.Users;
+
+            return View(users);
+
+        }
+
+      
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult popupUsuarios(string Id, string accion)
+        {
+            if (accion == "1")
+            {
+                ViewBag.title = "Nuevo";
+                return View();
+            }
+            else if (accion == "2")
+            {
+                var user = UserManager.Users.Where(x => x.Id == Id).FirstOrDefault();
+                ViewBag.title = "Editar";
+                return View(user);
+            }
+            else if (accion == "3")
+            {
+                var user = UserManager.Users.Where(x => x.Id == Id).FirstOrDefault();
+                ViewBag.title = "Eliminar";
+                return View(user);
+            }
+            return RedirectToAction("listaWey");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> popupUsuarios(ApplicationUser applicationUser, string accion)
+        {
+            // Si todo el formulario fue llenado correctamente
+            if (ModelState.IsValid)
+            {
+                // Si el applicationUser viene diferente de null, significa que el usaurio quiere Editar
+                if (applicationUser.Id != null && accion == "2")
+                {
+                    // Edición
+                    var user = await UserManager.FindByIdAsync(applicationUser.Id);
+
+                    if (user != null)
+                    {
+                            // Lo que hacemos aquí es saber si user fue encontrado de alguna forma dentro de la Base
+                            // si es así pues continuamos con la edición.
+                            user.Email = applicationUser.Email;
+                            user.UserName = applicationUser.UserName;
+                            // Método async para poder realizar la actualización en base
+                            var result =  await UserManager.UpdateAsync(user);
+
+                        // Si todo va chido, regresamos a la lista para ver el editado.
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction("listaWey");
+                        }
+                            
+                    }
+
+                } 
+                else if (applicationUser.Id != null && accion == "3")
+                {
+                    // Eliminación
+                    var user = await UserManager.FindByIdAsync(applicationUser.Id);
+
+                    // Lo que hacemos aquí es saber si user fue encontrado de alguna forma dentro de la Base
+                    // si es así pues continuamos con la edición.
+
+                    // Método async para poder realizar la actualización en base
+                    var result = await UserManager.DeleteAsync(user);
+
+                    // Si todo va chido, regresamos a la lista para ver el editado.
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("listaWey");
+                    }
+                }
+                else
+                {
+                    // Aquí código para crear
+
+
+                    /* En caso de que sea una creación directa, pues realizamos otro flujo, pero eso depende de la vista que se vaya a usar.
+                    * Como en mi caso use algo que ya trae el proyecto por defecto pues use sus métodos, creo que si ya hacemos otros vistas,
+                    * tocará relizar el context y todo eso. 
+                    */
+                    return View("listaWey");
+                }
+
+                }
+                return View("listaWey");
+            }
+
+      
         //
         // POST: /Account/Login
         [HttpPost]
@@ -548,6 +651,8 @@ namespace MerxProject.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+
+
         }
         #endregion
     }

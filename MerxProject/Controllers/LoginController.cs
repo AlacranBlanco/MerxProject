@@ -15,23 +15,18 @@ namespace MerxProject.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly UserManager<ApplicationUser> userManager;
 
-       
+
 
         // GET: Login
         public ActionResult LoginIndex()
         {
-            
+
             return View();
         }
 
-       
-
-        [HttpPost]
-        public ActionResult Verify()
-        {
-            return View();
-        }
+   
 
       
     }
