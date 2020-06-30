@@ -1,0 +1,85 @@
+﻿@model MerxProject.Models.Producto
+
+@{
+    ViewBag.Title = "Tienda Virtual";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+
+<title>Muebleria Merx - @Model.Nombre</title>
+<!-- Custom styles for this template -->
+<link href="~/Content/assets/vendor/bootstrap/css/shop-homepage.css" rel="stylesheet">
+
+<!-- ======= Hero Section ======= -->
+<section id="hero-product" class="d-flex align-items-center justify-content-center">
+    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="200">
+        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="200">
+        </div>
+    </div>
+</section><!-- End Hero -->
+<!-- Page Content -->
+<div class="container">
+    <div class="breadcrumb">
+        <a href="@Url.Action("Index", "Home")" class="breadcrumb-item">Inicio</a>
+        <a href="@Url.Action("Tienda", "Producto")" class="breadcrumb-item">Tienda Virtual</a>
+        <a href="#" class="breadcrumb-item">@Model.Nombre</a>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 section-bg">
+            <h1 class="my-4">Filtros</h1>
+            <div class="list-group">
+                @using (Html.BeginForm("Buscar", "Producto", FormMethod.Post))
+                {
+                    <div class="input-group">
+                        <input type="text" class="form-control list-group-item" name="parameter" id="parameter" placeholder="Buscar producto">
+                        <div class="input-group-append">
+                            <input class="btn btn-secondary" type="submit" value="Buscar" style="background-color:#009970; border-radius:10px;">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                }
+                <a href="#" class="list-group-item">Sillones</a>
+                <a href="#" class="list-group-item">Sillas</a>
+            </div>
+
+        </div>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9">
+                <div class="card mt-4">
+                    <img class="card-img-top img-fluid" src="~/Content/assets/img/Productos/@Model.Imagen" alt="">
+                    <div class="card-body">
+                        <h3 class="card-title">@Model.Nombre</h3>
+                        <h4>@Model.Precio</h4>
+                        <p class="card-text">@Model.Descripcion</p>
+                        <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
+                        4.0 stars
+                    </div>
+                </div>
+                <!-- /.card -->
+
+                <div class="card card-outline-secondary my-4">
+                    <div class="card-header">
+                        Tipo de Material
+                    </div>
+                    <div class="card-body">
+                        <p>&bull;Ventaja de Material</p>
+                        <hr>
+                        <p>&bull;Ventaja de Material</p>
+                        <hr>
+                        <p>&bull; Ventaja de Material</p>
+                        <hr>
+                    </div>
+                    <div class="col text-center" style="padding-bottom:10px">
+                        <a href="#" class="btn btn-comprar">Comprar</a>
+                    </div>
+                </div>
+                <!-- /.card -->
+        </div>
+        <!-- /.col-lg-9 -->
+
+    </div>
+    <!-- /.row -->
+
+</div>
+<!-- /.container -->
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
