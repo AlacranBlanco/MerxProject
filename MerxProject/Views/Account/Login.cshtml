@@ -3,6 +3,7 @@
 
 @{
     Layout = null;
+
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +19,11 @@
     <!-- Main css -->
     <link rel="stylesheet" href="~/Content/LoginColorlib/css/style.css">
 </head>
+
 <body>
+
+
+
 
     <div class="main">
 
@@ -26,16 +31,41 @@
 
         <!-- Sing in  Form -->
         <section class="sign-in">
+            @if (ViewBag.isRegister == 1)
+            {
+                <div class="alert alert-success alert-dismissible sign-in" role="alert" id="myDIVRegister">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="myFunction(isREgister)"><span aria-hidden="true">×</span></button>
+                    <p>Cuenta creada correctamente. Para poder usarla deberás activarla.</p><p>Te hemos enviado un correo electrónico a la dirección con las instrucciones a seguir para activar tu cuenta. Revisa las carpetas spam y correo no deseado en caso de que el correo no figure en la bandeja de entrada.</p>
+                </div>
+            }
+            else if (ViewBag.isConfirmed == 2)
+            {
+                <div class="alert alert-success alert-dismissible sign-in" role="alert" id="myDIVisConfirmed">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="myFunction(isConfirmed)"><span aria-hidden="true">×</span></button>
+                    <p>Tu cuenta ya está activa, ahora puedes acceder con el correo y contraseña que has indicado</p>
+                </div>
+            }
+            else if (ViewBag.isLoginFailed == 3)
+            {
+                <div class="alert alert-danger alert-dismissible sign-in" role="alert" id="myDIVisConfirmed">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="myFunction(isConfirmed)"><span aria-hidden="true">×</span></button>
+                    <p>Atención, la cuenta no esta activa todavia. Por favor dirígete a tu correo electrónico y revisa tu bandeja de entrada, busca nuestro mensaje de confirmación y pulsa en el enlace que viene en el mismo para activar la cuenta, De lo contrario no podrás acceder.</p><p>Si no visualizas el mensaje asegúrate de revisar la carpeta de SPAM (correo no deseado) y de agregar nuestro email a la lista de contactos.</p>
+                </div>
+            }
+
             <div class="container">
+
                 <div class="signin-content">
+
                     <div class="signin-image">
                         <figure><img src="~/Content/LoginColorlib/images/signin-image.jpg" alt="sing up image"></figure>
                         <label for="agree-term" class="label-agree-term"><span><span></span></span>¿No tienes una cuenta?  <a href="/Account/Register" class="term-service">Regístrate</a></label>
                     </div>
 
+
                     <div class="signin-form">
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
 
 
                         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "register-form", role = "login-form" }))
@@ -49,7 +79,6 @@
                             <div class="form-group">
                                 <label><i class="zmdi zmdi-email"></i></label>
                                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
-                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                             </div>
 
 
@@ -57,7 +86,6 @@
                             <div class="form-group">
                                 <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
                                 @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
-                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                             </div>
 
 
@@ -86,9 +114,9 @@
 
                         }
 
-                        
-                                 @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl }) 
-                           
+
+                        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+
                     </div>
                 </div>
             </div>
@@ -102,7 +130,20 @@
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
 
-</html>
+
+<script>
+    var isREgister = "myDIVRegister";
+    var isConfirmed = "myDIVisConfirmed";
+    function myFunction(name) {
+        var x = document.getElementById(name);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

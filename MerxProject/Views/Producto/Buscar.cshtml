@@ -1,0 +1,131 @@
+﻿@model IEnumerable<MerxProject.Models.Producto>
+
+@{
+    ViewBag.Title = "Tienda Virtual";
+    Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+}
+<title>Muebleria Merx - Tienda Virtual</title>
+<!-- Custom styles for this template -->
+<link href="~/Content/assets/vendor/bootstrap/css/shop-homepage.css" rel="stylesheet">
+
+<!-- ======= Hero Section ======= -->
+<section id="hero-store" class="d-flex align-items-center justify-content-center">
+    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="200">
+        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="200">
+            <h1>Tienda Merx</h1>
+        </div>
+    </div>
+</section><!-- End Hero -->
+<!-- ======= Clients Section ======= -->
+<section id="" class="clients">
+    <div class="container">
+        <div class="row">
+            <div class="breadcrumb">
+                <a href="@Url.Action("Index", "Home")" class="breadcrumb-item">Inicio</a>
+                <a href="#" class="breadcrumb-item">Tienda Virtual</a>
+            </div>
+        </div>
+    </div>
+</section><!-- End Clients Section -->
+<section class="about d-flex align-items-center justify-content-center" style="padding:2px; background-color: #f6f6f7">
+    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="200">
+        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="200">
+            <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    <div class="carousel-item active text-center">
+                        <img class="d-block img-fluid " src="~/Content/assets/img/Banner/promo.jpg" alt="First slide" style="background-attachment: fixed; background-size: cover;">
+                    </div>
+                    <div class="carousel-item text-center">
+                        <img class="d-block img-fluid " src="~/Content/assets/img/Banner/img1.jpg" alt="Second slide">
+                    </div>
+                    <div class="carousel-item text-center">
+                        <img class="d-block img-fluid " src="~/Content/assets/img/Banner/img2.jpg" alt="Third slide">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<br />
+<div id="main">
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-3 section-bg">
+                <h1 class="my-4">Filtros</h1>
+                <div class="list-group">
+                    @using (Html.BeginForm("Buscar", "Producto", FormMethod.Post))
+                    {
+                        <div class="input-group">
+                            <input type="text" class="form-control list-group-item" name="parameter" id="parameter" placeholder="Buscar producto">
+                            <div class="input-group-append">
+                                <input class="btn btn-secondary" type="submit" value="Buscar" style="background-color:#009970; border-radius:10px;">
+                                <i class="fa fa-search"></i>
+                            </div>
+                        </div>
+                    }
+
+                    <a href="#" class="list-group-item">Sillones</a>
+                    <a href="#" class="list-group-item">Sillas</a>
+                    <a href="#" class="list-group-item">Escritorios</a>
+                </div>
+
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-9">
+                <div class="row">
+
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100">
+                                <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })"><img class="card-img-top" src="~/Content/assets/img/Productos/@item.Imagen" alt=""></a>
+                                <hr />
+                                <div class="card-body section-title">
+                                    <h4 class="card-title">
+                                        <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })">@item.Nombre</a>
+                                    </h4>
+                                    <hr />
+                                    <h5>$@item.Precio MXN</h5>
+                                    <div class="align-content-xl-between align-items-xl-end">
+                                        <div class="card-footer">
+                                            <small class="card-text text-muted">@item.Descripcion</small>
+                                        </div>
+                                        <div class="col text-center">
+                                            <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })" class="btn btn-comprar">Comprar</a>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.col-lg-9 -->
+
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>

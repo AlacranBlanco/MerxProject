@@ -13,7 +13,7 @@ namespace MerxProject.Migrations
             AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(MerxProject.Models.ApplicationDbContext context)
+        protected override void Seed(MerxProject.Models.ApplicationDbContext context)   
         {
             //  This method will be called after migrating to the latest version.
 
