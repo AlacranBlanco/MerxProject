@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MerxProject.Models.Material>
+
+@{
+    ViewBag.Title = "Lista Material";
+}
+
+<h2>Lista de materiales</h2>
+<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpMateriales", "Material", new { applicationUser = "", accion = "1" })'></div>
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cantidad)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Imagen)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                <img src="~/Content/assets/img/Materiales/@Url.Content(item.Imagen)" width="100px" />
+            </td>
+            <td>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "2" })')">Editar</button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+            </td>
+        </tr>
+
+    }
+</table>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Nuevo').click(function () {
+            var url = $('#idModalRegistrar').data('url');
+            $.get(url, function (data) {
+                $("#idModalRegistrar").html(data);
+                $("#idModalRegistrar").modal('show');
+            });
+        });
+    });
+
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalUpdate").html(data);
+            $("#idModalUpdate").modal('show');
+        });
+
+    }
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalElminar").html(data);
+            $("#idModalElminar").modal('show');
+        });
+
+    }
+
+
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

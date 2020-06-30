@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
@@ -18,13 +18,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Nombre de la aplicación", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Productos", "ListaProducto", "Producto")</li>
+                    <li>@Html.ActionLink("Materiales", "ListaMaterial", "Material")</li>
+                    <li>@Html.ActionLink("Muebles", "ListaMueble", "Mueble")</li>
+                    <li>@Html.ActionLink("Clientes", "ListaCliente", "Cliente")</li>
+                    <li>@Html.ActionLink("Herramientas", "ListaHerramienta", "Herramienta")</li>
+                    <li>@Html.ActionLink("Empleados", "ListaEmpleado", "Empleado")</li>
+                    <li>@Html.ActionLink("Proveedores", "ListaProveedor", "Proveedor")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

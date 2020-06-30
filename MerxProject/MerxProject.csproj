@@ -220,7 +220,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\PruebaController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
+    <Compile Include="Controllers\MuebleController.cs" />
+    <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Facebook\FacebookBackChannelHandler.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -229,13 +231,18 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\PruebaModel.cs" />
+    <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\Mueble.cs" />
+    <Compile Include="Models\Producto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\style.css" />
     <Content Include="Content\assets\img\apple-touch-icon.png" />
+    <Content Include="Content\assets\img\Banner\img1.jpg" />
+    <Content Include="Content\assets\img\Banner\img2.jpg" />
+    <Content Include="Content\assets\img\Banner\promo.jpg" />
     <Content Include="Content\assets\img\clients\client-1.png" />
     <Content Include="Content\assets\img\clients\client-2.png" />
     <Content Include="Content\assets\img\clients\client-3.png" />
@@ -245,6 +252,34 @@
     <Content Include="Content\assets\img\cta-bg.jpg" />
     <Content Include="Content\assets\img\favicon.png" />
     <Content Include="Content\assets\img\hero-bg.jpg" />
+    <Content Include="Content\assets\img\hero-store.jpg" />
+    <Content Include="Content\assets\img\ico\android-icon-144x144.png" />
+    <Content Include="Content\assets\img\ico\android-icon-192x192.png" />
+    <Content Include="Content\assets\img\ico\android-icon-36x36.png" />
+    <Content Include="Content\assets\img\ico\android-icon-48x48.png" />
+    <Content Include="Content\assets\img\ico\android-icon-72x72.png" />
+    <Content Include="Content\assets\img\ico\android-icon-96x96.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-114x114.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-120x120.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-144x144.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-152x152.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-180x180.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-57x57.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-60x60.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-72x72.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-76x76.png" />
+    <Content Include="Content\assets\img\ico\apple-icon-precomposed.png" />
+    <Content Include="Content\assets\img\ico\apple-icon.png" />
+    <Content Include="Content\assets\img\ico\browserconfig.xml" />
+    <Content Include="Content\assets\img\ico\favicon-16x16.png" />
+    <Content Include="Content\assets\img\ico\favicon-32x32.png" />
+    <Content Include="Content\assets\img\ico\favicon-96x96.png" />
+    <Content Include="Content\assets\img\ico\favicon.ico" />
+    <Content Include="Content\assets\img\ico\ms-icon-144x144.png" />
+    <Content Include="Content\assets\img\ico\ms-icon-150x150.png" />
+    <Content Include="Content\assets\img\ico\ms-icon-310x310.png" />
+    <Content Include="Content\assets\img\ico\ms-icon-70x70.png" />
+    <Content Include="Content\assets\img\logo.png" />
     <Content Include="Content\assets\img\portfolio\portfolio-1.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-2.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-3.jpg" />
@@ -257,6 +292,10 @@
     <Content Include="Content\assets\img\portfolio\portfolio-details-1.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-details-2.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-details-3.jpg" />
+    <Content Include="Content\assets\img\products\chair.png" />
+    <Content Include="Content\assets\img\products\loveSeat.png" />
+    <Content Include="Content\assets\img\products\nightTable.png" />
+    <Content Include="Content\assets\img\products\Table.png" />
     <Content Include="Content\assets\img\team\team-1.jpg" />
     <Content Include="Content\assets\img\team\team-2.jpg" />
     <Content Include="Content\assets\img\team\team-3.jpg" />
@@ -474,6 +513,7 @@
     <Content Include="Content\LoginColorlib\scss\layouts\main.scss" />
     <Content Include="Content\LoginColorlib\scss\layouts\responsive.scss" />
     <Content Include="Content\LoginColorlib\scss\style.scss" />
+    <Content Include="Content\assets\img\ico\manifest.json" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -522,9 +562,22 @@
     <Content Include="Views\Login\LoginIndex.cshtml" />
     <Content Include="Views\Login\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\EmailVerification.cshtml" />
+    <Content Include="Views\Shared\_LayoutTienda.cshtml" />
+    <Content Include="Views\Shared\_MostrarTodos.cshtml" />
+    <Content Include="Views\Producto\Buscar.cshtml" />
+    <Content Include="Views\Producto\Tienda.cshtml" />
+    <Content Include="Views\Producto\VistaProducto.cshtml" />
+    <Content Include="Views\Material\popUpMateriales.cshtml" />
+    <Content Include="Views\Material\ListaMaterial.cshtml" />
+    <Content Include="Views\Shared\_LayoutPagina.cshtml" />
+    <Content Include="Views\Mueble\popUpMuebles.cshtml" />
+    <Content Include="Views\Mueble\ListaMueble.cshtml" />
+    <Content Include="Views\Producto\popUpProductos.cshtml" />
+    <Content Include="Views\Producto\ListaProducto.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\assets\img\Materiales\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

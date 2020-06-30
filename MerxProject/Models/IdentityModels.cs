@@ -29,5 +29,10 @@ namespace MerxProject.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Producto> Productos { get; set; }
+        public DbSet<Mueble> Muebles { get; set; }
+        public DbSet<Material> Materiales { get; set; }
+
     }
 }

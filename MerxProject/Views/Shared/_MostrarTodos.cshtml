@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MerxProject.Models.Producto>
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })"><img class="card-img-top" src="~/Content/assets/img/Productos/@item.Imagen" alt=""></a>
+                <hr />
+                <div class="card-body section-title">
+                    <h4 class="card-title">
+                        <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })">@item.Nombre</a>
+                    </h4>
+                    <hr />
+                    <h5>$@item.Precio MXN</h5>
+                    <div class="align-content-xl-between align-items-xl-end">
+                        <div class="card-footer">
+                            <small class="card-text text-muted">@item.Descripcion</small>
+                        </div>
+                        <div class="col text-center">
+                            <a href="@Url.Action("VistaProducto", "Producto", new { id = item.Id })" class="btn btn-comprar">Comprar</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+<!-- /.row -->

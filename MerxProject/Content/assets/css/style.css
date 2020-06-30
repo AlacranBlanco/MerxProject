@@ -87,7 +87,6 @@ h1, h2, h3, h4, h5, h6 {
 #header .logo {
   overflow: hidden;
   padding: 16px 30px 12px 30px;
-  background: #009970;
 }
 
 #header .logo h1 {
@@ -106,22 +105,153 @@ h1, h2, h3, h4, h5, h6 {
 #header .logo img {
   padding: 0;
   margin: 0;
-  max-height: 40px;
+  max-height: 30px;
+  max-width:150px;
+}
+
+#header .img-fluidMerx{
+    height: auto;
+    width: auto;
 }
 
 @media (max-width: 992px) {
   #header {
     box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
     top: 0;
-    background: #009970;
+    background: #fff;
+    padding-left: 10%;
+    padding-right: 5%;
   }
-  #header.header-scrolled, #header .header-container {
-    background: #009970;
-  }
+    #header.header-scrolled, #header .header-container {
+        background: #fff;
+        padding-left: 33%;
+        padding-right: 33%;
+    }
   #header .logo h1 {
     font-size: 24px;
   }
 }
+
+@media (max-width: 800px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 9%;
+        padding-right: 10%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 34%;
+            padding-right: 35%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
+@media (max-width: 768px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 9%;
+        padding-right: 10%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 33%;
+            padding-right: 35%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
+@media (max-width: 750px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 33%;
+            padding-right: 33%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
+@media (max-width: 414px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 0%;
+        padding-right: 0%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 26%;
+            padding-right: 29%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
+@media (max-width: 375px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 9%;
+        padding-right: 10%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 9%;
+            padding-right: 10%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
+@media (max-width: 360px) {
+    #header {
+        box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        top: 0;
+        background: #fff;
+        padding-left: 9%;
+        padding-right: 10%;
+    }
+
+        #header.header-scrolled, #header .header-container {
+            background: #fff;
+            padding-left: 9%;
+            padding-right: 10%;
+        }
+
+        #header .logo h1 {
+            font-size: 24px;
+        }
+}
+
 
 /*--------------------------------------------------------------
 # Navigation Menu
@@ -262,7 +392,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mobile-nav-toggle i {
-  color: #fff;
+  color: black;
 }
 
 .mobile-nav {
@@ -451,6 +581,186 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 36px;
   }
 }
+
+/*--------------------------------------------------------------
+# Hero Store Section
+--------------------------------------------------------------*/
+/**/
+
+#hero-store {
+    width: 100%;
+    height: 35vh;
+    background: url("../img/hero-store.jpg");
+    background-size: cover;
+    position: relative;
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+}
+
+
+    #hero-store .container {
+        padding-top: 80px;
+    }
+
+    #hero-store:before {
+        content: "";
+        background: rgba(0, 0, 0, 0.6);
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    #hero-store h1 {
+        margin: 0 0 10px 0;
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 56px;
+        color: #fff;
+    }
+
+    #hero-store h2 {
+        color: #eee;
+        margin-bottom: 40px;
+        font-size: 15px;
+        font-weight: 500;
+        font-family: "Open Sans", sans-serif;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    #hero-store .btn-get-started {
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 1px;
+        display: inline-block;
+        padding: 8px 28px;
+        border-radius: 50px;
+        transition: 0.5s;
+        margin: 10px;
+        border: 2px solid #fff;
+        color: #fff;
+    }
+
+        #hero-store .btn-get-started:hover {
+            background: #009970;
+            border: 2px solid #009970;
+        }
+
+@media (min-width: 1024px) {
+    #hero-store {
+        background-attachment: fixed;
+    }
+}
+
+@media (max-width: 768px) {
+    #hero-store {
+        height: 100vh;
+    }
+
+        #hero-store .container {
+            padding-top: 60px;
+        }
+
+        #hero-store h1 {
+            font-size: 32px;
+            line-height: 36px;
+        }
+}
+
+
+/*--------------------------------------------------------------
+# Hero Product Section
+--------------------------------------------------------------*/
+
+#hero-product {
+    width: 100%;
+    height: 10vh;
+    background: url("../img/hero-bg.jpg");
+    background-size: cover;
+    position: relative;
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+}
+
+
+
+#hero-product .container {
+    padding-top: 80px;
+}
+
+#hero-product:before {
+    content: "";
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#hero-product h1 {
+    margin: 0 0 10px 0;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 56px;
+    color: #fff;
+}
+
+#hero-store h2 {
+    color: #eee;
+    margin-bottom: 40px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: "Open Sans", sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+#hero-product .btn-get-started {
+    font-family: "Poppins", sans-serif;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 8px 28px;
+    border-radius: 50px;
+    transition: 0.5s;
+    margin: 10px;
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+    #hero-product .btn-get-started:hover {
+        background: #009970;
+        border: 2px solid #009970;
+    }
+
+@media (min-width: 1024px) {
+    #hero-product {
+        background-attachment: fixed;
+    }
+}
+
+@media (max-width: 768px) {
+    #hero-product {
+        height: 100vh;
+    }
+
+        #hero-product .container {
+            padding-top: 60px;
+        }
+
+        #hero-product h1 {
+            font-size: 32px;
+            line-height: 36px;
+        }
+}
+
 
 /*--------------------------------------------------------------
 # Sections General
@@ -1469,3 +1779,19 @@ section {
   color: #fff;
   text-decoration: none;
 }
+
+/*--------------------------------------------------------------
+# Extras
+--------------------------------------------------------------*/
+
+.btn-comprar {
+    color: #fff;
+    background-color: #009970;
+    border-color: #28a745;
+}
+
+    .btn-comprar:hover {
+        color: #fff;
+        background-color: #00805d;
+        border-color: #1e7e34;
+    }
