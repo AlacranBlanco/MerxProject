@@ -355,3 +355,5 @@ MigrationBackup/
 /obj/Debug/
 Debug/
 obj\Debug
+
+Web.config
