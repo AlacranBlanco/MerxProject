@@ -2,12 +2,14 @@
 
 @{
     ViewBag.Title = "listaWey";
+
 }
 
 <h2>listaWey</h2>
 
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popupUsuarios", "Account", new { applicationUser = "", accion = "1" })'></div>
+
 <br />
 
 
@@ -22,34 +24,38 @@
         <th>
             @Html.DisplayNameFor(model => model.UserName)
         </th>
-        <th></th>
+        <th>Acciones</th>
     </tr>
+
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
+      
+            <tr>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Editar">Editar</button>
-                <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1" data-url='@Url.Action("popupUsuarios", "Account", new { Id = item.Id, accion = "2" })'></div>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar">Eliminar</button>
-                <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1" data-url='@Url.Action("popupUsuarios", "Account", new { Id = item.Id, accion = "3" })'></div>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
 
-            </td>
-        </tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popupUsuarios", "Account" , new {id=item.Id, accion = "2" })')">Editar</button>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popupUsuarios", "Account" , new {id=item.Id, accion = "3" })')">Eliminar</button>
 
+                </td>
+            </tr>
+       
     }
 
 </table>
+
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -65,32 +71,23 @@
         });
     });
 
-    $(document).ready(function () {
-        $('#Editar').click(function () {
-            var url = $('#idModalUpdate').data('url');
-            $.get(url, function (data) {
-                $("#idModalUpdate").html(data);
-                $("#idModalUpdate").modal('show');
-            });
+  
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalUpdate").html(data);
+            $("#idModalUpdate").modal('show');
         });
-    });
-
-    $(document).ready(function () {
-        $('#Elimninar').click(function () {
-            var url = $('#idModalElminar').data('url');
-            $.get(url, function (data) {
-                $("#idModalElminar").html(data);
-                $("#idModalElminar").modal('show');
-            });
-        });
-    });
-
-    function soloUno(checkbox) {
-        var checkboxes = document.getElementsByName('resp')
-        checkboxes.forEach((item) => {
-            if (item !== checkbox) item.checked = false
-        })
+    
     }
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalElminar").html(data);
+            $("#idModalElminar").modal('show');
+        });
+
+    }
+
 
 </script>
 
