@@ -19,7 +19,8 @@ namespace MerxProject.Controllers
 {
 
 
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     public class AccountController : Controller
     {
 

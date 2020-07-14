@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "ProductoVenta";
+    Layout = null;
+}
+
+<html lang="es-MX">
+<head>
+</head>
+<body>
+
+    <input type="radio" name="option" value="1" id="GDP_option" checked onClick="changeSrc()">1
+    <input type="radio" name="option" value="2" id="Population_option" onClick="changeSrc()">2
+    <input type="radio" name="option" value="3" id="None_option" onClick="changeSrc()"> 3
+    <input type="radio" name="option" value="4" id="None_option" onClick="changeSrc()"> 4
+
+    <img src="/Images/Productos/Shelves/shelve1.jpg" name="picture" id="picture">
+</body>
+</html>
+
+<script type='text/javascript'>
+
+
+    function changeSrc() {
+
+        var rates = document.getElementsByName('option');
+        var rate_value;
+        for (var i = 0; i < rates.length; i++) {
+            if (rates[i].checked) {
+                rate_value = rates[i].value;
+            }
+        }
+
+        console.log(rate_value);
+      
+        switch (rate_value) {
+            case '1':
+                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve1.jpg";
+                break;
+            case '2':
+                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve2.jpg";
+                break;
+            case '3':
+                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve3.jpg";
+                break;
+            case '4':
+                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve4.jpg";
+                break;
+            default:
+                break;
+        }
+
+       
+    }
+
+   
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

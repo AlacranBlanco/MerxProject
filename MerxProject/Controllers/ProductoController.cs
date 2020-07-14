@@ -283,5 +283,40 @@ namespace MerxProject.Controllers
                 return View(productos);
             }
         }
+
+        #region Shelve Producto
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult  ShelveProduct1()
+        {
+            return View("");
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ShelveProduct2()
+        {
+            return View("");
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ShelveProduct3()
+        {
+            return View("");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult ShelveProduct4()
+        {
+            return View("");
+        }
+
+        #endregion
+
     }
 }
