@@ -42,7 +42,5 @@ namespace MerxProject.Models
         public DbSet<Material> Materiales { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
 
-
-
     }
 }

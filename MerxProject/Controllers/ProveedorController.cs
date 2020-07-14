@@ -27,19 +27,21 @@ namespace MerxProject.Controllers
                 }
                 else if (accion == "2")
                 {
-                    var material = DbModel.Proveedores.Find(Id);
+                    var proveedor = DbModel.Proveedores.Find(Id);
+                    proveedor.Persona = (Persona)proveedor.Persona;
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
                     ViewBag.img = true;
-                    return View(material);
+                    return View(proveedor);
                 }
                 else if (accion == "3")
                 {
-                    var material = DbModel.Proveedores.Find(Id);
+                    var proveedor = DbModel.Proveedores.Find(Id);
+                    proveedor.Persona = (Persona)proveedor.Persona;
                     ViewBag.title = "Eliminar";
                     ViewBag.Accion = "3";
                     ViewBag.img = true;
-                    return View(material);
+                    return View(proveedor);
                 }
             }
             return RedirectToAction("ListaProveedor");
@@ -56,9 +58,9 @@ namespace MerxProject.Controllers
                 if (proveedores.Id > 0 && accion == "2")
                 {
                     // Edición
-                    var material = DbModel.Proveedores.Find(proveedores.Id);
+                    var proveedor = DbModel.Proveedores.Find(proveedores.Id);
 
-                    if (material != null)
+                    if (proveedor != null)
                     {
                         try
                         {
@@ -92,13 +94,13 @@ namespace MerxProject.Controllers
                             DbModel.SaveChanges();
                             resultado = "Eliminación finalizada";
                             ViewBag.res = resultado;
-                            return RedirectToAction("ListaMaterial");
+                            return RedirectToAction("ListaProveedor");
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
-                            return RedirectToAction("ListaMaterial");
+                            return RedirectToAction("ListaProveedor");
                         }
                     }
 
@@ -146,6 +148,10 @@ namespace MerxProject.Controllers
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 var proveedores = DbModel.Proveedores.ToList();
+                foreach (var i in proveedores)
+                {
+                i.Persona = (Persona)i.Persona;
+                }
                 return View(proveedores);
             }
         }

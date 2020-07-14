@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -19,6 +20,7 @@ namespace MerxProject.Models
         [MaxLength(200)]
         public string Giro { get; set; }
         [Required]
-        public Persona Persona { get; set; }
+        public virtual Persona Persona { get; set; }
+
     }
 }

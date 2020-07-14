@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MerxProject.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,7 +27,6 @@ namespace MerxProject
         public string Telefono { get; set; }
 
         public int idUsuario { get; set; }
-
-
+        
     }
 }
