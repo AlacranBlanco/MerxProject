@@ -220,6 +220,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EmpleadoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Persona\Persona.cs" />
     <Compile Include="Models\Proveedor.cs" />
+    <Compile Include="Models\Empleado.cs" />
     <Compile Include="Models\Usuario\Usuario.cs" />
     <Compile Include="Models\Material.cs" />
     <Compile Include="Models\Mueble.cs" />
@@ -551,16 +553,21 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
+    <Content Include="Views\Account\EmailVerification.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\listaWey.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\popupUsuarios.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\Empleado\ListaEmpleado.cshtml" />
+    <Content Include="Views\Empleado\PopUpEmpleados.cshtml" />
     <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
@@ -570,9 +577,6 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Login\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\EmailVerification.cshtml" />
-    <Content Include="Views\Account\listaWey.cshtml" />
-    <Content Include="Views\Account\popupUsuarios.cshtml" />
     <Content Include="Views\Login\LoginIndex.cshtml" />
     <Content Include="Views\Shared\_LayoutTienda.cshtml" />
     <Content Include="Views\Shared\_MostrarTodos.cshtml" />
@@ -586,6 +590,10 @@
     <Content Include="Views\Mueble\ListaMueble.cshtml" />
     <Content Include="Views\Producto\popUpProductos.cshtml" />
     <Content Include="Views\Producto\ListaProducto.cshtml" />
+    <Content Include="Views\Producto\ShelveProduct1.cshtml" />
+    <Content Include="Views\Producto\ShelveProduct2.cshtml" />
+    <Content Include="Views\Producto\ShelveProduct3.cshtml" />
+    <Content Include="Views\Producto\ShelveProduct4.cshtml" />
     <Content Include="Views\Proveedor\ListaProveedor.cshtml" />
     <Content Include="Views\Proveedor\popUpProveedores.cshtml" />
   </ItemGroup>
