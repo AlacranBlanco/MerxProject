@@ -40,7 +40,12 @@ namespace MerxProject.Models
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Mueble> Muebles { get; set; }
         public DbSet<Material> Materiales { get; set; }
+<<<<<<< HEAD
         public DbSet<Proveedor> Proveedores { get; set; }
+=======
+        public DbSet<Empleado> Empleados { get; set; }
+
+>>>>>>> ea32352012b7bf740aa4ddc0840995792fd4cfa8
 
     }
 }
