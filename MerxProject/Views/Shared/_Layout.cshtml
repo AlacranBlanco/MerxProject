@@ -4,6 +4,25 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="../Content/assets/ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="../Content/assets/ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../Content/assets/ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../Content/assets/ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../Content/assets/ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../Content/assets/ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="../Content/assets/ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../Content/assets/ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../Content/assets/ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../Content/assets/ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../Content/assets/ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../Content/assets/ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../Content/assets/ico/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../Content/assets/ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
     <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -18,18 +37,38 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Inicio", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <div class="logo mr-auto">
+                    <a href="../Home/Index"><img src="~/Content/assets/img/MerxWhite.png" alt="" class="img-fluidMerx" max-width="100px" height="40" style="padding-top:5px; padding-right:20px; padding-left:5px;" ></a>
+                </div>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Productos", "ListaProducto", "Producto")</li>
-                    <li>@Html.ActionLink("Materiales", "ListaMaterial", "Material")</li>
-                    <li>@Html.ActionLink("Muebles", "ListaMueble", "Mueble")</li>
-                    <li>@Html.ActionLink("Clientes", "ListaCliente", "Cliente")</li>
-                    <li>@Html.ActionLink("Herramientas", "ListaHerramienta", "Herramienta")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar Productos</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../Producto/ListaProducto">Productos</a></li>
+                            <li><a href="../Mueble/ListaMueble">Categorias muebles</a></li>
+                            <li><a href="#">Productos de clientes</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar materia prima</a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Proveedores", "ListaProveedor", "Proveedor")</li>
+                            <li>@Html.ActionLink("Materiales", "ListaMaterial", "Material")</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar procesos</a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Herramientas", "ListaHerramienta", "Herramienta")</li>
+                            <li>@Html.ActionLink("Procesos", "MostrarProceso", "Proceso")</li>
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("Clientes", "listaWey", "Account")</li>
                     <li>@Html.ActionLink("Empleados", "ListaEmpleado", "Empleado")</li>
-                    <li>@Html.ActionLink("Proveedores", "ListaProveedor", "Proveedor")</li>
+                    
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
