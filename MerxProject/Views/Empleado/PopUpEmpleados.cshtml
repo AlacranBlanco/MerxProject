@@ -1,0 +1,80 @@
+﻿@model MerxProject.Models.Empleado
+
+@{
+    ViewBag.Title = "Registrar empleado";
+}
+
+<h2>PopUpEmpleados</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("PopUpEmpleados", "Empleado", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.FechaIngreso, htmlAttributes: new { @class = "control-label col-md-2"})
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.FechaIngreso)
+                                        @Html.ValidationMessageFor(model => model.FechaIngreso, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Personas, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="idPersona" , name="idPersona" class="">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Usuarios, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="idUsuario" , name="idUsuario" class="">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="hidden" name="accion" value="@ViewBag.Accion" />
+                                    <input type="submit" value="@ViewBag.title" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
