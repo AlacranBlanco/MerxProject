@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MerxProject.Models.Producto>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Producto>
+
 
 @{
     ViewBag.Title = "Tienda Virtual";
@@ -78,10 +79,14 @@
                             </div>
                         </div>
                     }
-
-                    <a href="#" class="list-group-item">Sillones</a>
-                    <a href="#" class="list-group-item">Sillas</a>
-                    <a href="#" class="list-group-item">Escritorios</a>
+                    @Html.ActionLink("Todos", "Tienda", new { pagina = 1 },
+                        new { @class = "btn btn-sm btn-default" })
+                    @Html.ActionLink("Sillas", "Buscar", new { parameter = "Silla", pagina = 1 },
+                        new { @class = "btn btn-sm btn-default" })
+                    @Html.ActionLink("Sillones", "Buscar", new { parameter = "Sillón", pagina = 1  },
+                        new { @class = "btn btn-sm btn-default" })
+                    @Html.ActionLink("Mesas", "Buscar", new { parameter = "Mesa", pagina = 1  },
+                        new { @class = "btn btn-sm btn-default" })
                 </div>
 
             </div>
@@ -90,7 +95,7 @@
             <div class="col-lg-9">
                 <div class="row">
 
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Resultado)
                     {
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100">
@@ -119,6 +124,57 @@
                     }
                 </div>
                 <!-- /.row -->
+                @*Paginador de registros*@
+                @if (Model.Resultado.Count() > 0)
+                {
+                    <span>
+                        <strong>@Model.TotalRegistros</strong> registros encontrados
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                        Página <strong>@(Model.PaginaActual)</strong> de
+                        <strong>@Model.TotalPaginas</strong>
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                }
+                else
+                {
+                    <span>No hay resultados para esta búsqueda</span>
+                    <span>&nbsp;|&nbsp;</span>
+                }
+                @if (Model.PaginaActual > 1)
+                {
+                    @Html.ActionLink("<<", "Tienda", new { pagina = 1 },
+                        new { @class = "btn btn-sm btn-default"})
+                    <span></span>
+                    @Html.ActionLink("Anterior", "Tienda", new { pagina = Model.PaginaActual - 1 },
+                        new { @class = "btn btn-sm btn-default" });
+                }
+                else
+                {
+                    @Html.ActionLink("<<", "Tienda", new { pagina = 1 },
+                        new { @class = "btn btn-sm btn-default disabled" })
+                    <span></span>
+                    @Html.ActionLink("Anterior", "Tienda", new { pagina = 1 },
+                        new { @class = "btn btn-sm btn-default disabled" })
+                }
+                <span></span>
+                @if (Model.PaginaActual < Model.TotalPaginas)
+                {
+                    @Html.ActionLink("Siguiente", "Tienda", new { pagina = Model.PaginaActual + 1 },
+                                    new { @class = "btn btn-sm btn-default" })
+                    <span></span>
+                    @Html.ActionLink(">>", "Tienda", new { pagina = Model.TotalPaginas },
+                                    new { @class = "btn btn-sm btn-default" })
+                }
+                else
+                {
+                    @Html.ActionLink("Siguiente", "Tienda", new { pagina = Model.TotalPaginas - 1 },
+                                    new { @class = "btn btn-sm btn-default disabled" })
+                    <span></span>
+                    @Html.ActionLink(">>", "Tienda", new { pagina = Model.TotalPaginas },
+                                    new { @class = "btn btn-sm btn-default disabled" })
+                }
             </div>
             <!-- /.col-lg-9 -->
 

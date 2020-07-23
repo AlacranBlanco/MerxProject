@@ -15,16 +15,12 @@ namespace MerxProject.Models
         public string Descripcion { get; set; }
         [Required]
         public string Imagen { get; set; }
-        [Required]
-        public string Color { get; set; }
 
         [Required]
         public Mueble CategoriaMueble { get; set; }
         [Required]
         public Material CategoriaMaterial { get; set; }
 
-        [Required]
-        public int Cantidad { get; set; }
         [Required]
         public float Precio { get; set; }
     }
