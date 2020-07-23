@@ -12,12 +12,41 @@ namespace MerxProject.Controllers
 {
     public class ProductoController : Controller
     {
-        // GET: Producto
-        public ActionResult Tienda()
+
+        ApplicationDbContext DbModel;
+
+
+        public ProductoController()
         {
-            return View();
+            this.DbModel = new ApplicationDbContext();
         }
 
+        // GET: Producto
+        [HttpGet]
+        public ActionResult Tienda(int? pag)
+        {
+            var productos = DbModel.Productos.ToList();
+            Producto[] productos1 = new Producto[productos.Count];
+
+            int i = 0;
+            foreach (var item in productos)
+            {
+                productos1[i] = item;
+                i++;
+            }
+
+
+            ViewBag.paginaSig = pag;
+
+            return View(productos1);
+        }
+
+        [HttpPost]
+        public ActionResult Tienda()
+        {
+            
+            return View();
+        }
         public ActionResult MostrarTodos()
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
@@ -296,25 +325,17 @@ namespace MerxProject.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult ShelveProduct2()
+        public ActionResult Bamboo1(string name, float price, string image)
         {
-            return View("");
+            Producto producto = new Producto();
+            producto.Nombre = name;
+            producto.Precio = price;
+            producto.Imagen = image;
+            return View(producto);
         }
 
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult ShelveProduct3()
-        {
-            return View("");
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult ShelveProduct4()
-        {
-            return View("");
-        }
+       
 
         #endregion
 

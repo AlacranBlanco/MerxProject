@@ -1,10 +1,36 @@
-﻿@model MerxProject.Models.Producto
+﻿@model MerxProject.Models.Producto[]
 
 @{
     ViewBag.Title = "Tienda Virtual";
     Layout = "~/Views/Shared/_LayoutTienda.cshtml";
+    int i = 0, k = 1, finalAux = 5, start = 0;
+    List<int> myList = new List<int>();
+    myList.Add(0);
+    int posAux = 1;
 }
 
+@if (ViewBag.paginaSig >= 2)
+{
+    start = ViewBag.paginaSig;
+}
+else if(ViewBag.paginaSig == 1)
+{
+    start = 0;
+
+}
+else
+{
+    start = 0;
+}
+
+@for (int o = 1; o <= Model.Length; o++)
+{
+    if (o % 5 == 0)
+    {
+        myList.Add(finalAux);
+        finalAux += 5;
+    }
+}
 <title>Muebleria Merx - Tienda Virtual</title>
 <!-- Custom styles for this template -->
 <link href="~/Content/assets/vendor/bootstrap/css/shop-homepage.css" rel="stylesheet">
@@ -67,43 +93,132 @@
         }
     </div>
 </section>
+<div class="super_container">
+    <div class="super_container_inner">
+        <div class="super_overlay"></div>
+        <!-- Products -->
 
-<br />
-<div id="main">
-    <!-- Page Content -->
-    <div class="container">
-
-        <div class="row">
-            <div class="col-lg-3 section-bg">
-                <h1 class="my-4">Filtros</h1>
-                <div class="list-group">
-                    @using (Html.BeginForm("Buscar", "Producto", FormMethod.Post))
-                    {
-                        <div class="input-group">
-                            <input type="text" class="form-control list-group-item" name="parameter" id="parameter" placeholder="Buscar producto">
-                            <div class="input-group-append">
-                                <input class="btn btn-secondary" type="submit" value="Buscar" style="background-color:#009970; border-radius:10px;">
-                                <i class="fa fa-search"></i>
+        <div class="products">
+            <div class="container">
+                <div class="row products_bar_row">
+                    <div class="col">
+                        <div class="products_bar d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-start justify-content-center">
+                            <div class="products_bar_links">
+                                <ul class="d-flex flex-row align-items-start justify-content-start">
+                                    <li><a href="#">All</a></li>
+                                    <li><a href="#">Hot Products</a></li>
+                                    <li class="active"><a href="#">New Products</a></li>
+                                    <li><a href="#">Sale Products</a></li>
+                                </ul>
+                            </div>
+                            <div class="products_bar_side d-flex flex-row align-items-center justify-content-start ml-lg-auto">
+                                <div class="products_dropdown product_dropdown_sorting">
+                                    <div class="isotope_sorting_text"><span>Default Sorting</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                                    <ul>
+                                        <li class="item_sorting_btn" data-isotope-option='{ "sortBy": "original-order" }'>Default</li>
+                                        <li class="item_sorting_btn" data-isotope-option='{ "sortBy": "price" }'>Price</li>
+                                        <li class="item_sorting_btn" data-isotope-option='{ "sortBy": "name" }'>Name</li>
+                                    </ul>
+                                </div>
+                                <div class="product_view d-flex flex-row align-items-center justify-content-start">
+                                    <div class="view_item active"><img src="~/Content/ProductAssets/images/view_1.png" alt=""></div>
+                                    <div class="view_item"><img src="~/Content/ProductAssets/images/view_2.png" alt=""></div>
+                                    <div class="view_item"><img src="~/Content/ProductAssets/images/view_3.png" alt=""></div>
+                                </div>
+                                <div class="products_dropdown text-right product_dropdown_filter">
+                                    <div class="isotope_filter_text"><span>Filter</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                                    <ul>
+                                        <li class="item_filter_btn" data-filter="*">All</li>
+                                        <li class="item_filter_btn" data-filter=".hot">Hot</li>
+                                        <li class="item_filter_btn" data-filter=".new">New</li>
+                                        <li class="item_filter_btn" data-filter=".sale">Sale</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    }
-                    <a href="#" class="list-group-item">Sillones</a>
-                    <a href="#" class="list-group-item">Sillas</a>
-                    <a href="#" class="list-group-item">Escritorios</a>
+                    </div>
                 </div>
 
-            </div>
-            <!-- /.col-lg-3 -->
+                <!-- Product -->
 
-            <div class="col-lg-9">
-                @Html.Action("MostrarTodos")
-            </div>
-            <!-- /.col-lg-9 -->
+                <div class="row products_row products_container grid">
+                    @for (int h = start; h < Model.Length; h++)
+                    {
 
+                        i++;
+
+                        if (i <= 5)
+                        {
+                            <div class="col-xl-4 col-md-6 grid-item new">
+                                <div class="product">
+                                    <div class="product_image"><img src="@Url.Content(Model[h].Imagen)" alt=""></div>
+                                    <div class="product_content">
+                                        <div class="product_info d-flex flex-row align-items-start justify-content-start">
+                                            <div>
+                                                <div>
+                                                    @*<div class="product_name"><a href="https://localhost:44309/Producto/Bamboo1">@Model[h].Nombre</a></div>*@
+                                                    <div class="product_name"><a href="@Url.Action("Bamboo1", "Producto", new { name = Model[h].Nombre, price = Model[h].Precio, image = Model[h].Imagen })">@Model[h].Nombre</a></div>
+                                                </div>
+                                            </div>
+                                            <div class="ml-auto text-right">
+                                                <div class="rating_r rating_r_4 home_item_rating"><i></i><i></i><i></i><i></i><i></i></div>
+                                                <div class="product_price text-right">$@Model[h].Precio</div>
+                                            </div>
+                                        </div>
+                                        <div class="product_buttons">
+                                            <div class="text-right d-flex flex-row align-items-start justify-content-start">
+                                                <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
+                                                    <div><div><img src="~/Content/ProductAssets/images/heart_2.svg" class="svg" alt=""><div>+</div></div></div>
+                                                </div>
+                                                <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+                                                    <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="svg" alt=""><div>+</div></div></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+
+                </div>
+                <div class="row page_nav_row">
+                    <div class="col">
+                        <div class="page_nav">
+                            <ul class="d-flex flex-row align-items-start justify-content-center">
+                             @{ 
+                                 posAux = 0;
+                             }
+                                @for (int j = 1; j <= myList.Count; j++)
+                                {
+                                    using (Html.BeginForm("Tienda", "Producto", FormMethod.Get, new { enctype = "multipart/form-data" }))
+                                    {
+                                        
+                                            if (myList[posAux] == ViewBag.paginaSig)
+                                            {
+                                                <input type="hidden" name="pag" value="@myList[posAux]" />
+                                                <li class="active"><input type="submit" value="@k" class="submitLink" /></li>
+                                                k++;
+                                                posAux++;
+                                            }
+                                            else
+                                            {
+                                                <input type="hidden" name="pag" value="@myList[posAux]" />
+                                                <li class=""><input type="submit" value="@k" class="submitLink" /></li>
+                                                k++;
+                                                posAux++;
+                                            }
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /.row -->
-
     </div>
-    <!-- /.container -->
-</div>
-<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+    </div>
+  
+    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
