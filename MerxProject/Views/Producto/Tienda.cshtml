@@ -1,4 +1,5 @@
-﻿@model MerxProject.Models.Producto[]
+﻿@using MerxProject.Models.TiendaViewModels
+@model TiendaViewModel
 
 @{
     ViewBag.Title = "Tienda Virtual";
@@ -7,23 +8,33 @@
     List<int> myList = new List<int>();
     myList.Add(0);
     int posAux = 1;
+    int idAux = 0, idAux2 = 6;
+    int pagActual = ViewBag.pagina - 1;
+    int idxFavorito = 0;
+}
+<script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script>
+
+@if (ViewBag.NoLogIn == 0)
+{
+    <script>
+
+      
+        $(document).ready(function () {
+            Swal.fire(
+                'Espera!',
+                'Sólo puede tener 4 direcciones por cuenta, elimina o edita alguna dirección',
+                'warning'
+            )
+        });
+
+
+    </script>
 }
 
-@if (ViewBag.paginaSig >= 2)
-{
-    start = ViewBag.paginaSig;
-}
-else if(ViewBag.paginaSig == 1)
-{
-    start = 0;
 
-}
-else
-{
-    start = 0;
-}
 
-@for (int o = 1; o <= Model.Length; o++)
+
+@for (int o = 1; o <= Model.ProductoCollection.Count; o++)
 {
     if (o % 5 == 0)
     {
@@ -31,6 +42,12 @@ else
         finalAux += 5;
     }
 }
+
+@{
+    start = myList[pagActual];
+}
+
+
 <title>Muebleria Merx - Tienda Virtual</title>
 <!-- Custom styles for this template -->
 <link href="~/Content/assets/vendor/bootstrap/css/shop-homepage.css" rel="stylesheet">
@@ -142,42 +159,109 @@ else
                 <!-- Product -->
 
                 <div class="row products_row products_container grid">
-                    @for (int h = start; h < Model.Length; h++)
+                    @for (int h = start; h < Model.ProductoCollection.Count; h++)
                     {
 
                         i++;
 
+
+
+
                         if (i <= 5)
                         {
+                            idAux++;
+                            idAux2++;
                             <div class="col-xl-4 col-md-6 grid-item new">
                                 <div class="product">
-                                    <div class="product_image"><img src="@Url.Content(Model[h].Imagen)" alt=""></div>
+                                    <div class="product_image"><img src="@Url.Content(Model.ProductoCollection[h].Imagen)" alt=""></div>
                                     <div class="product_content">
                                         <div class="product_info d-flex flex-row align-items-start justify-content-start">
                                             <div>
                                                 <div>
                                                     @*<div class="product_name"><a href="https://localhost:44309/Producto/Bamboo1">@Model[h].Nombre</a></div>*@
-                                                    <div class="product_name"><a href="@Url.Action("Bamboo1", "Producto", new { name = Model[h].Nombre, price = Model[h].Precio, image = Model[h].Imagen })">@Model[h].Nombre</a></div>
+                                                    <div class="product_name"><a href="@Url.Action("Bamboo1", "Producto", new { name = Model.ProductoCollection[h].Nombre })">@Model.ProductoCollection[h].Nombre</a></div>
                                                 </div>
                                             </div>
                                             <div class="ml-auto text-right">
                                                 <div class="rating_r rating_r_4 home_item_rating"><i></i><i></i><i></i><i></i><i></i></div>
-                                                <div class="product_price text-right">$@Model[h].Precio</div>
+                                                <div class="product_price text-right">$@Model.ProductoCollection[h].Precio</div>
                                             </div>
                                         </div>
                                         <div class="product_buttons">
                                             <div class="text-right d-flex flex-row align-items-start justify-content-start">
                                                 <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
-                                                    <div><div><img src="~/Content/ProductAssets/images/heart_2.svg" class="svg" alt=""><div>+</div></div></div>
+
+                                                    @if (Model.ProductoCollection[h].Id == Model.ProductosFavId[h])
+                                                    {
+                                                        idxFavorito++;
+                                                        using (Html.BeginForm("AgregarProductoFavorito", "Producto", FormMethod.Post, new { id = idAux }))
+                                                        {
+                                                            <input type="hidden" name="id" value=@Model.ProductoCollection[h].Id id=@idAux>
+                                                            <input type="hidden" name="accion" value="2" id=@idAux>
+                                                            <input type="hidden" name="pagi" value=@ViewBag.pagina id=@idAux>
+                                                            <a id=@idAux name=@idAux href="" onclick="$('#@idAux').submit(); return false;">
+                                                                @*<a id=@idAux name=@idAux href="@Url.Action("AgregarProductoFavorito", "Producto", new { id = Model[h].Id })">*@
+
+                                                                <div>
+                                                                    <div>
+
+                                                                        <img src="~/Content/ProductAssets/images/heart1.png" class="img" />
+                                                                    </div>
+                                                                </div>
+
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        using (Html.BeginForm("AgregarProductoFavorito", "Producto", FormMethod.Post, new { id = idAux }))
+                                                        {
+                                                            <input type="hidden" name="id" value=@Model.ProductoCollection[h].Id id=@idAux>
+                                                            <input type="hidden" name="accion" value="1" id=@idAux>
+                                                            <input type="hidden" name="pagi" value=@ViewBag.pagina id=@idAux>
+                                                            <a id=@idAux name=@idAux href="" onclick="$('#@idAux').submit(); return false;">
+                                                                @*<a id=@idAux name=@idAux href="@Url.Action("AgregarProductoFavorito", "Producto", new { id = Model[h].Id })">*@
+
+                                                                <div>
+                                                                    <div>
+
+                                                                        <img src="~/Content/ProductAssets/images/heart.svg" class="svg" />
+                                                                    </div>
+                                                                </div>
+
+                                                            </a>
+                                                        }
+                                                    }
+
                                                 </div>
                                                 <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
-                                                    <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="svg" alt=""><div>+</div></div></div>
+                                                    @using (Html.BeginForm("AgregarProductoFavorito", "Producto", FormMethod.Post, new { id = idAux2 }))
+                                                    {
+                                                        @*<a href='@Url.Action("MisDirecciones", "Manage", new { id = item.Id, accion = 3 })'>*@
+                                                        <input type="hidden" name="id" value=@Model.ProductoCollection[h].Id id=@idAux2>
+                                                        <input type="hidden" name="accion" value="3" id=@idAux2>
+                                                        <a id=@idAux2 name=@idAux2 href="" onclick="$('#@idAux2').submit(); return false;">
+
+                                                            <div>
+                                                                <div>
+
+                                                                    <img src="~/Content/ProductAssets/images/cart.svg" class="svg" />
+                                                                </div>
+                                                            </div>
+
+                                                        </a>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        }
+
+                        if (i == 5)
+                        {
+                            break;
                         }
 
                     }
@@ -187,31 +271,52 @@ else
                     <div class="col">
                         <div class="page_nav">
                             <ul class="d-flex flex-row align-items-start justify-content-center">
-                             @{ 
-                                 posAux = 0;
-                             }
-                                @for (int j = 1; j <= myList.Count; j++)
-                                {
-                                    using (Html.BeginForm("Tienda", "Producto", FormMethod.Get, new { enctype = "multipart/form-data" }))
-                                    {
-                                        
-                                            if (myList[posAux] == ViewBag.paginaSig)
-                                            {
-                                                <input type="hidden" name="pag" value="@myList[posAux]" />
-                                                <li class="active"><input type="submit" value="@k" class="submitLink" /></li>
-                                                k++;
-                                                posAux++;
-                                            }
-                                            else
-                                            {
-                                                <input type="hidden" name="pag" value="@myList[posAux]" />
-                                                <li class=""><input type="submit" value="@k" class="submitLink" /></li>
-                                                k++;
-                                                posAux++;
-                                            }
-                                    }
+                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = 1})"><<</a></li>
+                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina - 1})"><</a></li>
 
+                                @if (myList.Count == ViewBag.pagina)
+                                {
+                                    <li><a style="color:#2fce98">1</a></li>
+                                    <li><a style="color:#2fce98">...</a></li>
+                                    <li class="active"><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina })">@ViewBag.pagina</a></li>
                                 }
+                                else if (myList.Count > 1)
+                                {
+                                    <li class="active"><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina })">@ViewBag.pagina</a></li>
+                                    <li><a style="color:#2fce98">...</a></li>
+                                    <li><a style="color:#2fce98">@myList.Count</a></li>
+                                }
+                                else
+                                {
+                                    <li class="active"><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina })">@ViewBag.pagina</a></li>
+                                }
+
+
+                                @*@{
+                                        posAux = 0;
+                                    }
+                                    @for (int j = 1; j <= myList.Count; j++)
+                                    {
+
+
+                                        if (myList[posAux] == start)
+                                        {
+
+                                            <li class="active"><a href="@Url.Action("Tienda", "Producto", new { pag = k })">@k</a></li>
+                                            k++;
+                                            posAux++;
+                                        }
+                                        else
+                                        {
+
+                                            <li><a href="@Url.Action("Tienda", "Producto", new { pag = k })">@k</a></li>
+                                            k++;
+                                            posAux++;
+                                        }
+
+                                    }*@
+                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina + 1})">></a></li>
+                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = @myList.Count })">>></a></li>
                             </ul>
                         </div>
                     </div>
@@ -219,6 +324,9 @@ else
             </div>
         </div>
     </div>
-    </div>
-  
-    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+</div>
+
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+<script src="~/Content/SweetAlert/sweetalert2.all.min.js"></script>
+

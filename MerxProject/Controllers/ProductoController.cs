@@ -1,4 +1,7 @@
 ﻿using MerxProject.Models;
+using MerxProject.Models.ProductosFavorito;
+using MerxProject.Models.TiendaViewModels;
+using MerxProject.Models.VentaViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -23,22 +26,51 @@ namespace MerxProject.Controllers
 
         // GET: Producto
         [HttpGet]
-        public ActionResult Tienda(int? pag)
+        public ActionResult Tienda(int? NoLogIn, int pag = 1)
         {
-            var productos = DbModel.Productos.ToList();
-            Producto[] productos1 = new Producto[productos.Count];
+            if (pag <= 0) pag = 1;
+            if (NoLogIn != null) ViewBag.NoLogIn = 0;
+            var email = User.Identity.Name;
+            var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+            
 
-            int i = 0;
-            foreach (var item in productos)
+            TiendaViewModel tiendaViewModel = new TiendaViewModel();
+            tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+
+            tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+
+            tiendaViewModel.ProductosFavId = new List<int>();
+
+            int idxAux = 0;
+            foreach (var item in tiendaViewModel.ProductoCollection)
             {
-                productos1[i] = item;
-                i++;
+                if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
+                {
+                    if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                    {
+                        tiendaViewModel.ProductosFavId.Add(item.Id);
+                        idxAux++;
+                    }
+                    else
+                    {
+                        tiendaViewModel.ProductosFavId.Add(-12);
+                    }
+                }
+                else
+                {
+                    tiendaViewModel.ProductosFavId.Add(-12);
+                }
+                
             }
 
 
-            ViewBag.paginaSig = pag;
+                ViewBag.pagina = pag;
+                return View(tiendaViewModel);
+           
+            
 
-            return View(productos1);
+
+         
         }
 
         [HttpPost]
@@ -297,6 +329,9 @@ namespace MerxProject.Controllers
             }
         }
 
+
+        #region Braulio Monroy
+
         [HttpGet]
         [AllowAnonymous]
         public ActionResult ListaProducto()
@@ -313,7 +348,7 @@ namespace MerxProject.Controllers
             }
         }
 
-        #region Shelve Producto
+      
 
         [AllowAnonymous]
         [HttpGet]
@@ -325,17 +360,89 @@ namespace MerxProject.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult Bamboo1(string name, float price, string image)
+        public ActionResult Bamboo1(string name)
         {
-            Producto producto = new Producto();
-            producto.Nombre = name;
-            producto.Precio = price;
-            producto.Imagen = image;
-            return View(producto);
+
+            if(name != null)
+            {
+                VentaViewModels ventaViewModels = new VentaViewModels();
+
+                ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
+                ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto_Id == ventaViewModels.Producto.Id).ToList();
+                ventaViewModels.ColorsCollection = new List<Colors>();
+                foreach (var item in ventaViewModels.InventarioCollection)
+                {
+                    var colorDetail = DbModel.Colors.FirstOrDefault(x => x.Id == item.Color_Id);
+                    ventaViewModels.ColorsCollection.Add(colorDetail);
+                }
+            return View(ventaViewModels);
+            }
+            else
+            {
+                return Redirect("Tienda");
+            }
+           
+            
+
+        }
+
+      
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult AgregarProductoFavorito(Producto producto, int accion, int pagi)
+        {
+            var correo = User.Identity.Name;
+            if (correo != "")
+            {
+                if (accion == 1)
+                {
+                    ProductosFavoritos productosFavoritos = new ProductosFavoritos();
+                    using (this.DbModel = new ApplicationDbContext())
+                    {
+
+                        var idPersonas = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        var nombreProdcuto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                        productosFavoritos.Nombre = nombreProdcuto.Nombre;
+                        productosFavoritos.idProducto = producto.Id;
+                        productosFavoritos.idPersona = idPersonas.idPersona;
+                        DbModel.ProductosFavoritos.Add(productosFavoritos);
+                        DbModel.SaveChanges();
+                    }
+                    return RedirectToAction("Tienda", new { pag = pagi });
+                }
+                else if (accion == 2)
+                {
+                    // Eliminación
+                    var productoFav = DbModel.ProductosFavoritos.FirstOrDefault(x => x.idProducto == producto.Id);
+
+                    if (productoFav != null)
+                    {
+                        DbModel.ProductosFavoritos.Remove(productoFav);
+                        DbModel.SaveChanges();
+                        return RedirectToAction("Tienda", new { pag = pagi });
+                    }
+                }
+            }
+            else
+            {
+                // El usuario no ha sido logeado, le mandamos un mensaje
+                ViewBag.NoLogIn = 0;
+                ViewBag.pagina = 1;
+                Tienda(0, 1);
+                return View("Tienda");
+            }
+           
+        
+
+            return View("Tienda");
+
         }
 
 
-       
+
+
+
+
 
         #endregion
 

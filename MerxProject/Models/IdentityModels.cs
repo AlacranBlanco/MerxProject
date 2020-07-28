@@ -1,6 +1,10 @@
 ﻿using System.Data.Entity;
+using System.Drawing;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MerxProject.Models;
+using MerxProject.Models.Direccion;
+using MerxProject.Models.ProductosFavorito;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -42,6 +46,14 @@ namespace MerxProject.Models
         public DbSet<Material> Materiales { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Colors> Colors { get; set; }
+        public DbSet<Inventario> Inventarios{ get; set; }
+
+        public DbSet<Direcciones> Direcciones { get; set; }
+
+        public DbSet<Paises> Paises { get; set; }
+
+        public DbSet<ProductosFavoritos> ProductosFavoritos { get; set; }
 
     }
 }

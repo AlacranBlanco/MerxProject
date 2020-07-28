@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
 /******************************
@@ -1092,7 +1092,7 @@ section
 }
 .product_buttons > div > div
 {
-	width: 50%;
+	width: 100%;
 	height: 100%;
 	border-top: solid 1px #ededed;
 	background: rgba(255,255,255,0);
@@ -1102,11 +1102,25 @@ section
 	-o-transition: all 200ms ease;
 	transition: all 200ms ease;
 }
+
+	.product_buttons > div > div new {
+		max-width: 15%;
+		height: auto;
+	}
+
 .product_buttons > div > div svg
 {
-	max-width: 100%;
+	max-width: 28%;
 	height: auto;
 }
+
+	.product_buttons > div > div img {
+		max-width: 28%;
+		height: auto;
+	}
+
+
+
 .home_item_large .product_buttons > div > div
 {
 	border-top: solid 1px rgba(255,255,255,0.2);

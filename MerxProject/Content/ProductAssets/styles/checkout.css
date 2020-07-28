@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
 /******************************
@@ -803,8 +803,8 @@ section
 .billing
 {
 	padding-top: 51px;
-	padding-left: 68px;
-	padding-right: 68px;
+	padding-left: 300px;
+	padding-right: 250px;
 	padding-bottom: 32px;
 	background: #f8f8f8;
 }

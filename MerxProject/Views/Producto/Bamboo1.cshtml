@@ -1,8 +1,9 @@
-﻿@model MerxProject.Models.Producto
+﻿@model MerxProject.Models.VentaViewModels.VentaViewModels
 
 @{
     ViewBag.Title = "Tienda Virtual";
     Layout = "~/Views/Shared/_LayoutProducto.cshtml";
+    int radio_Id = 0;
 }
 
 <title>Muebleria Merx - Tienda Virtual</title>
@@ -42,7 +43,7 @@
                             <div id="slider" class="flexslider">
                                 <ul class="slides">
                                     <li>
-                                        <img src="@Url.Content(Model.Imagen)" />
+                                        <img src="@Url.Content(Model.Producto.Imagen)" />
                                     </li>
                                 </ul>
                             </div>
@@ -53,13 +54,32 @@
                     <!-- Product Info -->
                     <div class="col-lg-6 product_col">
                         <div class="product_info">
-                            <div class="product_name">@Model.Nombre</div>
+                            <div class="product_name">@Model.Producto.Nombre</div>
                             <div class="product_category">In <a href="category.html">Category</a></div>
-                            <div class="product_price">$@Model.Precio</div>
+                            <div class="product_price">$@Model.Producto.Precio</div>
                             <div class="product_size">
-                                <div class="product_size_title">Select Size</div>
+                                <div class="product_size_title">Selecciona el Color</div>
                                 <ul class="d-flex flex-row align-items-start justify-content-start">
-                                    <li>
+
+                                    @for (int i = 0; i < Model.InventarioCollection.Count; i++)
+                                    {
+                                        radio_Id++;
+                                        if (Model.InventarioCollection[i].Cantidad == 0)
+                                        {
+                                            <li>
+                                                <input type="radio" id=@radio_Id disabled name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
+                                                @*<label for=@radio_Id ></label>*@
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <input type="radio" id=@radio_Id name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
+                                                @*<label for=@radio_Id></label>*@
+                                            </li>
+                                        }
+                                    }
+                                    @*<li>
                                         <input type="radio" id="radio_1" disabled name="product_radio" class="regular_radio radio_1">
                                         <label for="radio_1">XS</label>
                                     </li>
@@ -82,7 +102,7 @@
                                     <li>
                                         <input type="radio" id="radio_6" disabled name="product_radio" class="regular_radio radio_6">
                                         <label for="radio_6">XXL</label>
-                                    </li>
+                                    </li>*@
                                 </ul>
                             </div>
                             <div class="product_text">
@@ -91,10 +111,10 @@
                             <div class="product_buttons">
                                 <div class="text-right d-flex flex-row align-items-start justify-content-start">
                                     <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
-                                        <div><div><img src="~/Content/ProductAssets/images/heart_2.svg" class="svg" alt=""><div>+</div></div></div>
+                                        <div><div><img src="~/Content/ProductAssets/images/heart1.png" class="image" alt=""><div>+</div></div></div>
                                     </div>
                                     <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
-                                        <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="svg" alt=""><div>+</div></div></div>
+                                        <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="image" alt=""><div>+</div></div></div>
                                     </div>
                                 </div>
                             </div>

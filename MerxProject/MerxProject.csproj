@@ -234,15 +234,23 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CarritoCompras\CarritoCompra.cs" />
+    <Compile Include="Models\Colors.cs" />
+    <Compile Include="Models\Direccion\Direcciones.cs" />
+    <Compile Include="Models\Direccion\Paises.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Inventario.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Persona\Persona.cs" />
+    <Compile Include="Models\ProductosFavorito\ProductosFavoritos.cs" />
     <Compile Include="Models\Proveedor.cs" />
     <Compile Include="Models\Empleado.cs" />
+    <Compile Include="Models\TiendaViewModels\TiendaViewModel.cs" />
     <Compile Include="Models\Usuario\Usuario.cs" />
     <Compile Include="Models\Material.cs" />
     <Compile Include="Models\Mueble.cs" />
     <Compile Include="Models\Producto.cs" />
+    <Compile Include="Models\VentaViewModels\VentaViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -465,6 +473,7 @@
     <Content Include="Content\ProductAssets\plugins\scrollmagic\ScrollMagic.min.js" />
     <Content Include="Content\ProductAssets\styles\bootstrap-4.1.2\bootstrap.min.css" />
     <Content Include="Content\ProductAssets\styles\bootstrap-4.1.2\bootstrap.min.js" />
+    <Content Include="Content\ProductAssets\styles\Direcciones.css" />
     <Content Include="Content\ProductAssets\styles\bootstrap-4.1.2\popper.js" />
     <Content Include="Content\ProductAssets\styles\cart.css" />
     <Content Include="Content\ProductAssets\styles\cart_responsive.css" />
@@ -476,6 +485,7 @@
     <Content Include="Content\ProductAssets\styles\product.css" />
     <Content Include="Content\ProductAssets\styles\product_responsive.css" />
     <Content Include="Content\ProductAssets\styles\responsive.css" />
+    <Content Include="Content\SweetAlert\sweetalert2.all.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -711,6 +721,9 @@
     <Content Include="Views\Proveedor\ListaProveedor.cshtml" />
     <Content Include="Views\Proveedor\popUpProveedores.cshtml" />
     <Content Include="Views\Shared\_LayoutProducto.cshtml" />
+    <Content Include="Views\Shared\_LayoutDirecciones.cshtml" />
+    <Content Include="Views\Manage\Direcciones.cshtml" />
+    <Content Include="Views\Manage\MisDirecciones.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

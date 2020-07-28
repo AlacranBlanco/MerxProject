@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
 /******************************
@@ -1011,14 +1011,36 @@ section
 {
 	margin-top: 22px;
 }
-.regular_radio
-{
-	display: none;
+.regular_radio {
+	/*	display: none;*/
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	-o-appearance: none;
+	appearance: none;
+	width: 36px;
+	height: 36px;
+	/*background: transparent;*/
+	border: solid 2px #4a4a4a;
+	/*color: #4a4a4a;*/
+	cursor: pointer;
+	margin-right: 14px;
+	font-weight: 700;
+	border-radius: 50%;
 }
-.regular_radio:checked + label
+.regular_radio:checked
 {
 	color: #2fce98;
 	border-color: #2fce98;
+	border-radius: 50%;
 }
 .regular_radio + label
 {
@@ -1037,14 +1059,14 @@ section
 	appearance: none;
 	width: 36px;
 	height: 36px;
-	background: transparent;
+	/*background: transparent;*/
 	border: solid 2px #4a4a4a;
-	color: #4a4a4a;
+	/*color: #4a4a4a;*/
 	cursor: pointer;
 	margin-right: 14px;
 	font-weight: 700;
 }
-.regular_radio[disabled] + label
+.regular_radio[disabled]
 {
 	border: solid 2px #969696;
 	color: #969696;
@@ -1084,8 +1106,9 @@ section
 	-ms-transition: all 200ms ease;
 	-o-transition: all 200ms ease;
 	transition: all 200ms ease;
+	margin-top: auto;
 }
-.product_buttons > div > div svg
+.product_buttons > div > div image
 {
 	max-width: 100%;
 	height: auto;

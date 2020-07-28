@@ -7,6 +7,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MerxProject.Models;
+using Newtonsoft.Json;
+using System.Net;
+using System.Data.Entity.Migrations;
+using MerxProject.Models.Direccion;
+using System.IO;
 
 namespace MerxProject.Controllers
 {
@@ -15,10 +20,17 @@ namespace MerxProject.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext DbModel;
 
         public ManageController()
         {
+            this.DbModel = new ApplicationDbContext();
         }
+
+
+
+
+
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -32,9 +44,9 @@ namespace MerxProject.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -231,6 +243,18 @@ namespace MerxProject.Controllers
                 return View(model);
             }
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+            var gmail = User.Identity.GetUserName();
+            using (this.DbModel = new ApplicationDbContext())
+            {
+                Usuario usuario = new Usuario();
+                usuario = DbModel.Usuarios.FirstOrDefault(x => x.User == gmail);
+                usuario.Password = model.NewPassword;
+                DbModel.Usuarios.AddOrUpdate(usuario);
+                DbModel.SaveChanges();
+
+            }
+            
+
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -260,6 +284,18 @@ namespace MerxProject.Controllers
             if (ModelState.IsValid)
             {
                 var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+
+                var gmail = User.Identity.GetUserName();
+                using (this.DbModel = new ApplicationDbContext())
+                {
+                    Usuario usuario = new Usuario();
+                    usuario = DbModel.Usuarios.FirstOrDefault(x => x.User == gmail);
+                    usuario.Password = model.NewPassword;
+                    DbModel.Usuarios.AddOrUpdate(usuario);
+                    DbModel.SaveChanges();
+
+                }
+
                 if (result.Succeeded)
                 {
                     var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -333,7 +369,104 @@ namespace MerxProject.Controllers
             base.Dispose(disposing);
         }
 
-#region Aplicaciones auxiliares
+        [Authorize]
+        [HttpGet]
+        public ActionResult Direcciones(int? id, int? accion)
+        {
+            if (id == null && accion == null)
+            {
+                return View();
+            }
+            if (accion.Value == 2)
+            {
+                var direccion = DbModel.Direcciones.Find(id.Value);
+                ViewBag.accion = accion;
+                return View(direccion);
+            }
+            else if (accion.Value == 1)
+            {
+                ViewBag.accion = accion;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("MisDirecciones");
+
+            }
+
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> Direcciones(Direcciones dir, int accion)
+        {
+
+            if (accion == 1)
+            {
+                using (this.DbModel = new ApplicationDbContext())
+                {
+                    var correo = User.Identity.Name;
+                    var idPersonas = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                    dir.IdPersona = idPersonas.idPersona;
+                    DbModel.Direcciones.Add(dir);
+                    DbModel.SaveChanges();
+                }
+                return RedirectToAction("MisDirecciones");
+            }
+            else if (accion == 2)
+            {
+                using (this.DbModel = new ApplicationDbContext())
+                {
+                    DbModel.Direcciones.AddOrUpdate(dir);
+                    DbModel.SaveChanges();
+
+                }
+                return RedirectToAction("MisDirecciones");
+            }
+            return RedirectToAction("MisDirecciones");
+        } 
+
+
+        [HttpGet]
+        public ActionResult MisDirecciones()
+        {
+            var correo = User.Identity.Name;
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var MisDirecciones = DbModel.Direcciones.Where(x => x.IdPersona == idPersona.idPersona).ToList();
+            return View(MisDirecciones);
+                
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> MisDirecciones(int? id, int accion)
+        {
+            try
+            {
+                if (accion == 3)
+                {
+                    // Eliminación
+                    var direccion = DbModel.Direcciones.Find(id);
+
+                    if (direccion != null)
+                    {
+                        DbModel.Direcciones.Remove(direccion);
+                        DbModel.SaveChanges();
+                        return RedirectToAction("MisDirecciones");
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+
+                return View();
+            }
+
+            return View();
+
+        }
+
+
+        #region Aplicaciones auxiliares
         // Se usan para protección XSRF al agregar inicios de sesión externos
         private const string XsrfKey = "XsrfId";
 
