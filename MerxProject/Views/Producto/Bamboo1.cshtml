@@ -1,0 +1,128 @@
+﻿@model MerxProject.Models.VentaViewModels.VentaViewModels
+
+@{
+    ViewBag.Title = "Tienda Virtual";
+    Layout = "~/Views/Shared/_LayoutProducto.cshtml";
+    int radio_Id = 0;
+}
+
+<title>Muebleria Merx - Tienda Virtual</title>
+
+
+<!-- ======= Hero Section ======= -->
+<section id="hero-store" class="d-flex align-items-center justify-content-center">
+    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="100">
+        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="100">
+            <h1>Tienda Merx</h1>
+        </div>
+    </div>
+</section><!-- End Hero -->
+<!-- ======= Clients Section ======= -->
+<section id="" class="clients">
+    <div class="container">
+        <div class="row">
+            <div class="breadcrumb">
+                <a href="@Url.Action("Index", "Home")" class="breadcrumb-item">Inicio</a>
+                <a href="#" class="breadcrumb-item">Tienda Virtual</a>
+            </div>
+        </div>
+    </div>
+</section><!-- End Clients Section -->
+<div class="super_container">
+    <div class="super_container_inner">
+        <div class="super_overlay"></div>
+        <!-- Products -->
+
+        <div class="product">
+            <div class="container">
+                <div class="row">
+
+                    <!-- Product Image -->
+                    <div class="col-lg-6">
+                        <div class="product_image_slider_container">
+                            <div id="slider" class="flexslider">
+                                <ul class="slides">
+                                    <li>
+                                        <img src="@Url.Content(Model.Producto.Imagen)" />
+                                    </li>
+                                </ul>
+                            </div>
+                          
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="col-lg-6 product_col">
+                        <div class="product_info">
+                            <div class="product_name">@Model.Producto.Nombre</div>
+                            <div class="product_category">In <a href="category.html">Category</a></div>
+                            <div class="product_price">$@Model.Producto.Precio</div>
+                            <div class="product_size">
+                                <div class="product_size_title">Selecciona el Color</div>
+                                <ul class="d-flex flex-row align-items-start justify-content-start">
+
+                                    @for (int i = 0; i < Model.InventarioCollection.Count; i++)
+                                    {
+                                        radio_Id++;
+                                        if (Model.InventarioCollection[i].Cantidad == 0)
+                                        {
+                                            <li>
+                                                <input type="radio" id=@radio_Id disabled name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
+                                                @*<label for=@radio_Id ></label>*@
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <input type="radio" id=@radio_Id name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
+                                                @*<label for=@radio_Id></label>*@
+                                            </li>
+                                        }
+                                    }
+                                    @*<li>
+                                        <input type="radio" id="radio_1" disabled name="product_radio" class="regular_radio radio_1">
+                                        <label for="radio_1">XS</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="radio_2" name="product_radio" class="regular_radio radio_2" checked>
+                                        <label for="radio_2">S</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="radio_3" name="product_radio" class="regular_radio radio_3">
+                                        <label for="radio_3">M</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="radio_4" name="product_radio" class="regular_radio radio_4">
+                                        <label for="radio_4">L</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="radio_5" name="product_radio" class="regular_radio radio_5">
+                                        <label for="radio_5">XL</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="radio_6" disabled name="product_radio" class="regular_radio radio_6">
+                                        <label for="radio_6">XXL</label>
+                                    </li>*@
+                                </ul>
+                            </div>
+                            <div class="product_text">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec consequat lorem. Maecenas elementum at diam consequat bibendum. Mauris iaculis fringilla ex, sit amet semper libero facilisis sit amet. Nunc ut aliquet metus. Praesent pulvinar justo sed velit tempus bibendum. Quisque dictum lorem id mi viverra, in auctor justo laoreet. Nam at massa malesuada, ullamcorper metus vel, consequat risus. Phasellus ultricies velit vel accumsan porta.</p>
+                            </div>
+                            <div class="product_buttons">
+                                <div class="text-right d-flex flex-row align-items-start justify-content-start">
+                                    <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
+                                        <div><div><img src="~/Content/ProductAssets/images/heart1.png" class="image" alt=""><div>+</div></div></div>
+                                    </div>
+                                    <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+                                        <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="image" alt=""><div>+</div></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>

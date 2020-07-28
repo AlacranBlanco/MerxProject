@@ -27,6 +27,17 @@ section,
 summary {
   display: block;
 }
+.submitLink {
+    background-color: transparent;
+    text-decoration: none;
+    border: none;
+    color: #2fce98;
+    cursor: pointer;
+}
+
+submitLink:focus {
+    outline: none;
+}
 audio,
 canvas,
 progress,

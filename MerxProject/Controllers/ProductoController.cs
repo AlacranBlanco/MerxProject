@@ -1,4 +1,7 @@
 ﻿using MerxProject.Models;
+using MerxProject.Models.ProductosFavorito;
+using MerxProject.Models.TiendaViewModels;
+using MerxProject.Models.VentaViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -14,7 +17,7 @@ namespace MerxProject.Controllers
 
     public class ProductoController : Controller
     {
-        private readonly int _RegistrosPorPagina = 10;
+        /*private readonly int _RegistrosPorPagina = 10;
 
         private List<Inventario> _Productos;
         private PaginadorGenerico<Inventario> _PaginadorProductos;
@@ -22,7 +25,72 @@ namespace MerxProject.Controllers
         private PaginadorGenerico<Producto> _PaginadorProducto;
 
         // GET: Producto
-        public ActionResult Tienda(int pagina = 1)
+        public ActionResult Tienda(int pagina = 1)*/
+
+        ApplicationDbContext DbModel;
+
+
+        public ProductoController()
+        {
+            this.DbModel = new ApplicationDbContext();
+        }
+
+        // GET: Producto
+        [HttpGet]
+        public ActionResult Tienda(int? NoLogIn, int pag = 1)
+        {
+            if (pag <= 0) pag = 1;
+            if (NoLogIn != null) ViewBag.NoLogIn = 0;
+            var email = User.Identity.Name;
+            var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+            
+
+            TiendaViewModel tiendaViewModel = new TiendaViewModel();
+            tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+
+            tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+
+            tiendaViewModel.ProductosFavId = new List<int>();
+
+            int idxAux = 0;
+            foreach (var item in tiendaViewModel.ProductoCollection)
+            {
+                if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
+                {
+                    if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                    {
+                        tiendaViewModel.ProductosFavId.Add(item.Id);
+                        idxAux++;
+                    }
+                    else
+                    {
+                        tiendaViewModel.ProductosFavId.Add(-12);
+                    }
+                }
+                else
+                {
+                    tiendaViewModel.ProductosFavId.Add(-12);
+                }
+                
+            }
+
+
+                ViewBag.pagina = pag;
+                return View(tiendaViewModel);
+           
+            
+
+
+         
+        }
+
+        [HttpPost]
+        public ActionResult Tienda()
+        {
+            
+            return View();
+        }
+        public ActionResult MostrarTodos()
         {
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
@@ -456,6 +524,8 @@ namespace MerxProject.Controllers
             }
             return RedirectToAction("ListaProducto");
         }
+
+        #region Braulio Monroy
 
         [HttpGet]
         [AllowAnonymous]
@@ -1052,7 +1122,7 @@ namespace MerxProject.Controllers
             }
         }
 
-        #region Shelve Producto
+      
 
         [AllowAnonymous]
         [HttpGet]
@@ -1064,25 +1134,89 @@ namespace MerxProject.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult ShelveProduct2()
+        public ActionResult Bamboo1(string name)
         {
-            return View("");
+
+            if(name != null)
+            {
+                VentaViewModels ventaViewModels = new VentaViewModels();
+
+                ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
+                ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto_Id == ventaViewModels.Producto.Id).ToList();
+                ventaViewModels.ColorsCollection = new List<Colors>();
+                foreach (var item in ventaViewModels.InventarioCollection)
+                {
+                    var colorDetail = DbModel.Colors.FirstOrDefault(x => x.Id == item.Color_Id);
+                    ventaViewModels.ColorsCollection.Add(colorDetail);
+                }
+            return View(ventaViewModels);
+            }
+            else
+            {
+                return Redirect("Tienda");
+            }
+           
+            
+
         }
 
-
+      
         [AllowAnonymous]
-        [HttpGet]
-        public ActionResult ShelveProduct3()
+        [HttpPost]
+        public ActionResult AgregarProductoFavorito(Producto producto, int accion, int pagi)
         {
-            return View("");
+            var correo = User.Identity.Name;
+            if (correo != "")
+            {
+                if (accion == 1)
+                {
+                    ProductosFavoritos productosFavoritos = new ProductosFavoritos();
+                    using (this.DbModel = new ApplicationDbContext())
+                    {
+
+                        var idPersonas = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        var nombreProdcuto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                        productosFavoritos.Nombre = nombreProdcuto.Nombre;
+                        productosFavoritos.idProducto = producto.Id;
+                        productosFavoritos.idPersona = idPersonas.idPersona;
+                        DbModel.ProductosFavoritos.Add(productosFavoritos);
+                        DbModel.SaveChanges();
+                    }
+                    return RedirectToAction("Tienda", new { pag = pagi });
+                }
+                else if (accion == 2)
+                {
+                    // Eliminación
+                    var productoFav = DbModel.ProductosFavoritos.FirstOrDefault(x => x.idProducto == producto.Id);
+
+                    if (productoFav != null)
+                    {
+                        DbModel.ProductosFavoritos.Remove(productoFav);
+                        DbModel.SaveChanges();
+                        return RedirectToAction("Tienda", new { pag = pagi });
+                    }
+                }
+            }
+            else
+            {
+                // El usuario no ha sido logeado, le mandamos un mensaje
+                ViewBag.NoLogIn = 0;
+                ViewBag.pagina = 1;
+                Tienda(0, 1);
+                return View("Tienda");
+            }
+           
+        
+
+            return View("Tienda");
+
         }
 
-        [AllowAnonymous]
-        [HttpGet]
-        public ActionResult ShelveProduct4()
-        {
-            return View("");
-        }
+
+
+
+
+
 
         #endregion
 

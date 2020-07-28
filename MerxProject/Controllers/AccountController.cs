@@ -27,8 +27,10 @@ namespace MerxProject.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ILogger<AccountController> logger;
+        ApplicationDbContext DbModel;
         public AccountController()
         {
+            this.DbModel = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ILogger<AccountController> logger)
@@ -218,6 +220,10 @@ namespace MerxProject.Controllers
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             var user = await UserManager.FindByEmailAsync(model.Email);
 
+            // Si queremos diferencias  entre roles tendrémos que hacer un where a persona y luego a usuarios mediante el email
+            // El email es unico y no puede repetirse
+
+
             if (result == SignInStatus.Success)
             {
                 if (user != null && user.EmailConfirmed)
@@ -301,7 +307,7 @@ namespace MerxProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model, string agree)
+        public async Task<ActionResult> Register(RegisterViewModel model, string agree, string nombre)
         {
             if (agree != "true")
             {
@@ -311,11 +317,36 @@ namespace MerxProject.Controllers
             }
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                int idUsuario = 0;
+                int idPersona = 0;
+
+                using (this.DbModel = new ApplicationDbContext())
                 {
 
+                    Usuario usuario = new Usuario();
+                    usuario.User = model.Email;
+                    usuario.Password = model.Password;
+                    usuario.Rol = "Cliente";
+                    DbModel.Usuarios.Add(usuario);
+                    DbModel.SaveChanges();
+                    idUsuario = usuario.idUsuario;
+                    Persona persona = new Persona();
+                    persona.Nombre = nombre;
+                    persona.Correo = model.Email;
+                    persona.idUsuario = idUsuario;
+                    DbModel.Personas.Add(persona);
+                    DbModel.SaveChanges();
+                    idPersona = persona.idPersona;
+
+                    
+                }
+
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario };
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                   
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo

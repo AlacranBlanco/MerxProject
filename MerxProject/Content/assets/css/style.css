@@ -1506,7 +1506,7 @@ section {
 --------------------------------------------------------------*/
 .breadcrumbs {
     padding: 15px 0;
-    background: #f6f6f7;
+    background: none;
     margin-top: 100px;
 }
 
