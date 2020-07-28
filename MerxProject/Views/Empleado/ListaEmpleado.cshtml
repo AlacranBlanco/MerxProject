@@ -7,28 +7,28 @@
 <h2>Lista de Empleados</h2>
 
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" 
-     data-url='@Url.Action("popUpEmpleados", "Empleado", new { applicationUser = "", accion = "1" })'></div>
+     data-url='@Url.Action("PopUpEmpleados", "Empleado", new { applicationUser = "", accion = "1" })'></div>
 <br />
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Personas.Nombre)
+            @Html.DisplayNameFor(model => model.Personass.Nombre)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Personas.Telefono)
+            @Html.DisplayNameFor(model => model.Personass.Telefono)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Personas.Correo)
+            @Html.DisplayNameFor(model => model.Personass.Correo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Usuarios.User)
+            @Html.DisplayNameFor(model => model.Usuarioss.User)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Usuarios.Password)
+            @Html.DisplayNameFor(model => model.Usuarioss.Password)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Usuarios.Rol)
+            @Html.DisplayNameFor(model => model.Usuarioss.Rol)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FechaIngreso)
@@ -38,34 +38,32 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Personas.Nombre)
+            <td> 
+                @Html.DisplayFor(modelItem => item.Personass.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Personas.Telefono)
+                @Html.DisplayFor(modelItem => item.Personass.Telefono)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Personas.Correo)
+                @Html.DisplayFor(modelItem => item.Personass.Correo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarios.User)
+                @Html.DisplayFor(modelItem => item.Usuarioss.User)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarios.Password)
+                @Html.DisplayFor(modelItem => item.Usuarioss.Password)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarios.Rol)
+                @Html.DisplayFor(modelItem => item.Usuarioss.Rol) 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaIngreso)
             </td>
             <td>
                 <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpEmpleados", "Empleado" , 
-                                             new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpEmpleados", "Empleado" ,
-                                             new {id=item.Id, accion = "3" })')">Eliminar</button>
+                        onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado" , new {id=item.Id, accion = "2" })')">Editar</button>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" 
+                        onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
     }

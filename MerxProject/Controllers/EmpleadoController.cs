@@ -33,6 +33,8 @@ namespace MerxProject.Controllers
                 else if (accion == "2")
                 {
                     var empleado = DbModel.Empleados.Find(Id);
+                    empleado.Usuarioss = (Usuario)empleado.Usuarioss;
+                    empleado.Personass = (Persona)empleado.Personass;
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
                     return View(empleado);
@@ -40,6 +42,8 @@ namespace MerxProject.Controllers
                 else if (accion == "3")
                 {
                     var empleado = DbModel.Empleados.Find(Id);
+                    empleado.Usuarioss = (Usuario)empleado.Usuarioss;
+                    empleado.Personass = (Persona)empleado.Personass;
                     ViewBag.title = "Eliminar";
                     ViewBag.Accion = "3";
                     return View(empleado);
@@ -55,7 +59,7 @@ namespace MerxProject.Controllers
             string resultado;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                // Si el applicationUser viene diferente de null, significa que el usaurio quiere Editar
+                // Si el applicationUser viene diferente de null, significa que el usuario quiere Editar
                 if (empleados.Id > 0 && accion == "2")
                 {
                     // Edición
@@ -66,6 +70,8 @@ namespace MerxProject.Controllers
                         try
                         {
                             DbModel.Empleados.AddOrUpdate(empleados);
+                            DbModel.Usuarios.AddOrUpdate(empleados.Usuarioss);
+                            DbModel.Personas.AddOrUpdate(empleados.Personass);
                             DbModel.SaveChanges();
                             resultado = "Actualización realizada";
                             ViewBag.res = resultado;
@@ -108,18 +114,18 @@ namespace MerxProject.Controllers
                 }
                 else
                 {
-                    string dir = Server.MapPath("~/Content/assets/img/Materiales");
-                    if (!Directory.Exists(dir))
-                    {
-                        Directory.CreateDirectory(dir);
-                    }
+                    //string dir = Server.MapPath("~/Content/assets/img/Materiales");
+                    //if (!Directory.Exists(dir))
+                    //{
+                    //    Directory.CreateDirectory(dir);
+                    //}
 
-                    var originalFile = Path.GetFileName(postedFile.FileName);
-                    string fileId = Guid.NewGuid().ToString().Replace("-", "");
-                    var path = Path.Combine(dir, fileId);
-                    postedFile.SaveAs(path + postedFile.FileName);
+                    ////var originalFile = Path.GetFileName(postedFile.FileName);
+                    ////string fileId = Guid.NewGuid().ToString().Replace("-", "");
+                    ////var path = Path.Combine(dir, fileId);
+                    ////postedFile.SaveAs(path + postedFile.FileName);
 
-
+               
                     if (empleados != null)
                     {
                         // Aquí código para crear
@@ -147,7 +153,7 @@ namespace MerxProject.Controllers
                     */
                 }
 
-                return RedirectToAction("ListaMaterial");
+                return RedirectToAction("ListaEmpleado");
 
 
             }
@@ -160,12 +166,17 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var personas = DbModel.Personas.ToList();
-                var usuarios = DbModel.Usuarios.ToList();
-                ViewBag.Personas = personas;
-                ViewBag.Usuarios = usuarios;
-                var materiales = DbModel.Empleados.ToList();
-                return View(materiales);
+                //var personas = DbModel.Personas.ToList();
+                //var usuarios = DbModel.Usuarios.ToList();
+                //ViewBag.Personas = personas;
+                //ViewBag.Usuarios = usuarios;
+                var emp = DbModel.Empleados.ToList();
+                foreach (var item in emp)
+                {
+                    item.Personass = (Persona)item.Personass;
+                    item.Usuarioss = (Usuario)item.Usuarioss;
+                }
+                return View(emp);
             }
         }
     }
