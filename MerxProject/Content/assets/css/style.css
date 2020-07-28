@@ -1805,3 +1805,10 @@ section {
         background-color: #00805d;
         border-color: #1e7e34;
     }
+
+.dot {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: inline-block;
+}

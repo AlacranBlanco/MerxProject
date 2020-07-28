@@ -38,10 +38,13 @@ namespace MerxProject.Models
         public DbSet<Persona> Personas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Producto> Productos { get; set; }
+        public DbSet<Inventario> Inventarios { get; set; }
+        public DbSet<Color> Colores { get; set; }
         public DbSet<Mueble> Muebles { get; set; }
         public DbSet<Material> Materiales { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Proceso> Procesos { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<DetalleCompra> DetalleCompra { get; set; }
         public DbSet<Herramienta> Herramientas { get; set; }
@@ -82,6 +85,5 @@ namespace MerxProject.Models
                 .WithOptional(e => e.Herramienta)
                 .HasForeignKey(e => e.IdHerramienta);
         }
-
     }
 }
