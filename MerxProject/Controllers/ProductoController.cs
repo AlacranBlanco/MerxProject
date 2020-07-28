@@ -17,7 +17,7 @@ namespace MerxProject.Controllers
 
     public class ProductoController : Controller
     {
-        /*private readonly int _RegistrosPorPagina = 10;
+        private readonly int _RegistrosPorPagina = 10;
 
         private List<Inventario> _Productos;
         private PaginadorGenerico<Inventario> _PaginadorProductos;
@@ -25,7 +25,7 @@ namespace MerxProject.Controllers
         private PaginadorGenerico<Producto> _PaginadorProducto;
 
         // GET: Producto
-        public ActionResult Tienda(int pagina = 1)*/
+        //public ActionResult Tienda(int pagina = 1)
 
         ApplicationDbContext DbModel;
 
@@ -90,8 +90,9 @@ namespace MerxProject.Controllers
             
             return View();
         }
-        public ActionResult MostrarTodos()
+        public ActionResult MostrarTodos(int pagina = 1)
         {
+
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -1142,11 +1143,11 @@ namespace MerxProject.Controllers
                 VentaViewModels ventaViewModels = new VentaViewModels();
 
                 ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
-                ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto_Id == ventaViewModels.Producto.Id).ToList();
-                ventaViewModels.ColorsCollection = new List<Colors>();
+                ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Id == ventaViewModels.Producto.Id).ToList();
+                ventaViewModels.ColorsCollection = new List<Color>();
                 foreach (var item in ventaViewModels.InventarioCollection)
                 {
-                    var colorDetail = DbModel.Colors.FirstOrDefault(x => x.Id == item.Color_Id);
+                    var colorDetail = DbModel.Colores.FirstOrDefault(x => x.Id == item.Color.Id);
                     ventaViewModels.ColorsCollection.Add(colorDetail);
                 }
             return View(ventaViewModels);
