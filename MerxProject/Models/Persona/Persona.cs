@@ -26,7 +26,7 @@ namespace MerxProject
 
         public string Telefono { get; set; }
 
-        public int idUsuario { get; set; }
-        
+        //public int idUsuario { get; set; }
     }
+        
 }
