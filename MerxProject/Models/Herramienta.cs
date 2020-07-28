@@ -6,7 +6,7 @@ using System.Web;
 
 namespace MerxProject.Models
 {
-    public class Material
+    public class Herramienta
     {
         [Key]
         public int Id { get; set; }

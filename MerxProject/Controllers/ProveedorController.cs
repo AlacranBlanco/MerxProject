@@ -28,7 +28,7 @@ namespace MerxProject.Controllers
                 else if (accion == "2")
                 {
                     var proveedor = DbModel.Proveedores.Find(Id);
-                    proveedor.Persona = (Persona)proveedor.Persona;
+                    //proveedor.Persona = (Persona)proveedor.Persona;
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
                     ViewBag.img = true;
@@ -37,7 +37,7 @@ namespace MerxProject.Controllers
                 else if (accion == "3")
                 {
                     var proveedor = DbModel.Proveedores.Find(Id);
-                    proveedor.Persona = (Persona)proveedor.Persona;
+                    //proveedor.Persona = (Persona)proveedor.Persona;
                     ViewBag.title = "Eliminar";
                     ViewBag.Accion = "3";
                     ViewBag.img = true;
@@ -65,6 +65,7 @@ namespace MerxProject.Controllers
                         try
                         {
                             DbModel.Proveedores.AddOrUpdate(proveedores);
+                            DbModel.Personas.AddOrUpdate(proveedores.Persona);
                             DbModel.SaveChanges();
                             resultado = "Actualización realizada";
                             ViewBag.res = resultado;
@@ -147,11 +148,11 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var proveedores = DbModel.Proveedores.ToList();
-                foreach (var i in proveedores)
+                var proveedores = DbModel.Proveedores.Include("Persona").ToList();
+                /*foreach (var i in proveedores)
                 {
                 i.Persona = (Persona)i.Persona;
-                }
+                }*/
                 return View(proveedores);
             }
         }

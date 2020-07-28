@@ -1,35 +1,29 @@
-﻿@model IEnumerable<MerxProject.Models.Proveedor>
+﻿@model IEnumerable<MerxProject.Models.Compra>
 
 @{
-    ViewBag.Title = "ListaProveedor";
+    ViewBag.Title = "ListaCompras";
 }
-<h2>Proveedores</h2>
+<h2>Compras</h2>
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" 
-     data-url='@Url.Action("popUpProveedores", "Proveedor", new { applicationUser = "", accion = "1" })'></div>
+     data-url='@Url.Action("popUpCompras", "Compras", new { applicationUser = "", accion = "1" })'></div>
 <br />
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Persona.Nombre)
+            @Html.DisplayName("Proveedor")
         </th>
         <th>
-            @Html.DisplayName("Razón Social")
+            @Html.DisplayName("Empleado")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Giro)
+            @Html.DisplayName("Monto Total")
         </th>
         <th>
-            @Html.DisplayName("Correo Electrónico")
+            @Html.DisplayName("Fecha de Registro")
         </th>
         <th>
-            @Html.DisplayName("Teléfono")
-        </th>
-        <th>
-            @Html.DisplayName("Domicilio")
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Persona.Ciudad)
+            @Html.DisplayNameFor(model => model.Estatus)
         </th>
     </tr>
 
@@ -37,31 +31,25 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Persona.Nombre)
+                @Html.DisplayFor(modelItem => item.Proveedor.Persona.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RazonSocial)
+                @Html.DisplayFor(modelItem => item.Empleado.Personas.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Giro)
+                @Html.DisplayFor(modelItem => item.MontoTotal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Persona.Correo)
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Persona.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Persona.Direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Persona.Ciudad)
+                @Html.DisplayFor(modelItem => item.DS_Estatus)
             </td>
             <td>
                 <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "2" })')">Editar</button>
+                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "2" })')">Editar</button>
                 <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
 

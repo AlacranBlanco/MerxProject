@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MerxProject.Models.DetalleCompra>
+
+@if (Model != null)
+{
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Tipo Artículo")
+        </th>
+        <th>
+            @Html.DisplayName("Artículo")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cantidad)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unidad)
+        </th>
+        <th>
+            @Html.DisplayName("Precio Unitario")
+        </th>
+        <th>
+            @Html.DisplayName("Precio Total")
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DropDownListFor(modelItem => item.Tipo, EnumHelper.GetSelectList(typeof(MerxProject.Models.Tipos)), new { @class = "form-control" })
+        </td>
+        <td>
+            @if (item.Tipo == "Herramienta")
+            {
+                @Html.DropDownListFor(modelItem => item.Herramienta, new SelectList(ViewBag.Herramientas, "Id", "Nombre"), "Seleccione", new { @class = "form-control" })
+            }
+            @if (item.Tipo == "MateriaPrima")
+            {
+                @Html.DropDownListFor(modelItem => item.MateriaPrima, new SelectList(ViewBag.MateriasPrimas, "Id", "Nombre"), "Seleccione", new { @class = "form-control" })
+            }
+        </td>
+        <td>
+            @Html.EditorFor(modelItem => item.Cantidad)
+        </td>
+        <td>
+            @Html.DropDownListFor(modelItem => item.Unidad, EnumHelper.GetSelectList(typeof(MerxProject.Models.Unidades)), new { @class = "form-control" })
+        </td>
+        <td>
+            @if (item.Tipo == "Herramienta")
+            {
+                @Html.DisplayFor(modelItem => item.PrecioUnitario, item.Herramienta.Precio)
+            }
+            @if (item.Tipo == "MateriaPrima")
+            {
+                @Html.DisplayFor(modelItem => item.PrecioUnitario, item.MateriaPrima.Precio)
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrecioTotal, item.PrecioUnitario * item.Cantidad)
+        </td>
+        <td>
+            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                   >
+                Editar
+            </button>
+            <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                    >
+                Eliminar
+            </button>
+        </td>
+    </tr>
+    }
+</table>
+}

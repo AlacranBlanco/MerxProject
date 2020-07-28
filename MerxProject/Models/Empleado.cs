@@ -8,6 +8,7 @@ namespace MerxProject.Models
 {
     public class Empleado
     {
+        [Key]
         public int Id { get; set; }
         [Required]
         public DateTime FechaIngreso { get; set; }
@@ -15,5 +16,6 @@ namespace MerxProject.Models
         public Persona Personas { get; set; }
         [Required]
         public Usuario Usuarios { get; set; }
+        public virtual List<Compra> Compras { get; set; }
     }
 }

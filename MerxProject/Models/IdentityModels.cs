@@ -42,6 +42,46 @@ namespace MerxProject.Models
         public DbSet<Material> Materiales { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Compra> Compras { get; set; }
+        public DbSet<DetalleCompra> DetalleCompra { get; set; }
+        public DbSet<Herramienta> Herramientas { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Compra >()
+                .Ignore(e => e.DS_Estatus);
+
+            modelBuilder.Entity<DetalleCompra>()
+                .Ignore(e => e.Tipo);
+
+            modelBuilder.Entity<Compra>()
+                .HasMany(e => e.DetalleCompra)
+                .WithOptional(e => e.Compra)
+                .HasForeignKey(e => e.IdCompra);
+
+            modelBuilder.Entity<Proveedor>()
+                .HasMany(e => e.Compras)
+                .WithOptional(e => e.Proveedor)
+                .HasForeignKey(e => e.IdProveedor);
+
+            modelBuilder.Entity<Empleado>()
+                .HasMany(e => e.Compras)
+                .WithOptional(e => e.Empleado)
+                .HasForeignKey(e => e.IdEmpleado);
+
+            modelBuilder.Entity<Material>()
+                .HasMany(e => e.DetalleCompras)
+                .WithOptional(e => e.MateriaPrima)
+                .HasForeignKey(e => e.IdMateriaPrima);
+
+            modelBuilder.Entity<Herramienta>()
+                .HasMany(e => e.DetalleCompras)
+                .WithOptional(e => e.Herramienta)
+                .HasForeignKey(e => e.IdHerramienta);
+        }
 
     }
 }
