@@ -44,6 +44,7 @@ namespace MerxProject.Models
         public DbSet<Material> Materiales { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Proceso> Procesos { get; set; }
 
     }
 }

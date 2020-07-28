@@ -1,61 +1,107 @@
-﻿
+﻿@model MerxProject.Models.Inventario
+
 @{
-    ViewBag.Title = "ProductoVenta";
     Layout = null;
+    int i = 0;
 }
 
-<html lang="es-MX">
-<head>
-</head>
-<body>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("popUpProcesos", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
 
-    <input type="radio" name="option" value="1" id="GDP_option" checked onClick="changeSrc()">1
-    <input type="radio" name="option" value="2" id="Population_option" onClick="changeSrc()">2
-    <input type="radio" name="option" value="3" id="None_option" onClick="changeSrc()"> 3
-    <input type="radio" name="option" value="4" id="None_option" onClick="changeSrc()"> 4
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Producto.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Producto.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Producto.Id, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @if (ViewBag.invId != null)
+                                    {
+                                        foreach (var item in ViewBag.invId)
+                                        {
+                                            i += 1;
 
-    <img src="/Images/Productos/Shelves/shelve1.jpg" name="picture" id="picture">
-</body>
-</html>
+                                            <div class="col-md-2">
+                                                <label class="control-label col-md-2">Color @item.Color.Nombre</label>
+                                                <div class="col-md-10">
+                                                    <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Color.Codigo;"></span>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input type="radio" name="radio" value="@item.Id" class="" />
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    @if (ViewBag.invId != null)
+                                    {
+                                        foreach (var item in ViewBag.invId)
+                                        {
+                                            <div class="col-md-2">
+                                                @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-10">
+                                                    <span>@item.Cantidad en inventario</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <h4> <span class="badge-light"> Este producto tiene @ViewBag.total modelos en existencia</span> </h4>
+                                    </div>
+                                </div>
+                                @if (i <= 3)
+                                {
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2">Agregar otro color</label>
+                                        <div class="col-md-10">
+                                            <select name="newColor" class="form-control">
+                                                @foreach (var item in ViewBag.Colores)
+                                                {
+                                                    <option value="@item.Id">@item.Nombre</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Agregar/Cambiar cantidad</label>
+                                    <div class="col-md-10">
+                                        <input type="number" name="cantidad" value="0" min="0" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="hidden" name="productoId" value="@ViewBag.productoId" />
+                                        <input type="submit" value="Editar" name="accion" class="btn btn-default" placeholder="" />
+                                        <input type="submit" value="Eliminar" name="accion" class="btn btn-default" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<script type='text/javascript'>
-
-
-    function changeSrc() {
-
-        var rates = document.getElementsByName('option');
-        var rate_value;
-        for (var i = 0; i < rates.length; i++) {
-            if (rates[i].checked) {
-                rate_value = rates[i].value;
-            }
-        }
-
-        console.log(rate_value);
-      
-        switch (rate_value) {
-            case '1':
-                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve1.jpg";
-                break;
-            case '2':
-                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve2.jpg";
-                break;
-            case '3':
-                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve3.jpg";
-                break;
-            case '4':
-                document.getElementById("picture").src = "/Images/Productos/Shelves/shelve4.jpg";
-                break;
-            default:
-                break;
-        }
-
-       
-    }
-
-   
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

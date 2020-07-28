@@ -13,7 +13,7 @@
                     <div class="modal-header">
                         <button class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">@ViewBag.title</h4>
-                        <h5 class="modal-header">@ViewBag.Subtitle</h5>
+                        <h5 class="zmdi-view-subtitles">@ViewBag.subtitle</h5>
                     </div>
                     <div class="modal-body">
                         @using (Html.BeginForm("popUpProductosColor", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -23,51 +23,75 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.Producto.Id, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.Producto.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Producto.Id, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Color, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @foreach (var item in Model.Color.Codigo)
+                                @if (ViewBag.invId != null)
+                                {
+                                    foreach (var item in ViewBag.invId)
                                     {
                                         i += 1;
-                                        <span class="dot" style="background-color:@item"></span>
+
+                                        <div class="col-md-2">
+                                            <label class="control-label col-md-2">Color @item.Color.Nombre</label>
+                                            <div class="col-md-10">
+                                                <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Color.Codigo;"></span>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input type="radio" name="radio" value="@item.Id" class="" />
+                                            </div>
+                                        </div>
                                     }
-                                </div>
+                                }
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @if (ViewBag.invId != null)
+                                {
+                                    foreach (var item in ViewBag.invId)
+                                    {
+                                        <div class="col-md-2">
+                                            @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                <span>@item.Cantidad en inventario</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="form-group">
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.Cantidad, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(model => model.Cantidad, "", new { @class = "text-danger" })
+                                    <h4> <span class="badge-light"> Este producto tiene @ViewBag.total modelos en existencia</span> </h4>
                                 </div>
                             </div>
-                            @if (i >= 4)
+                            @if (i <= 3)
                             {
                                 <div class="form-group">
+                                    <label class="control-label col-md-2">Agregar otro color</label>
                                     <div class="col-md-10">
-                                        <select name="color" class="form-control">
+                                        <select name="newColor" class="form-control">
                                             @foreach (var item in ViewBag.Colores)
                                             {
-                                                <option value="@item.Id">Codigo</option>
+                                                <option value="@item.Id">@item.Nombre</option>
                                             }
                                         </select>
                                     </div>
-                                    <div class="col-md-10">
-                                        <input type="number" value="0" placeholder="Cantidad" min="0" name="cantidad" id="cantidad"/>
-                                        <input type="submit" value="Agregar" class="btn btn-default"/>
-                                    </div>
                                 </div>
                             }
-
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Agregar/Cambiar cantidad</label>
+                                <div class="col-md-10">
+                                    <input type="number" name="cantidad" value="0" min="0" class="form-control" required />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
-                                    <input type="hidden" name="productos" value="@Model.Producto" />
-                                    <input type="submit" value="Editar" class="btn btn-default" />
+                                    <input type="hidden" name="productoId" value="@ViewBag.productoId" />
+                                    <input type="submit" value="Editar" name="accion" class="btn btn-default" placeholder="" />
+                                    <input type="submit" value="Eliminar" name="accion" class="btn btn-default" />
                                 </div>
                             </div>
                         </div>

@@ -332,57 +332,116 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var Materiales = DbModel.Materiales.ToList();
-                var Muebles = DbModel.Muebles.ToList();
+                Inventario inv = new Inventario();
+                
                 var Colores = DbModel.Colores.ToList();
-                ViewBag.Materiales = Materiales;
-                ViewBag.Muebles = Muebles;
+                var ColoresHechos = new List<Inventario>();
+                var producto = DbModel.Productos.Find(Id);
+                var inventarios = DbModel.Inventarios.ToList();
+                var invId = new List<Inventario>();
+
+                foreach(var item in inventarios)
+                {
+                    if (item.Producto != null)
+                    {
+                        if (producto.Id == item.Producto.Id)
+                        {
+                            invId.Add(item);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                foreach(var item in invId)
+                {
+                    foreach(var color in Colores)
+                    {
+                        if(item.Color.Id == color.Id)
+                        {
+                            ColoresHechos.Add(item);
+                        }
+                    }
+                }
+
+                foreach(var item in ColoresHechos)
+                {
+                    Colores.Remove(item.Color);
+                }
+
+                int suma = 0;
+                foreach (var item in invId)
+                {
+                    suma += item.Cantidad;
+                }
+                
+
                 ViewBag.Colores = Colores;
+                ViewBag.productoId = producto.Id;
+                ViewBag.invId = invId;
+                ViewBag.total = suma;
 
                 ViewBag.title = "Inventario";
-                var producto = DbModel.Productos.Find(Id);
+                ViewBag.subtitle = producto.Nombre;
+                
 
-                return View(producto);
+                return View(inv);
             }
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> popUpProductosColor(Producto productos, string color, int cantidad, int accion)
+        public async Task<ActionResult> popUpProductosColor(int productoId, string cantidad, string newColor, string radio, string accion)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                Color colour = DbModel.Colores.Find(color);
                 Inventario inv = new Inventario();
-                inv.Color = colour;
-                inv.Cantidad = cantidad;
-                inv.Producto = productos;
+
+
                 string resultado;
                 try
                 {
-                    if (accion == 1)
+                    if (accion == "Editar")
                     {
-                        DbModel.Inventarios.AddOrUpdate(inv);
-                        DbModel.SaveChanges();
-                        resultado = "Actualización realizada";
-                        Session["res"] = resultado;
-                        Session["tipo"] = "Exito";
-                        return RedirectToAction("ListaProducto");
+                        if (radio != null)
+                        {
+                            inv = DbModel.Inventarios.Find(Convert.ToInt16(radio));
+                            inv.Cantidad = Convert.ToInt16(cantidad);
+
+                            DbModel.Inventarios.AddOrUpdate(inv);
+                            DbModel.SaveChanges();
+                            resultado = "Inserción realizada";
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProducto");
+                        }
+                        else if (newColor != null && radio == null)
+                        {
+                            var productos = DbModel.Productos.Find(productoId);
+                            inv.Producto = productos;
+
+                            Color colour = new Color();
+                            colour = DbModel.Colores.Find(Convert.ToInt16(newColor));
+                            inv.Color = colour;
+
+                            inv.Cantidad = Convert.ToInt16(cantidad);
+
+                            DbModel.Inventarios.Add(inv);
+                            DbModel.SaveChanges();
+                            resultado = "Inserción realizada";
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProducto");
+                        }
                     }
-                    if (accion == 2)
+                    else
                     {
+                        inv = DbModel.Inventarios.Find(Convert.ToInt16(radio));
                         DbModel.Inventarios.Remove(inv);
                         DbModel.SaveChanges();
-                        resultado = "Eliminación finalizada";
-                        Session["res"] = resultado;
-                        Session["tipo"] = "Exito";
-                        return RedirectToAction("ListaProducto");
-                    }
-                    if (accion == 3)
-                    {
-                        DbModel.Inventarios.Add(inv);
-                        DbModel.SaveChanges();
-                        resultado = "Inserción realizada";
+                        resultado = "Eliminación realizada";
                         Session["res"] = resultado;
                         Session["tipo"] = "Exito";
                         return RedirectToAction("ListaProducto");
@@ -409,7 +468,6 @@ namespace MerxProject.Controllers
                 var Muebles = DbModel.Muebles.ToList();
                 var Colores = DbModel.Colores.ToList();
 
-
                 ViewBag.Materiales = Materiales;
                 ViewBag.Muebles = Muebles;
                 ViewBag.Colores = Colores;
@@ -434,7 +492,8 @@ namespace MerxProject.Controllers
                     PaginaActual = pagina,
                     Resultado = _Producto
                 };
-
+                
+             
                 return View(_PaginadorProducto);
             }
         }

@@ -1,0 +1,75 @@
+﻿@model MerxProject.Models.Proceso
+@using MerxProject.Models;
+
+
+@{
+    Layout = null;
+    List<Producto> productos = ViewBag.Productos;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                        <h5 class="zmdi-view-subtitles">@ViewBag.subtitle</h5>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("popUpProcesos", "Proceso", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Buscar producto</label>      
+                                    <div class="col-md-10">
+                                        <input type="text" name="parametro" value="" placeholder="Buscar" id="parameter" class="form-control" onchange="GetProd(this.value);"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Inventario.Producto, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <select id="ddlstate" class="form-control" onchange="GetInv(this.value);" required>
+                                            @foreach (var item in productos)
+                                            {
+                                                <option value="@item.Id">@item.Nombre</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Inventario.Color, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <select id="ddlcity" name="Id" class="form-control" required></select>
+                                        <br /><br />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Iniciar" name="accion" class="btn btn-default" placeholder="" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

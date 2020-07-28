@@ -116,6 +116,9 @@
         <th>
             Imagen
         </th>
+        <th>
+            Cantidad general
+        </th>
     </tr>
     @foreach (var item in Model.Resultado)
     {
@@ -167,35 +170,35 @@ else
 }
 @if (Model.PaginaActual > 1)
 {
-    @Html.ActionLink("<<", "Tienda", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default"})
     <span></span>
-    @Html.ActionLink("Anterior", "Tienda", new { pagina = Model.PaginaActual - 1 },
+    @Html.ActionLink("Anterior", "ListaProducto", new { pagina = Model.PaginaActual - 1 },
         new { @class = "btn btn-sm btn-default" });
 }
 else
 {
-    @Html.ActionLink("<<", "Tienda", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink("Anterior", "Tienda", new { pagina = 1 },
+    @Html.ActionLink("Anterior", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
 }
 <span></span>
 @if (Model.PaginaActual < Model.TotalPaginas)
 {
-    @Html.ActionLink("Siguiente", "Tienda", new { pagina = Model.PaginaActual + 1 },
+    @Html.ActionLink("Siguiente", "ListaProducto", new { pagina = Model.PaginaActual + 1 },
                     new { @class = "btn btn-sm btn-default" })
     <span></span>
-    @Html.ActionLink(">>", "Tienda", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default" })
 }
 else
 {
-    @Html.ActionLink("Siguiente", "Tienda", new { pagina = Model.TotalPaginas - 1 },
+    @Html.ActionLink("Siguiente", "ListaProducto", new { pagina = Model.TotalPaginas - 1 },
                     new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink(">>", "Tienda", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalColor" tabindex="-1"></div>
