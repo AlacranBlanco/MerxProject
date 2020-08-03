@@ -94,18 +94,18 @@
                             @using (Html.BeginForm("Direcciones", "Manage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "register-form", role = "login-form" }))
                             {
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            <div>
-                                <!-- Name -->
-                                @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "checkout_input", @placeholder = "Nombre Completo", @required = "required" })
-                  
-                            </div>
+                                <div>
+                                    <!-- Name -->
+                                    @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "checkout_input", @placeholder = "Nombre Completo", @required = "required" })
+
+                                </div>
 
                                 <br />
                                 <div>
                                     <!-- Address -->
                                     @Html.TextBoxFor(m => m.DirCalle, new { @class = "checkout_input", @placeholder = "Dirección de Calle", @required = "required" })
                                     @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "checkout_input checkout_address_2", @placeholder = "Código Postal", @id = "cp", @onchange = "myFunction(this.value)", @required = "required" })
-                               </div>
+                                </div>
                                 <br />
                                 <div>
 
@@ -113,11 +113,11 @@
                                 </div>
                                 <div>
                                     <!-- City / Town -->
-                                    @Html.TextBoxFor(m => m.Estado, new { @class = "checkout_input checkout_address_2", @placeholder = "Estado", @id = "input",  @required = "required" })
-                                    
+                                    @Html.TextBoxFor(m => m.Estado, new { @class = "checkout_input checkout_address_2", @placeholder = "Estado", @id = "input", @required = "required" })
+
                                 </div>
                                 <div>
-                                   @Html.TextBoxFor(m => m.Ciudad, new { @class = "checkout_input checkout_address_2", @placeholder = "Ciudad", @id = "input1", @required = "required" })
+                                    @Html.TextBoxFor(m => m.Ciudad, new { @class = "checkout_input checkout_address_2", @placeholder = "Ciudad", @id = "input1", @required = "required" })
                                 </div>
                                 <br />
                                 <div>
@@ -129,7 +129,7 @@
                                 <div>
                                     <!-- Numero Telf -->
                                     @Html.TextBoxFor(m => m.NumTelefono, new { @class = "checkout_input", @placeholder = "Num. Teléfono", @required = "required" })
-                                   
+
                                 </div>
                                 <br />
                                 <div>

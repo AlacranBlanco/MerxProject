@@ -369,6 +369,7 @@ namespace MerxProject.Controllers
             base.Dispose(disposing);
         }
 
+
         [Authorize]
         [HttpGet]
         public ActionResult Direcciones(int? id, int? accion)
@@ -423,7 +424,7 @@ namespace MerxProject.Controllers
                 return RedirectToAction("MisDirecciones");
             }
             return RedirectToAction("MisDirecciones");
-        } 
+        }
 
 
         [HttpGet]
@@ -433,7 +434,7 @@ namespace MerxProject.Controllers
             var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
             var MisDirecciones = DbModel.Direcciones.Where(x => x.IdPersona == idPersona.idPersona).ToList();
             return View(MisDirecciones);
-                
+
         }
 
         [HttpPost]

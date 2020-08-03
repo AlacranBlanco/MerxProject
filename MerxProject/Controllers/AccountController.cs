@@ -103,7 +103,7 @@ namespace MerxProject.Controllers
 
         }
 
-      
+
 
         [AllowAnonymous]
         [HttpGet]
@@ -144,22 +144,22 @@ namespace MerxProject.Controllers
 
                     if (user != null)
                     {
-                            // Lo que hacemos aquí es saber si user fue encontrado de alguna forma dentro de la Base
-                            // si es así pues continuamos con la edición.
-                            user.Email = applicationUser.Email;
-                            user.UserName = applicationUser.UserName;
-                            // Método async para poder realizar la actualización en base
-                            var result =  await UserManager.UpdateAsync(user);
+                        // Lo que hacemos aquí es saber si user fue encontrado de alguna forma dentro de la Base
+                        // si es así pues continuamos con la edición.
+                        user.Email = applicationUser.Email;
+                        user.UserName = applicationUser.UserName;
+                        // Método async para poder realizar la actualización en base
+                        var result = await UserManager.UpdateAsync(user);
 
                         // Si todo va chido, regresamos a la lista para ver el editado.
                         if (result.Succeeded)
                         {
                             return RedirectToAction("listaWey");
                         }
-                            
+
                     }
 
-                } 
+                }
                 else if (applicationUser.Id != null && accion == "3")
                 {
                     // Eliminación
@@ -189,11 +189,11 @@ namespace MerxProject.Controllers
                     return View("listaWey");
                 }
 
-                }
-                return View("listaWey");
             }
+            return View("listaWey");
+        }
 
-      
+
         //
         // POST: /Account/Login
         [HttpPost]
@@ -338,7 +338,7 @@ namespace MerxProject.Controllers
                     DbModel.SaveChanges();
                     idPersona = persona.idPersona;
 
-                    
+
                 }
 
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario };
@@ -346,7 +346,7 @@ namespace MerxProject.Controllers
 
                 if (result.Succeeded)
                 {
-                   
+
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo

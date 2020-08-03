@@ -1,4 +1,5 @@
 ﻿using MerxProject.Models.ProductosFavorito;
+using MerxProject.Models.CarritoCompras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,12 @@ namespace MerxProject.Models.TiendaViewModels
         public ProductosFavoritos ProductosFavorito { get; set; }
 
         public List<ProductosFavoritos> ProductosFavoritosColelction { get; set; }
-        
+        public List<CarritoCompra> ProductosCarritoCollection { get; set; }
+
+        public CarritoCompra CarritoCompra { get; set; }
+
         public List<int> ProductosFavId { get; set; }
+        public List<int> ProductosCarrito { get; set; }
+
     }
 }
