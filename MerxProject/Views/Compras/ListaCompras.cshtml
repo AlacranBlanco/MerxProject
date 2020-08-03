@@ -5,7 +5,7 @@
 }
 <h2>Compras</h2>
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" 
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
      data-url='@Url.Action("popUpCompras", "Compras", new { applicationUser = "", accion = "1" })'></div>
 <br />
 <table class="table">
@@ -34,9 +34,10 @@
                 @Html.DisplayFor(modelItem => item.Proveedor.Persona.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Empleado.Personas.Nombre)
+                @Html.DisplayFor(modelItem => item.Empleado.Personass.Nombre)
             </td>
             <td>
+                $
                 @Html.DisplayFor(modelItem => item.MontoTotal)
             </td>
             <td>
@@ -46,10 +47,18 @@
                 @Html.DisplayFor(modelItem => item.DS_Estatus)
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="details_@item.Id"
+                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "4" })')">
+                    Ver Detalles
+                </button>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "2" })')">
+                    Editar
+                </button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "3" })')">
+                    Eliminar
+                </button>
             </td>
         </tr>
 
@@ -57,6 +66,7 @@
 </table>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalDetalles" tabindex="-1"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 
@@ -83,6 +93,14 @@
         $.get(url, function (data) {
             $("#idModalElminar").html(data);
             $("#idModalElminar").modal('show');
+        });
+
+    }
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalDetalles").html(data);
+            $("#idModalDetalles").modal('show');
         });
 
     }

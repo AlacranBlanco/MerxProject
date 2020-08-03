@@ -69,7 +69,7 @@ namespace MerxProject.Models
             modelBuilder.Entity<DetalleCompra>()
                 .Ignore(e => e.Tipo);
 
-            modelBuilder.Entity<Compra>()
+            /*modelBuilder.Entity<Compra>()
                 .HasMany(e => e.DetalleCompra)
                 .WithOptional(e => e.Compra)
                 .HasForeignKey(e => e.IdCompra);
@@ -82,17 +82,17 @@ namespace MerxProject.Models
             modelBuilder.Entity<Empleado>()
                 .HasMany(e => e.Compras)
                 .WithOptional(e => e.Empleado)
-                .HasForeignKey(e => e.IdEmpleado);
+                .HasForeignKey(e => e.IdEmpleado);*/
 
-            modelBuilder.Entity<Material>()
+            /*modelBuilder.Entity<Material>()
                 .HasMany(e => e.DetalleCompras)
                 .WithOptional(e => e.MateriaPrima)
-                .HasForeignKey(e => e.IdMateriaPrima);
+                .HasForeignKey(e => e.MateriaPrima);
 
             modelBuilder.Entity<Herramienta>()
                 .HasMany(e => e.DetalleCompras)
                 .WithOptional(e => e.Herramienta)
-                .HasForeignKey(e => e.IdHerramienta);
+                .HasForeignKey(e => e.Herramienta);*/
         }
     }
 }

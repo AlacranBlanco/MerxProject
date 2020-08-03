@@ -21,7 +21,7 @@ namespace MerxProject.Models
         public string Giro { get; set; }
         [Required]
         public virtual Persona Persona { get; set; }
-        public virtual List<Compra> Compras { get; set; }
+       // public virtual List<Compra> Compras { get; set; }
 
     }
 }

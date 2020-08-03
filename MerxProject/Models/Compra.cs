@@ -12,7 +12,6 @@ namespace MerxProject.Models
         public int Id { get; set; }
         [MaxLength(20)]
         public string Folio { get; set; }
-        [Required]
         public decimal MontoTotal { get; set; }
         [Required]
         public DateTime FechaRegistro { get; set; }
@@ -22,20 +21,22 @@ namespace MerxProject.Models
         public string DS_Estatus { get; set; }
 
         // Llaves foráneas
-        public int? IdProveedor { get; set; }
-        public int? IdEmpleado { get; set; }
+        //public int? IdProveedor { get; set; }
+        //public int? IdEmpleado { get; set; }
 
         // Relaciones con otras tablas
-        public virtual List<DetalleCompra> DetalleCompra { get; set; }
-        public virtual Proveedor Proveedor { get; set; }
-        public virtual Empleado Empleado { get; set; }
+        //public virtual List<DetalleCompra> DetalleCompra { get; set; }
+        public Proveedor Proveedor { get; set; }
+        public Empleado Empleado { get; set; }
     }
 
     public enum EstatusC
     {
-        Pendiente = 0,
-        Entregada = 1,
-        Cancelada = 2,
-        Incorrecta = 3
+        Vacía = 0,
+        Pendiente = 1,
+        Confirmada = 2,
+        Entregada = 3,
+        Cancelada = 4,
+        Incompleta = 5
     }
 }

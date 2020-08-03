@@ -1,11 +1,18 @@
 ﻿@model IEnumerable<MerxProject.Models.DetalleCompra>
 
+<button class="btn btn-primary btn-sm pull-right" id="NuevoH">Nueva Herramienta</button>
+<button class="btn btn-primary btn-sm pull-right" id="NuevoM">Nueva Materia Prima</button>
+<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="NuevoH">Nuevo</button>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrarH" tabindex="-1"
+     data-url='@Url.Action("popUpDetalleCompra", "Compras", new { applicationUser = "", accion = 1, tipo = 'H'})'></div>
+<br />
+
 @if (Model != null)
 {
-<table class="table">
+    <table class="table">
     <tr>
         <th>
-            @Html.DisplayName("Tipo Artículo")
+            @Html.DisplayName("Tipo")
         </th>
         <th>
             @Html.DisplayName("Artículo")
@@ -26,50 +33,146 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DropDownListFor(modelItem => item.Tipo, EnumHelper.GetSelectList(typeof(MerxProject.Models.Tipos)), new { @class = "form-control" })
-        </td>
-        <td>
-            @if (item.Tipo == "Herramienta")
-            {
-                @Html.DropDownListFor(modelItem => item.Herramienta, new SelectList(ViewBag.Herramientas, "Id", "Nombre"), "Seleccione", new { @class = "form-control" })
-            }
-            @if (item.Tipo == "MateriaPrima")
-            {
-                @Html.DropDownListFor(modelItem => item.MateriaPrima, new SelectList(ViewBag.MateriasPrimas, "Id", "Nombre"), "Seleccione", new { @class = "form-control" })
-            }
-        </td>
-        <td>
-            @Html.EditorFor(modelItem => item.Cantidad)
-        </td>
-        <td>
-            @Html.DropDownListFor(modelItem => item.Unidad, EnumHelper.GetSelectList(typeof(MerxProject.Models.Unidades)), new { @class = "form-control" })
-        </td>
-        <td>
-            @if (item.Tipo == "Herramienta")
-            {
-                @Html.DisplayFor(modelItem => item.PrecioUnitario, item.Herramienta.Precio)
-            }
-            @if (item.Tipo == "MateriaPrima")
-            {
-                @Html.DisplayFor(modelItem => item.PrecioUnitario, item.MateriaPrima.Precio)
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PrecioTotal, item.PrecioUnitario * item.Cantidad)
-        </td>
-        <td>
-            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
-                   >
-                Editar
-            </button>
-            <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
-                    >
-                Eliminar
-            </button>
-        </td>
-    </tr>
+        <tr>
+            <td>
+                @if (item.IdHerramienta != null)
+                {
+                    @Html.Label("Herramienta")
+                }
+                @if (item.IdMateriaPrima != null)
+                {
+                    @Html.Label("Materia Prima")
+                }
+            </td>
+            <td>
+                @if (item.IdHerramienta != null)
+                {
+                    @Html.DisplayFor(modelItem => item.Herramienta.Nombre)
+                }
+                @if (item.IdMateriaPrima != null)
+                {
+                    @Html.DisplayFor(modelItem => item.MateriaPrima.Nombre)
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unidad)
+            </td>
+            <td>
+                $
+                @if (item.IdHerramienta != null)
+                {
+                    @Html.DisplayFor(modelItem => item.PrecioUnitario)
+                }
+                @if (item.IdMateriaPrima != null)
+                {
+                    @Html.DisplayFor(modelItem => item.PrecioUnitario)
+                }
+            </td>
+            <td>
+                $ @Html.DisplayFor(modelItem => item.PrecioTotal, item.PrecioUnitario * item.Cantidad)
+            </td>
+            <td>
+                @if (item.IdHerramienta != null)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id">
+                        Editacr
+                        <div onclick="@Html.Action("popUpDetalleCompra", "Compras", new { id = item.Id, accion = "2", tipo = "H" })"></div>
+                    </button>
+                }
+                @if (item.IdMateriaPrima != null)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" id="edit_@item.Id"
+                            onclick="@Html.Action("popUpDetalleCompra", "Compras", new { id = item.Id, accion = "2", tipo = "MP" })">
+                        Editars
+                    </button>
+                }
+
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                        onclick="createModal('@Url.Action("popUpDetalleCompra", "Compras", new { id = item.Id, accion = "3" })')">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
     }
-</table>
+    </table>
+}
+<div id="nuevo"></div>
+
+
+
+<script>
+
+    var url = '@Url.Action("popUpDetalleCompra", "Compras")';
+    $('#NuevoH').click(function () {
+        alert($("#nuevo"));
+            $('#nuevo').load(@Url.Action("popUpDetalleCompra", "Compras", new { applicationUser = "", accion = 1, tipo = 'H'});
+        });
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#Nuevo').click(function () {
+            var url = $('#idModalRegistrarH').data('url');
+            $.get(url, function (data) {
+                $("#idModalRegistrarH").html(data);
+                $("#idModalRegistrarH").modal('show');
+            });
+        });
+    });
+
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalUpdate").html(data);
+            $("#idModalUpdate").modal('show');
+        });
+
+    }
+
+    function createModal(url) {
+        $.get(url, function (data) {
+            $("#idModalElminar").html(data);
+            $("#idModalElminar").modal('show');
+        });
+
+    }
+
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#pCompras').submit(function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            $.post($form.attr("action"), $form.serialize()).done(function (res) {
+                $mymodal = $("#myModal");
+                // Show the modal
+                $mymodal.modal("show");
+            });
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#pCompras').submit(function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            $.post($form.attr("action"), $form.serialize()).done(function (res) {
+                $mymodal = $("#myModal");
+                // Show the modal
+                $mymodal.modal("show");
+            });
+        });
+
+    });
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }

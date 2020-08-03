@@ -18,24 +18,30 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
+                ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
+                ViewBag.Empleados = DbModel.Empleados.Include("Personass").Include("Usuarioss").ToList();
                 if (accion == "1")
                 {
-                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
-                    ViewBag.Empleados = DbModel.Empleados.Include("Personas").ToList();
+                    var correo = User.Identity.Name;
                     var compra = new Compra();
                     compra.FechaRegistro = DateTime.Now;
                     compra.Estatus = 0;
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
+                    if (correo != "")
+                    {
+                        var Persona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        compra.Empleado = DbModel.Empleados.
+                            Include("Personass").
+                            FirstOrDefault(x => x.Personass.idPersona == Persona.idPersona);
+                    }
                     ViewBag.title = "Nuevo";
                     ViewBag.Accion = "1";
-                    return View(compra);
+                    return View("popUpCompras", compra);
                 }
                 else if (accion == "2")
                 {
                     var compra = DbModel.Compras.Find(Id);
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
-                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
-                    ViewBag.Empleados = DbModel.Empleados.Include("Personas").ToList();
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
                     return View(compra);
@@ -48,8 +54,19 @@ namespace MerxProject.Controllers
                     ViewBag.Accion = "3";
                     return View(compra);
                 }
+                else if (accion == "4")
+                {
+                    if (Id != null)
+                    {
+                        var detalleCompra = DbModel.DetalleCompra
+                            .Include("Herramienta").Include("MateriaPrima").Include("Compra")
+                            .Where(e => e.Compra.Id == Id).ToList();
+
+                        return View("ListaDetalleCompra", detalleCompra);
+                    }
+                }
             }
-            return RedirectToAction("ListaCompras");
+            return RedirectToAction("popUpCompras");
         }
 
         [AllowAnonymous]
@@ -67,20 +84,29 @@ namespace MerxProject.Controllers
 
                     if (compra != null)
                     {
-                        try
-                        {
-                            DbModel.Compras.AddOrUpdate(compras);
-                            DbModel.SaveChanges();
-                            resultado = "Actualización realizada";
-                            ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
+                        var proveedor = DbModel.Proveedores.Find(compras.Proveedor.Id);
+                        var empleado = DbModel.Empleados.Find(compras.Empleado.Id);
 
-                        }
-                        catch (Exception ex)
+                        if (proveedor != null && empleado != null)
                         {
-                            resultado = ex.Message;
-                            ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
+
+                            compra.Proveedor = proveedor;
+                            compra.Empleado = empleado;
+                            try
+                            {
+                                DbModel.Compras.AddOrUpdate(compras);
+                                DbModel.SaveChanges();
+                                resultado = "Actualización realizada";
+                                ViewBag.res = resultado;
+                                return RedirectToAction("ListaCompras");
+
+                            }
+                            catch (Exception ex)
+                            {
+                                resultado = ex.Message;
+                                ViewBag.res = resultado;
+                                return RedirectToAction("ListaCompras");
+                            }
                         }
                     }
 
@@ -113,21 +139,30 @@ namespace MerxProject.Controllers
                 {
                     if (compras != null)
                     {
-                        // Aquí código para crear
-                        try
+                        var proveedor = DbModel.Proveedores.Find(compras.Proveedor.Id);
+                        var empleado = DbModel.Empleados.Find(compras.Empleado.Id);
+
+                        if (proveedor != null && empleado != null)
                         {
 
-                            DbModel.Compras.Add(compras);
-                            DbModel.SaveChanges();
-                            resultado = "Inserción realizada";
-                            ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
-                        }
-                        catch (Exception ex)
-                        {
-                            resultado = ex.Message;
-                            ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
+                            compras.Proveedor = proveedor;
+                            compras.Empleado = empleado;
+                            // Aquí código para crear
+                            try
+                            {
+
+                                DbModel.Compras.Add(compras);
+                                DbModel.SaveChanges();
+                                resultado = "Inserción realizada";
+                                ViewBag.res = resultado;
+                                return RedirectToAction("ListaCompras");
+                            }
+                            catch (Exception ex)
+                            {
+                                resultado = ex.Message;
+                                ViewBag.res = resultado;
+                                return RedirectToAction("ListaCompras");
+                            }
                         }
                     }
                     resultado = "Error";
@@ -149,7 +184,7 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var compras = DbModel.Compras.Include("Empleado.Personas").Include("Proveedor.Persona").ToList();
+                var compras = DbModel.Compras.Include("Empleado.Personass").Include("Proveedor.Persona").ToList();
                 foreach(Compra compra in compras)
                 {
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
@@ -165,15 +200,178 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                ViewBag.Herramientas = DbModel.Herramientas.ToList();
-                ViewBag.MateriasPrimas = DbModel.Materiales.ToList();
-
                 if (idCompra != null)
                 {
                     var detalleCompra = DbModel.DetalleCompra
                         .Include("Herramienta").Include("MateriaPrima").Include("Compra")
-                        .Where(e => e.IdCompra == idCompra).ToList();
-                    return PartialView("_ListaDetalleCompra", detalleCompra);
+                        .Where(e => e.Compra.Id == idCompra).ToList();
+
+                    return View("ListaDetalleCompra", detalleCompra);
+                }
+                return View("ListaDetalleCompra");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult popUpDetalleCompra(int? Id, string accion, string tipo)
+        {
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                ViewBag.tipo = tipo;
+                if (accion == "1")
+                {
+                    if (tipo != null)
+                    {
+                        if (tipo.Equals("H"))
+                        {
+                            ViewBag.Articulos = DbModel.Herramientas.ToList();
+                        }
+                        else if (tipo.Equals("MP"))
+                        {
+                            ViewBag.Articulos = DbModel.Materiales.ToList();
+                        }
+                    }
+                    var detalleCompra = new DetalleCompra();
+                    ViewBag.title = "Nuevo";
+                    ViewBag.Accion = "1";
+                    //return PartialView("_popUpDetalleCompra", detalleCompra);
+                    return View("popUpDetalleCompra", detalleCompra);
+                }
+                else if (accion == "2")
+                {
+                    if (tipo != null)
+                    {
+                        if (tipo.Equals("H"))
+                        {
+                            ViewBag.Articulos = DbModel.Herramientas.ToList();
+                        }
+                        else if (tipo.Equals("MP"))
+                        {
+                            ViewBag.Articulos = DbModel.Materiales.ToList();
+                        }
+                    }
+                    var detalleCompra = DbModel.DetalleCompra.Find(Id);
+
+                    ViewBag.title = "Editar";
+                    ViewBag.Accion = "2";
+                    //return PartialView("_popUpDetalleCompra", detalleCompra);
+                    return View("popUpDetalleCompra", detalleCompra);
+                }
+                else if (accion == "3")
+                {
+                    var detalleCompra = DbModel.DetalleCompra.Find(Id);
+                    ViewBag.title = "Eliminar";
+                    ViewBag.Accion = "3";
+                    return PartialView(detalleCompra);
+                }
+            }
+            return RedirectToAction("popUpCompras");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> popUpDetalleCompra(DetalleCompra detalleCompra, string accion, HttpPostedFileBase postedFile)
+        {
+            string resultado;
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                // Si el applicationUser viene diferente de null, significa que el usaurio quiere Editar
+                if (detalleCompra.Id > 0 && accion == "2")
+                {
+                    // Edición
+                    var detCompra = DbModel.DetalleCompra.Find(detalleCompra.Id);
+
+                    if (detCompra != null)
+                    {
+                        try
+                        {
+                            DbModel.DetalleCompra.AddOrUpdate(detalleCompra);
+                            DbModel.SaveChanges();
+                            resultado = "Actualización realizada";
+                            ViewBag.res = resultado;
+                            return RedirectToAction("popUpCompras");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            resultado = ex.Message;
+                            ViewBag.res = resultado;
+                            return RedirectToAction("popUpCompras");
+                        }
+                    }
+
+                }
+                else if (detalleCompra.Id > 0 && accion == "3")
+                {
+                    // Eliminación
+                    var detCompra = DbModel.DetalleCompra.Find(detalleCompra.Id);
+
+                    if (detCompra != null)
+                    {
+
+                        try
+                        {
+                            DbModel.DetalleCompra.Remove(detCompra);
+                            DbModel.SaveChanges();
+                            resultado = "Eliminación finalizada";
+                            ViewBag.res = resultado;
+                            return RedirectToAction("ListaCompras");
+                        }
+                        catch (Exception ex)
+                        {
+                            resultado = ex.Message;
+                            ViewBag.res = resultado;
+                            return RedirectToAction("ListaCompras");
+                        }
+                    }
+                }
+                else
+                {
+                    if (detalleCompra != null)
+                    {
+                        // Aquí código para crear
+                        try
+                        {
+
+                            DbModel.DetalleCompra.Add(detalleCompra);
+                            DbModel.SaveChanges();
+                            resultado = "Inserción realizada";
+                            ViewBag.res = resultado;
+                            return RedirectToAction("PopUpCompras");
+                        }
+                        catch (Exception ex)
+                        {
+                            resultado = ex.Message;
+                            ViewBag.res = resultado;
+                            return RedirectToAction("PopUpCompras");
+                        }
+                    }
+                    resultado = "Error";
+                    ViewBag.res = resultado;
+                    /* En caso de que sea una creación directa, pues realizamos otro flujo, pero eso depende de la vista que se vaya a usar.
+                    * Como en mi caso use algo que ya trae el proyecto por defecto pues use sus métodos, creo que si ya hacemos otros vistas,
+                    * tocará relizar el context y todo eso. 
+                    */
+                }
+
+                return RedirectToAction("ListaCompras");
+            }
+        }
+
+        public ActionResult ListaArticulos(int tipo)
+        {
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                if(tipo == 0)
+                {
+                    var Articulos = DbModel.Herramientas.ToList();
+                    return Json(Articulos, JsonRequestBehavior.AllowGet);
+                }
+                else if (tipo == 1)
+                {
+                    var Articulos = DbModel.Materiales.ToList();
+                    return Json(Articulos, JsonRequestBehavior.AllowGet);
                 }
                 return PartialView("_ListaDetalleCompra");
             }

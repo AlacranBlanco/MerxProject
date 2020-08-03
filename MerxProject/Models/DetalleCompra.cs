@@ -21,23 +21,27 @@ namespace MerxProject.Models
         public decimal PrecioTotal { get; set; }
 
         // Llaves foráneas
-        public int? IdCompra { get; set; }
+        /*public int? IdCompra { get; set; }
         public int? IdMateriaPrima { get; set; }
-        public int? IdHerramienta { get; set; }
+        public int? IdHerramienta { get; set; }*/
 
         // Relaciones con otras tablas
-        public virtual Compra Compra { get; set; }
-        public virtual Material MateriaPrima { get; set; }
-        public virtual Herramienta Herramienta { get; set; }
+        public  Compra Compra { get; set; }
+        public Material MateriaPrima { get; set; }
+        public Herramienta Herramienta { get; set; }
 
 
         public string Tipo { get; set; }
 
         public void setTipo()
         {
-            if (IdMateriaPrima != null)
+            if (MateriaPrima != null)
             {
                 Tipo = "MateriaPrima";
+            }
+            if (Herramienta != null)
+            {
+                Tipo = "Herramienta";
             }
         }
     }

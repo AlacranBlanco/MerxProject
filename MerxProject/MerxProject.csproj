@@ -742,6 +742,9 @@
     <Content Include="Views\Shared\_LayoutDirecciones.cshtml" />
     <Content Include="Views\Manage\Direcciones.cshtml" />
     <Content Include="Views\Manage\MisDirecciones.cshtml" />
+    <Content Include="Views\Compras\popUpDetalleCompra.cshtml" />
+    <Content Include="Views\Compras\_popUpDetalleCompra.cshtml" />
+    <Content Include="Views\Compras\ListaDetalleCompra.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

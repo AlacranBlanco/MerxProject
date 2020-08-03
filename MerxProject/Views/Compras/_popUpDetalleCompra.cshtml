@@ -1,0 +1,59 @@
+﻿@model MerxProject.Models.DetalleCompra
+
+@{
+    Layout = null;
+}
+@if (ViewBag.tipo != null)
+{
+    <tr>
+        <td>
+            @if (ViewBag.tipo == "H")
+            {
+                @Html.Label("Herramienta")
+            }
+            @if (ViewBag.tipo == "MP")
+            {
+                @Html.Label("Materia Prima")
+            }
+        </td>
+        <td>
+            @if (ViewBag.tipo == "H")
+            {
+                @Html.DropDownListFor(model => model.Herramienta, new SelectList(ViewBag.Articulos, "Id", "Nombre"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Herramienta, "", new { @class = "text-danger" })
+            }
+            @if (ViewBag.tipo == "MP")
+            {
+                @Html.DropDownListFor(model => model.MateriaPrima, new SelectList(ViewBag.Articulos, "Id", "Nombre"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MateriaPrima, "", new { @class = "text-danger" })
+            }
+        </td>
+        <td>
+            @Html.EditorFor(model => model.Cantidad)
+            @Html.ValidationMessageFor(model => model.Cantidad, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            @Html.DropDownListFor(model => model.Unidad, EnumHelper.GetSelectList(typeof(MerxProject.Models.Unidades)), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Unidad, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            $ @Html.DisplayFor(model => model.PrecioUnitario)
+            @Html.ValidationMessageFor(model => model.PrecioUnitario, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            $ @Html.DisplayFor(model => model.PrecioTotal)
+            @Html.ValidationMessageFor(model => model.PrecioTotal, "", new { @class = "text-danger" })
+        </td>
+        <td>
+            <button type="submit" class="btn btn-primary btn-sm" id="edit_@Model.Id">
+                Editar
+            </button>
+            <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@Model.Id">
+                Eliminar
+            </button>
+
+            <input type="hidden" name="accion" value="@ViewBag.Accion" />
+        </td>
+    </tr>
+}
+
