@@ -10,8 +10,14 @@ using System.Web.Mvc;
 
 namespace MerxProject.Controllers
 {
+    [Authorize(Roles = "Administrador, Empleado")]
     public class MuebleController : Controller
     {
+        private readonly int _RegistrosPorPagina = 10;
+
+        private List<Mueble> _Muebles;
+        private PaginadorGenerico<Mueble> _PaginadorMuebles;
+
         [AllowAnonymous]
         [HttpGet]
         public ActionResult popUpMuebles(int? Id, string accion)
@@ -65,14 +71,15 @@ namespace MerxProject.Controllers
                             DbModel.Muebles.AddOrUpdate(mueble);
                             DbModel.SaveChanges();
                             resultado = "Actualización realizada";
-                            ViewBag.res = resultado;
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
                             return RedirectToAction("ListaMueble");
 
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
-                            ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaMueble");
                         }
                     }
@@ -88,16 +95,37 @@ namespace MerxProject.Controllers
 
                         try
                         {
-                            DbModel.Muebles.Remove(mueble);
-                            DbModel.SaveChanges();
-                            resultado = "Eliminación finalizada";
-                            ViewBag.res = resultado;
-                            return RedirectToAction("ListaMueble");
+                            var productos = DbModel.Productos.Where(x => x.CategoriaMueble == mueble).Count();
+                            if (productos < 1)
+                            {
+                                var procesosActuales = DbModel.Procesos.Where(x => x.Inventario.Producto.CategoriaMueble.Id == mueble.Id).Count();
+                                if (procesosActuales < 1)
+                                {
+                                    DbModel.Muebles.Remove(mueble);
+                                    DbModel.SaveChanges();
+                                    resultado = "Eliminación finalizada";
+                                    Session["res"] = resultado;
+                                    Session["tipo"] = "Exito";
+                                    return RedirectToAction("ListaMueble");
+                                }
+                                else
+                                {
+                                    resultado = "Un producto de este tipo está en proceso. No se puede eliminar";
+                                    Session["res"] = resultado;
+                                    return RedirectToAction("ListaMueble");
+                                }
+                            }
+                            else
+                            {
+                                resultado = "Aún hay productos con este tipo de mueble, primero se tienen que quitar";
+                                Session["res"] = resultado;
+                                return RedirectToAction("ListaMueble");
+                            }
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
-                            ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaMueble");
                         }
                     }
@@ -127,18 +155,19 @@ namespace MerxProject.Controllers
                             DbModel.Muebles.Add(muebles);
                             DbModel.SaveChanges();
                             resultado = "Inserción realizada";
-                            ViewBag.res = resultado;
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
                             return RedirectToAction("ListaMueble");
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
-                            ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaMueble");
                         }
                     }
                     resultado = "Error";
-                    ViewBag.res = resultado;
+                    Session["res"] = resultado;
                     /* En caso de que sea una creación directa, pues realizamos otro flujo, pero eso depende de la vista que se vaya a usar.
                     * Como en mi caso use algo que ya trae el proyecto por defecto pues use sus métodos, creo que si ya hacemos otros vistas,
                     * tocará relizar el context y todo eso. 
@@ -153,12 +182,71 @@ namespace MerxProject.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult ListaMueble()
+        public ActionResult ListaMueble(int pagina = 1)
         {
+            int _TotalRegistros = 0;
+
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var muebles = DbModel.Muebles.ToList();
-                return View(muebles);
+                // Número total de registros de la tabla Productos
+                _TotalRegistros = DbModel.Muebles.Count();
+                // Obtenemos la 'página de registros' de la tabla Productos
+                _Muebles = DbModel.Muebles.OrderBy(x => x.Id)
+                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                 .Take(_RegistrosPorPagina)
+                                                 .ToList();
+                // Número total de páginas de la tabla Productos
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorMuebles = new PaginadorGenerico<Mueble>()
+                {
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Muebles
+                };
+
+
+                return View(_PaginadorMuebles);
+            }
+        }
+
+        public ActionResult BuscarLista(string parameter, int pagina = 1)
+        {
+            int _TotalRegistros = 0;
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                // Número total de registros de la tabla Productos donde sean parecidos al parámetro
+                _TotalRegistros = DbModel.Muebles.Where(x => x.Nombre.Contains(parameter) ||
+                    (x.Descripcion.Contains(parameter))).Count();
+                // Obtenemos la 'página de registros' de la tabla Productos donde sean parecidos al parámetro
+                _Muebles = DbModel.Muebles.Where(x => x.Nombre.Contains(parameter) ||
+                    (x.Descripcion.Contains(parameter))).OrderBy(x => x.Nombre)
+                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                 .Take(_RegistrosPorPagina)
+                                                 .ToList();
+                // Número total de páginas de la tabla Productos donde sean parecidos al parámetro
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorMuebles = new PaginadorGenerico<Mueble>()
+                {
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Muebles
+                };
+
+                if (_TotalRegistros < 1)
+                {
+                    ViewBag.alert = ("No hay resultados");
+                    return View("ListaMueble");
+                }
+                else
+                {
+                    return View("ListaMueble", _PaginadorMuebles);
+                }
             }
         }
     }

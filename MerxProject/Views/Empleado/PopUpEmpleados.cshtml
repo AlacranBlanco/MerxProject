@@ -1,9 +1,5 @@
 ﻿@model MerxProject.Models.Empleado
 
-@{
-    ViewBag.Title = "Registrar empleado";
-}
-
 <h2>PopUpEmpleados</h2>
 
 <div class="container">
@@ -30,20 +26,11 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="col-md-10">
+
                                         @Html.HiddenFor(model => model.Personass.idPersona, new { htmlAttributes = new { @class = "form-control",
                                             @disabled = "disabled" }})
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-10">
                                         @Html.HiddenFor(model => model.Usuarioss.idUsuario, new { htmlAttributes = new { @class = "form-control",
                                             @disabled = "disabled" }})
-                                    </div>
-                                </div>
-
 
 
                                 <div class="form-group">
@@ -107,28 +94,38 @@
                                 </div>
 
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.FechaIngreso, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        <div class="checkbox">
-                                            @Html.EditorFor(model => model.FechaIngreso)
-                                            @Html.ValidationMessageFor(model => model.FechaIngreso, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
                                     @Html.LabelFor(model => model.Usuarioss.Rol, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Usuarioss.Rol, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.Usuarioss.Rol, "", new { @class = "text-danger" })
+                                        <select name="rol" id="rol" class="form-control" required>
+                                            @if (ViewBag.puesto != null && ViewBag.puesto == "Administrador")
+                                            {
+                                                <option value="Administrador" selected>Administrador</option>
+                                                <option value="Empleado">Empleado</option>
+                                            }
+                                            else
+                                            {
+                                                <option value ="Administrador"> Administrador </option>
+                                                <option value ="Empleado" selected> Empleado </option>
+                                            }
+                                        </select>
                                     </div>
                                 </div>
-
                                 <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label class="control-label">La contraseña debe tener mínimo 14 caracteres y un signo especial</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="password">
                                     @Html.LabelFor(model => model.Usuarioss.Password, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Usuarioss.Password, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(model => model.Usuarioss.Password, "", new { @class = "text-danger" })
+                                        @if (ViewBag.pass != null)
+                                        {
+                                            <input type="password" name="password" id="pass" class="form-control" required value="@ViewBag.pass"/>
+                                        }
+                                        else
+                                        {
+                                            <input type="password" name="password" id="pass" class="form-control" required />
+                                        }
                                     </div>
                                 </div>
 

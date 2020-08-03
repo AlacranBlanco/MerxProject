@@ -65,7 +65,7 @@
     </div>
 }
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpProcesos", "Proceso", new { applicationUser = "", accion = "1" })'></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpProcesos", "Proceso", new { applicationUser = "", accion = "1", Id = "" })'></div>
 <br />
 
 <table class="table">
@@ -91,6 +91,9 @@
         </th>
         <th>
             Color
+        </th>
+        <th>
+            Fecha de registro
         </th>
         <th>
             Tiempo actual
@@ -122,14 +125,16 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Inventario.Color.Nombre)
-            <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Inventario.Color.Codigo;"></span>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tiempo)
         </td>
         <td>
             @foreach(var tiempo in Tiempo)
             {
                 if(item.Id == tiempo.Item1)
                 {
-                    @tiempo.Item2.TotalHours;
+                    <p>@(tiempo.Item2.ToString(@"hh\:mm")) horas</p>
                 }
             }
         </td>
@@ -137,23 +142,40 @@
             @Html.DisplayFor(modelItem => item.Estado)
         </td>
         <td>
-            @if (item.Estado == "En espera")
+            @if (item.Estado == "En espera" && item.Nombre != "Finalizado")
             {
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="@Url.Action("TomarPedido", "Proceso", new { id = item.Id })">Iniciar proceso</button>
+                using (Html.BeginForm("TomarPedido", "Proceso", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="submit" name="name" value="Iniciar proceso" class="btn btn-primary btn-sm" />
+                }
             }
             @if (item.Estado == "En proceso")
             {
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" onclick="@Url.Action("popUpProcesos", "Proceso" , new {id=item.Id, accion = "2" })">Siguiente proceso</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" onclick="@Url.Action("popUpProcesos", "Proceso" , new {id=item.Id, accion = "3" })">Pausar</button>
+                using (Html.BeginForm("popUpProcesos", "Proceso", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="2" />
+                    <input type="submit" name="name" value="Siguiente proceso" class="btn btn-primary btn-sm" />
+                }
+                using (Html.BeginForm("popUpProcesos", "Proceso", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="3" />
+                    <input type="submit" name="name" value="Pausar" class="btn btn-primary btn-sm" />
+                }
             }
             else if (item.Estado == "Detenido")
             {
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" onclick="@Url.Action("popUpProcesos", "Proceso" , new {id=item.Id, accion = "4" })">Reanudar</button>
+                using (Html.BeginForm("popUpProcesos", "Proceso", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="4" />
+                    <input type="submit" name="name" value="Reanudar" class="btn btn-primary btn-sm" />
+                }
             }
-
         </td>
     </tr>
-
     }
 </table>
 
@@ -170,7 +192,6 @@
             });
         });
     });
-    
     
 
      function GetProd(_parametro) {

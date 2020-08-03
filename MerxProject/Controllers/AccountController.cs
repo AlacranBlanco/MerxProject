@@ -14,6 +14,7 @@ using Microsoft.Owin.Security.Provider;
 using System.Collections.Specialized;
 using NinjaNye.SearchExtensions;
 using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MerxProject.Controllers
 {
@@ -105,7 +106,7 @@ namespace MerxProject.Controllers
 
       
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popupUsuarios(string Id, string accion)
         {
@@ -129,7 +130,7 @@ namespace MerxProject.Controllers
             return RedirectToAction("listaWey");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popupUsuarios(ApplicationUser applicationUser, string accion)
         {
@@ -201,11 +202,11 @@ namespace MerxProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, string RememberMe)
         {
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("", "¡Vaya, parece que el usuario o contraseña que has escrito no son correctos!");
-                return View(model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    ModelState.AddModelError("", "¡Vaya, parece que el usuario o contraseña que has escrito no son correctos!");
+            //    return View(model);
+            //}
 
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
@@ -218,16 +219,45 @@ namespace MerxProject.Controllers
                 model.RememberMe = false;
             }
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            var user = await UserManager.FindByEmailAsync(model.Email);
+            var user = DbModel.Users.Where(x => x.UserName == model.Email).FirstOrDefault();
+            var RoleStore = new RoleStore<IdentityRole>(DbModel);
+            var RoleMngr = new RoleManager<IdentityRole>(RoleStore);
+            var roles = RoleMngr.Roles.ToList();
 
             // Si queremos diferencias  entre roles tendrémos que hacer un where a persona y luego a usuarios mediante el email
             // El email es unico y no puede repetirse
-
+            bool rolEmpleado = false;
+            bool rolAdmin = false;
+            if (user.Roles.Count() > 0)
+            {
+                foreach (var rol in roles)
+                {
+                    if (user.Roles.First().RoleId == rol.Id && rol.Name == "Empleado")
+                    {
+                        rolEmpleado = true;
+                    }
+                    else if (user.Roles.First().RoleId == rol.Id && rol.Name == "Administrador")
+                    {
+                        rolAdmin = true;
+                    }
+                }
+            }
 
             if (result == SignInStatus.Success)
             {
-                if (user != null && user.EmailConfirmed)
+                if (user != null && user.EmailConfirmed && rolEmpleado)
                 {
+                    Session["user"] = user.UserName;
+                    return RedirectToAction("ListaProducto", "Producto");
+                }
+                else if (user != null && user.EmailConfirmed && rolAdmin)
+                {
+                    Session["user"] = user.UserName;
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                else if (user != null && user.EmailConfirmed)
+                {
+                    Session["user"] = user.UserName;
                     return RedirectToLocal(returnUrl);
                 }
                 else
@@ -337,8 +367,6 @@ namespace MerxProject.Controllers
                     DbModel.Personas.Add(persona);
                     DbModel.SaveChanges();
                     idPersona = persona.idPersona;
-
-                    
                 }
 
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario };
@@ -592,7 +620,7 @@ namespace MerxProject.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);

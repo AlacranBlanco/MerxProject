@@ -81,12 +81,20 @@ namespace MerxProject.Controllers
         
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaProcesos (int pagina = 1)
         {
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
+                var Colores = DbModel.Colores.ToList();
+                var Muebles = DbModel.Muebles.ToList();
+                var Materiales = DbModel.Materiales.ToList();
+                var Productos = DbModel.Productos.ToList();
+                var Inventarios = DbModel.Inventarios.ToList();
+                var Empleados = DbModel.Empleados.ToList();
+                var Personas = DbModel.Personas.ToList();
+
                 // Número total de registros de la tabla Productos
                 _TotalRegistros = DbModel.Procesos.Count();
                 // Obtenemos la 'página de registros' de la tabla Productos
@@ -112,25 +120,24 @@ namespace MerxProject.Controllers
 
                 foreach (var item in _Procesos)
                 {
-                    TiempoPasado = Hoy - item.Tiempo;
+                    TiempoPasado = item.Tiempo.Subtract(Hoy);
                     TiempoActual.Add(new Tuple<string, TimeSpan>(item.Id, TiempoPasado));
                 }
-
                 ViewBag.Tiempo = TiempoActual;
                 return View(_PaginadorProcesos);
             }
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public ActionResult popUpProcesos(int? Id, string accion)
+        [Authorize(Roles = "Administrador, Empleado")]
+        public ActionResult popUpProcesos(string Id, string accion)
         {
             string resultado;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 try
                 {
-                    if (accion == "1")
+                    if (accion == "1" && string.IsNullOrEmpty(Id))
                     {
                         ViewBag.title = "Nuevo";
                         ViewBag.Accion = "1";
@@ -166,6 +173,7 @@ namespace MerxProject.Controllers
                                 Session["tipo"] = "Exito";
                                 return RedirectToAction("ListaProcesos");
                         }
+                        procesos.Empleado = null;
                         DbModel.Procesos.AddOrUpdate(procesos);
                         DbModel.SaveChanges();
                         resultado = "Actualización realizada";
@@ -181,6 +189,14 @@ namespace MerxProject.Controllers
                         DbModel.SaveChanges();
                         return RedirectToAction("ListaProcesos");
                     }
+                    else if (accion == "4")
+                    {
+                        var procesos = DbModel.Procesos.Find(Id);
+                        procesos.Estado = "En proceso";
+                        DbModel.Procesos.AddOrUpdate(procesos);
+                        DbModel.SaveChanges();
+                        return RedirectToAction("ListaProcesos");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -189,10 +205,10 @@ namespace MerxProject.Controllers
                     return RedirectToAction("ListaProcesos");
                 }
             }
-            return RedirectToAction("ListaMueble");
+            return RedirectToAction("ListaProcesos");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpProcesos(int Id)
         {
@@ -253,52 +269,59 @@ namespace MerxProject.Controllers
             }
         }
 
-        public string TomarPedido(int Id)
+        public ActionResult TomarPedido(int? cliente, string Id)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var personas = DbModel.Personas.ToList();
-                var usuarios = DbModel.Usuarios.ToList();
-                var usuario = usuarios.Where(x => x.User == User.Identity.Name).ToList();
+                var usuario = DbModel.Usuarios.Where(x => x.User == User.Identity.Name).FirstOrDefault();
+                var empleado = DbModel.Empleados.Where(x => x.Usuarioss.idUsuario == usuario.idUsuario).FirstOrDefault();
+                var persona = DbModel.Personas.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
 
-                string nombre = null;
-                foreach (var item in personas)
-                {
-                    foreach (var per in usuario)
-                    {
-                        if (item.idUsuario == per.idUsuario)
-                        {
-                            nombre = item.Nombre;
-                            break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(nombre))
+                if (persona!=null && cliente == null)
                 {
                     try
                     {
                         var inventario = DbModel.Inventarios.ToList();
                         var proceso = DbModel.Procesos.Find(Id);
-                        proceso.Estado = "En proceso";
-                        proceso.Empleado = nombre;
-                        proceso.Tiempo = DateTime.Now;
-                        DbModel.Procesos.AddOrUpdate(proceso);
-                        DbModel.SaveChanges();
-                        return "Exito";
+                        if (proceso.Nombre == "Finalizado")
+                        {
+                            proceso.Estado = "Finalizado";
+                            DbModel.Procesos.AddOrUpdate(proceso);
+                            DbModel.SaveChanges();
+                            Session["res"] = "Proceso ya finalizado, esperando confirmación del cliente";
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProcesos");
+                        }
+                        else
+                        {
+                            proceso.Estado = "En proceso";
+                            proceso.Empleado = persona.Nombre;
+                            proceso.Tiempo = DateTime.Now;
+                            DbModel.Procesos.AddOrUpdate(proceso);
+                            DbModel.SaveChanges();
+                            Session["res"] = "Proceso iniciado";
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProcesos");
+                        }
                     }
                     catch(Exception ex)
                     {
-                        return ex.Message;
+                        Session["res"] = ex.Message;
+                        return RedirectToAction("ListaProcesos");
                     }
+                }
+                else if(cliente != null)
+                {
+                    var proceso = DbModel.Procesos.Find(Id);
+                    DbModel.Procesos.Remove(proceso);
+                    DbModel.SaveChanges();
+                    Session["res"] = "Gracias por su confianza";
+                    return RedirectToAction("ConsultarPedido");
                 }
                 else
                 {
-                    return "Usuario no reconocido";
+                    Session["res"] = "Usuario no reconocido";
+                    return RedirectToAction("ConsultarPedido");
                 }
             }
         }
@@ -319,6 +342,11 @@ namespace MerxProject.Controllers
                     var proceso = DbModel.Procesos.Find(Id);
                     if (proceso != null)
                     {
+                        var color = DbModel.Colores.ToList();
+                        var catMat = DbModel.Materiales.ToList();
+                        var catMue = DbModel.Muebles.ToList();
+                        var producto = DbModel.Productos.ToList();
+                        var inventario = DbModel.Inventarios.ToList();
                         Session["res"] = "Pedido encontrado";
                         Session["tipo"] = "Exito";
                         ViewBag.proceso = proceso;

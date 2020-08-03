@@ -1,14 +1,11 @@
-﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Mueble>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Herramienta>
 
 @{
-    ViewBag.Title = "Lista Mueble";
+    ViewBag.Title = "Lista de herramientas";
+
 }
-
-<h2>Lista de Muebles</h2>
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpMuebles", "Mueble", new { applicationUser = "", accion = "1" })'></div>
-<br />
-
+<link href="~/Content/assets/css/main.css" rel="stylesheet" />
+<h2>Lista de Herramientas</h2>
 @if (Session["res"] != null)
 {
     string color;
@@ -65,23 +62,29 @@
         </table>
     </div>
 }
-
-@using (Html.BeginForm("BuscarLista", "Mueble", FormMethod.Post))
+<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpHerramienta", "Herramienta", new { applicationUser = "", accion = "1" })'></div>
+<br />
+@using (Html.BeginForm("BuscarHerramienta", "Herramienta", FormMethod.Post))
 {
     <div class="container">
         <div class="row">
             <div class="col-xs-8">
                 <div class="input-group" style="display: inline; vertical-align: top; line-height: 28px;">
-                    <input type="text" class="form-control" name="parameter" placeholder="Search term...">
+                    <input type="text" class="form-control" name="param" placeholder="Search term...">
                     <input type="submit" name="Subir" value="Buscar" class="btn btn-primary" />
+
                 </div>
             </div>
         </div>
     </div>
 }
+
+
 <br />
 
 <table class="table">
+
     <tr>
         <th>
             Nombre
@@ -90,9 +93,17 @@
             Descripción
         </th>
         <th>
+            Precio
+        </th>
+        <th>
+            Cantidad
+        </th>
+        <th>
+            En uso
+        </th>
+        <th>
             Imagen
         </th>
-        <th></th>
     </tr>
     @foreach (var item in Model.Resultado)
     {
@@ -104,17 +115,46 @@
                 @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
-                <img src="~/Content/assets/img/Muebles/@Url.Content(item.Imagen)" width="100px" />
+                @Html.DisplayFor(modelItem => item.Precio)
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popUpMuebles", "Mueble" , new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popUpMuebles", "Mueble" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EnUso)
+            </td>
+            <td>
+                <img src="~/Content/assets/img/Herramienta/@item.Imagen" width="100px" />
+            </td>
+            <td>
+                @if (item.EnUso < item.Cantidad)
+                {
+                    using (Html.BeginForm("popUpHerramienta", "Herramienta", FormMethod.Get))
+                    {
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="accion" value="4" />
+                        <input type="submit" name="name" value="Tomar herramienta" class="btn btn-primary btn-sm" />
+                    }
+                }
+                @using (Html.BeginForm("popUpHerramienta", "Herramienta", FormMethod.Get))
+                {
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="5" />
+                    <input type="submit" name="name" value="Devolver herramienta" class="btn btn-primary btn-sm" />
+                }
+            </td>
+            <td>
+                @if (item.EnUso > 0)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                }
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "2" })')">Editar herramienta</button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
 
     }
 </table>
-
 @*Paginador de registros*@
 @if (Model.Resultado.Count() > 0)
 {
@@ -135,40 +175,41 @@ else
 }
 @if (Model.PaginaActual > 1)
 {
-    @Html.ActionLink("<<", "ListaMueble", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default"})
     <span></span>
-    @Html.ActionLink("Anterior", "ListaMueble", new { pagina = Model.PaginaActual - 1 },
+    @Html.ActionLink("Anterior", "ListaProducto", new { pagina = Model.PaginaActual - 1 },
         new { @class = "btn btn-sm btn-default" });
 }
 else
 {
-    @Html.ActionLink("<<", "ListaMueble", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink("Anterior", "ListaMueble", new { pagina = 1 },
+    @Html.ActionLink("Anterior", "ListaProducto", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
 }
 <span></span>
 @if (Model.PaginaActual < Model.TotalPaginas)
 {
-    @Html.ActionLink("Siguiente", "ListaMueble", new { pagina = Model.PaginaActual + 1 },
+    @Html.ActionLink("Siguiente", "ListaProducto", new { pagina = Model.PaginaActual + 1 },
                     new { @class = "btn btn-sm btn-default" })
     <span></span>
-    @Html.ActionLink(">>", "ListaMueble", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default" })
 }
 else
 {
-    @Html.ActionLink("Siguiente", "ListaMueble", new { pagina = Model.TotalPaginas - 1 },
+    @Html.ActionLink("Siguiente", "ListaProducto", new { pagina = Model.TotalPaginas - 1 },
                     new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink(">>", "ListaMueble", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
-
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalShow" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -183,21 +224,38 @@ else
         });
     });
 
+    function createModalShow(url) {
+        $.get(url, function (data) {
+            $("#idModalShow").html(data);
+            $("#idModalShow").modal('show');
+        });
+    }
 
-    function createModal(url) {
+    function createModalEdit(url) {
         $.get(url, function (data) {
             $("#idModalUpdate").html(data);
             $("#idModalUpdate").modal('show');
         });
-
     }
 
-    function createModal(url) {
+    function createModalDelete(url) {
         $.get(url, function (data) {
             $("#idModalElminar").html(data);
             $("#idModalElminar").modal('show');
         });
+    }
 
+    function confirmar(url) {
+        jQuery(document).ready(function () {
+            jQuery('[data-confirm]').click(function (e) {
+                if (!confirm(jQuery(this).attr("data-confirm"))) {
+                    location.reload(true);
+                }
+                else {
+                    createModalDelete(url);
+                }
+            })
+        })
     }
 
 

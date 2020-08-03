@@ -12,5 +12,6 @@ namespace MerxProject.Models
         public string Nombre { get; set; }
 
         public string Codigo { get; set; }
+
     }
 }

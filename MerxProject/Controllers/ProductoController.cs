@@ -37,6 +37,7 @@ namespace MerxProject.Controllers
 
         // GET: Producto
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Tienda(int? NoLogIn, int pag = 1)
         {
             if (pag <= 0) pag = 1;
@@ -71,28 +72,18 @@ namespace MerxProject.Controllers
                 {
                     tiendaViewModel.ProductosFavId.Add(-12);
                 }
-                
             }
-
-
                 ViewBag.pagina = pag;
                 return View(tiendaViewModel);
-           
-            
-
-
-         
         }
 
         [HttpPost]
         public ActionResult Tienda()
         {
-            
             return View();
         }
         public ActionResult MostrarTodos(int pagina = 1)
         {
-
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -137,7 +128,6 @@ namespace MerxProject.Controllers
         public ActionResult Buscar(string parameter, int pagina = 1)
         {
             int _TotalRegistros = 0;
-
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 var Materiales = DbModel.Materiales.ToList();
@@ -186,7 +176,7 @@ namespace MerxProject.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popUpProductos(int? Id, string accion)
         {
@@ -223,7 +213,7 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaMueble");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpProductos(Producto productos, int idMueble, int idMaterial, string accion, HttpPostedFileBase postedFile)
         {
@@ -309,12 +299,34 @@ namespace MerxProject.Controllers
 
                         try
                         {
-                            DbModel.Productos.Remove(producto);
-                            DbModel.SaveChanges();
-                            resultado = "Eliminación finalizada";
-                            Session["res"] = resultado;
-                            Session["tipo"] = "Exito";
-                            return RedirectToAction("ListaProducto");
+                            var inventario = DbModel.Inventarios.Where(x => x.Producto.Id == producto.Id && x.Cantidad > 0).Count();
+                            if (inventario < 1)
+                            {
+                                var procesosActuales = DbModel.Procesos.Where(x => x.Inventario.Producto.Id == producto.Id).Count();
+                                if (procesosActuales < 1)
+                                {
+                                    var inventarios = DbModel.Inventarios.Where(x => x.Producto.Id == producto.Id).ToList();
+                                    DbModel.Inventarios.RemoveRange(inventarios);
+                                    DbModel.Productos.Remove(producto);
+                                    DbModel.SaveChanges();
+                                    resultado = "Eliminación finalizada";
+                                    Session["res"] = resultado;
+                                    Session["tipo"] = "Exito";
+                                    return RedirectToAction("ListaProducto");
+                                }
+                                else
+                                {
+                                    resultado = "Un producto de este tipo está en proceso. No se puede eliminar";
+                                    Session["res"] = resultado;
+                                    return RedirectToAction("ListaProducto");
+                                }
+                            }
+                            else
+                            {
+                                resultado = "Aún quedan productos en inventario, no se puede eliminar";
+                                Session["res"] = resultado;
+                                return RedirectToAction("ListaProducto");
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -361,6 +373,14 @@ namespace MerxProject.Controllers
                             {
 
                                 DbModel.Productos.Add(productos);
+                                var colores = DbModel.Colores.ToList();
+                                var inv = new Inventario()
+                                {
+                                    Cantidad = 0,
+                                    Color = colores.Where(x => x.Id == 1).FirstOrDefault(),
+                                    Producto = productos
+                                };
+                                DbModel.Inventarios.Add(inv);
                                 DbModel.SaveChanges();
                                 resultado = "Inserción realizada";
                                 Session["res"] = resultado;
@@ -395,7 +415,7 @@ namespace MerxProject.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popUpProductosColor(int Id, string accion)
         {
@@ -460,15 +480,13 @@ namespace MerxProject.Controllers
             }
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpProductosColor(int productoId, string cantidad, string newColor, string radio, string accion)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 Inventario inv = new Inventario();
-
-
                 string resultado;
                 try
                 {
@@ -526,10 +544,8 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaProducto");
         }
 
-        #region Braulio Monroy
-
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaProducto(int pagina = 1)
         {
             int _TotalRegistros = 0;
@@ -569,11 +585,11 @@ namespace MerxProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult BuscarLista(string orden, string categoria, string parameter, int pagina = 1)
         {
            
             int _TotalRegistros = 0;
-            var propertyInfo = typeof(Producto).GetProperty(parameter);
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 var Materiales = DbModel.Materiales.ToList();
@@ -666,7 +682,6 @@ namespace MerxProject.Controllers
                                 // Número total de registros de la tabla Productos
                                 _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
                                                                     (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.Nombre.Contains(parameter)) ||
                                                                     (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
                                                                     (x.Nombre.Contains(parameter)) ||
                                                                     (x.Precio.ToString().Contains(parameter)))
@@ -675,7 +690,6 @@ namespace MerxProject.Controllers
                                 // Obtenemos la 'página de registros' de la tabla Productos
                                 _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
                                                                  (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.Nombre.Contains(parameter)) ||
                                                                  (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
                                                                  (x.CategoriaMueble.Nombre.Contains(parameter)) ||
                                                                  (x.Precio.ToString().Contains(parameter)))
@@ -1124,7 +1138,6 @@ namespace MerxProject.Controllers
         }
 
       
-
         [AllowAnonymous]
         [HttpGet]
         public ActionResult  ShelveProduct1()
@@ -1160,9 +1173,8 @@ namespace MerxProject.Controllers
             
 
         }
+        
 
-      
-        [AllowAnonymous]
         [HttpPost]
         public ActionResult AgregarProductoFavorito(Producto producto, int accion, int pagi)
         {
@@ -1212,14 +1224,5 @@ namespace MerxProject.Controllers
             return View("Tienda");
 
         }
-
-
-
-
-
-
-
-        #endregion
-
     }
 }

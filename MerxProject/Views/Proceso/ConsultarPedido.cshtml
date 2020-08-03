@@ -4,6 +4,15 @@
     Layout = "~/Views/Shared/_LayoutPagina.cshtml";
 
 }
+
+<section id="hero-store" class="d-flex align-items-center justify-content-center">
+    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="100">
+        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="100">
+            <h1>Buscar pedido</h1>
+        </div>
+    </div>
+</section><!-- End Hero -->
+
 @if (Session["res"] != null)
 {
     string color;
@@ -60,32 +69,30 @@
         </table>
     </div>
 }
-
-<main id="main">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2>Buscar pedido</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <h5>Ingresa el código que se te dio para ver en qué proceso se encuentra tu pedido</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-group">
-                @using (Html.BeginForm("ConsultarPedido", "Proceso", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<div class="container">
+    <div class="breadcrumb">
+        <a href="@Url.Action("Index", "Home")" class="breadcrumb-item">Inicio</a>
+        <a href="@Url.Action("ConsultarPedido", "Proceso")" class="breadcrumb-item">Consultar pedido</a>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" style="align-content:center">
+            <h5>Ingresa el código que se te envió para ver el progreso de tu pedido</h5>
+            <div class="menu_search_form">
+                @using (Html.BeginForm("ConsultarPedido", "Proceso", FormMethod.Post))
                 {
-                    @Html.AntiForgeryToken()
-                    <input type="text" name="Id" value="" placeholder="Buscar" required class="form-control-lg" />
-                    <input type="submit" name="Buscar" value="Buscar" />
+                    <div class="input-group">
+                        <input type="hidden" name="cliente" value="1" />
+                        <input type="text" class="form-control list-group-item" name="Id" id="Id" placeholder="Buscar producto">
+                        <div class="input-group-append">
+                            <input class="btn btn-secondary" type="submit" value="Buscar" style="background-color:#009970; border-radius:10px;">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
         @if (ViewBag.proceso != null)
         {
-
             var proceso = new Proceso();
             proceso = ViewBag.proceso;
 
@@ -113,12 +120,6 @@
                         <th>
                             Color
                         </th>
-                        <th>
-                            Tiempo actual
-                        </th>
-                        <th>
-                            Estado
-                        </th>
                     </tr>
                     <tr>
                         <td>
@@ -140,13 +141,10 @@
                             @Html.DisplayFor(modelItem => proceso.Inventario.Color.Nombre)
                             <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @proceso.Inventario.Color.Codigo;"></span>
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Estado)
-                        </td>
-                        @if (proceso.Estado == "Finalizado")
+                        @if (proceso.Nombre == "Finalizado")
                         {
                             <td>
-                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@proceso.Id" onclick="@Url.Action("TomarPedido", "Proceso", new { id = proceso.Id })">Recibí mi pedido</button>
+                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@proceso.Id" data-confirm="¿Estás seguro?" onclick="confirmar('@Url.Action("TomarPedido", "Proceso", new { id = proceso.Id, cliente = 1 })')">Recibí mi pedido</button>
                             </td>
                         }
                     </tr>
@@ -154,4 +152,28 @@
             }
         }
     </div>
-</main>
+</div>
+
+<script type="text/javascript">
+    function confirmar(url) {
+        jQuery(document).ready(function () {
+            jQuery('[data-confirm]').click(function (e) {
+                if (!confirm(jQuery(this).attr("data-confirm"))) {
+                    location.reload(true);
+                }
+                else {
+                    finalizarProceso(url);
+                }
+            })
+        })
+    }
+
+    function finalizarProceso(url) {
+        $.ajax({
+            url: url,
+        }).done(function () {
+            alert("Gracias por tu confianza");
+        });
+    }
+
+</script>

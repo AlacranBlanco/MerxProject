@@ -225,8 +225,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ComprasController.cs" />
     <Compile Include="Controllers\EmpleadoController.cs" />
+    <Compile Include="Controllers\HerramientaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -243,6 +245,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Compra.cs" />
     <Compile Include="Models\DetalleCompra.cs" />
+    <Compile Include="Models\DetalleHerramienta.cs" />
     <Compile Include="Models\Herramienta.cs" />
     <Compile Include="Models\Color.cs" />
     <Compile Include="Models\Inventario.cs" />
@@ -742,6 +745,10 @@
     <Content Include="Views\Shared\_LayoutDirecciones.cshtml" />
     <Content Include="Views\Manage\Direcciones.cshtml" />
     <Content Include="Views\Manage\MisDirecciones.cshtml" />
+    <Content Include="Views\Herramienta\ListaHerramienta.cshtml" />
+    <Content Include="Views\Herramienta\popUpHerramienta.cshtml" />
+    <Content Include="Views\Herramienta\VerHerramienta.cshtml" />
+    <Content Include="Views\Admin\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

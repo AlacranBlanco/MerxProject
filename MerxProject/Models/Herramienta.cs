@@ -17,9 +17,10 @@ namespace MerxProject.Models
         [Required]
         public string Imagen { get; set; }
         [Required]
-        public string Cantidad { get; set; }
+        public int Cantidad { get; set; }
         [Required]
         public decimal Precio { get; set; }
         public virtual List<DetalleCompra> DetalleCompras { get; set; }
+        public int EnUso { get; set; }
     }
 }

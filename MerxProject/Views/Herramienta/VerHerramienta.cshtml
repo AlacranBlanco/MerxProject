@@ -1,0 +1,64 @@
+﻿@using MerxProject.Models;
+@{
+    Layout = null;
+    var Tiempo = new List <Tuple<int,TimeSpan>>();
+    var Herramienta = new List<DetalleHerramienta>();
+    Tiempo = ViewBag.Tiempo;
+    Herramienta = ViewBag.Herramienta;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal" onclick="location.reload(true)">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+
+                            <tr>
+                                <th>
+                                    Empleado
+                                </th>
+                                <th>
+                                    Fecha de inicio de uso
+                                </th>
+                                <th>
+                                    Tiempo total
+                                </th>
+                            </tr>
+                            @foreach (var item in Herramienta)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Empleado)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Time)
+                                    </td>
+                                    <td>
+                                        @foreach (var tiempo in Tiempo)
+                                        {
+                                            if(tiempo.Item1 == item.Id)
+                                            {
+                                                <p>@tiempo.Item2.ToString(@"hh\:mm") horas</p>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
