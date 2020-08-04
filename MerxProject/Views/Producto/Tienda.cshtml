@@ -312,10 +312,18 @@
                                     <li class="active"><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina })">@ViewBag.pagina</a></li>
                                 }
 
+                                @if (myList.Count == 1)
+                                {
 
+                                    <li><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina})">></a></li>
+                                    <li><a href="@Url.Action("Tienda", "Producto", new { pag = @myList.Count })">>></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina + 1})">></a></li>
+                                    <li><a href="@Url.Action("Tienda", "Producto", new { pag = @myList.Count })">>></a></li>
+                                }
 
-                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = ViewBag.pagina + 1})">></a></li>
-                                <li><a href="@Url.Action("Tienda", "Producto", new { pag = @myList.Count })">>></a></li>
                             </ul>
                         </div>
                     </div>

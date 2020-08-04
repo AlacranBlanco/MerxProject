@@ -37,60 +37,104 @@ namespace MerxProject.Controllers
         }
 
         // GET: Producto
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult Tienda(int? NoLogIn, int pag = 1)
         {
             if (pag <= 0) pag = 1;
-            if (NoLogIn != null) ViewBag.NoLogIn = 0;
+
             var email = User.Identity.Name;
-            var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
-            
 
-            TiendaViewModel tiendaViewModel = new TiendaViewModel();
-            tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
-
-            tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
-
-            tiendaViewModel.ProductosFavId = new List<int>();
-
-            int idxAux = 0;
-            foreach (var item in tiendaViewModel.ProductoCollection)
+            if (email != "")
             {
-                if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
+                ViewBag.NoLogIn = 1;
+                var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+
+
+                TiendaViewModel tiendaViewModel = new TiendaViewModel();
+                tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+
+                tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+                tiendaViewModel.ProductosCarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+
+                tiendaViewModel.ProductosFavId = new List<int>();
+                tiendaViewModel.ProductosCarrito = new List<int>();
+
+                int idxAux = 0;
+                foreach (var item in tiendaViewModel.ProductoCollection)
                 {
-                    if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                    if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
                     {
-                        tiendaViewModel.ProductosFavId.Add(item.Id);
-                        idxAux++;
+                        if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                        {
+                            tiendaViewModel.ProductosFavId.Add(item.Id);
+
+                            idxAux++;
+                        }
+                        else
+                        {
+
+                            tiendaViewModel.ProductosFavId.Add(-1);
+                        }
                     }
                     else
                     {
-                        tiendaViewModel.ProductosFavId.Add(-12);
+                        tiendaViewModel.ProductosFavId.Add(-1);
                     }
+
                 }
-                else
+                int idxAux2 = 0;
+
+                foreach (var item in tiendaViewModel.ProductoCollection)
                 {
-                    tiendaViewModel.ProductosFavId.Add(-12);
+                    if (idxAux2 < tiendaViewModel.ProductosCarritoCollection.Count)
+                    {
+                        if (item.Id == tiendaViewModel.ProductosCarritoCollection[idxAux2].idProducto)
+                        {
+                            tiendaViewModel.ProductosCarrito.Add(item.Id);
+
+                            idxAux2++;
+                        }
+                        else
+                        {
+
+                            tiendaViewModel.ProductosCarrito.Add(-1);
+                        }
+                    }
+                    else
+                    {
+                        tiendaViewModel.ProductosCarrito.Add(-1);
+                    }
+
                 }
-                
-            }
 
 
                 ViewBag.pagina = pag;
                 return View(tiendaViewModel);
-           
-            
+            }
+            else
+            {
+                ViewBag.NoLogIn = 0;
+                TiendaViewModel tiendaViewModel = new TiendaViewModel();
+                tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+                ViewBag.pagina = pag;
+                return View(tiendaViewModel);
+            }
 
 
-         
+
+
+
         }
 
         [HttpPost]
         public ActionResult Tienda()
         {
-            
+
             return View();
         }
+
+
         public ActionResult MostrarTodos(int pagina = 1)
         {
 
@@ -765,8 +809,11 @@ namespace MerxProject.Controllers
                         }
                         else
                         {
-                            var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
-                            var Color = DbModel.Colores.FirstOrDefault(x => x.Id == inventario.Color.Id);
+                            Inventario inventario = new Inventario();
+                            inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
+                            //inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
+                            
+                            var Color = DbModel.Colores.FirstOrDefault(x => x.Id == 1);
                             agregarProductoCarrito.ColorNombre = Color.Nombre;
                             agregarProductoCarrito.CodigoColor = Color.Codigo;
                             agregarProductoCarrito.Cantidad = inventario.Cantidad;
