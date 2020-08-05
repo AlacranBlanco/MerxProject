@@ -616,7 +616,43 @@ namespace MerxProject.Controllers
                         PaginaActual = pagina,
                         Resultado = _Producto
                     };
-                    return View("ListaProducto", _PaginadorProductos);
+                    return View("ListaProducto", _PaginadorProducto);
+                }
+                else if (string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden) && !string.IsNullOrWhiteSpace(parameter))
+                {
+                    _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
+                                                     (x.Precio.ToString().Contains(parameter)) ||
+                                                     (x.Descripcion.Contains(parameter)) ||
+                                                     (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
+                                                     (x.CategoriaMueble.Nombre.Contains(parameter)))
+                                                     .Count();
+                    if (_TotalRegistros > 0)
+                    {
+
+
+                        // Obtenemos la 'página de registros' de la tabla Productos
+                        _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
+                                                         .Where(x => x.Nombre.Contains(parameter) ||
+                                                         (x.Precio.ToString().Contains(parameter)) ||
+                                                         (x.Descripcion.Contains(parameter)) ||
+                                                         (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
+                                                         (x.CategoriaMueble.Nombre.Contains(parameter)))
+                                                         .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                         .Take(_RegistrosPorPagina)
+                                                         .ToList();
+                        // Número total de páginas de la tabla Productos
+                        var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                        // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                        _PaginadorProducto = new PaginadorGenerico<Producto>()
+                        {
+                            RegistrosPorPagina = _RegistrosPorPagina,
+                            TotalRegistros = _TotalRegistros,
+                            TotalPaginas = _TotalPaginas,
+                            PaginaActual = pagina,
+                            Resultado = _Producto
+                        };
+                        return View("ListaProducto", _PaginadorProducto);
+                    }
                 }
                 else if(!string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden))
                 {
@@ -744,8 +780,8 @@ namespace MerxProject.Controllers
 
                             if (_TotalRegistros < 1)
                             {
-                                ViewBag.error = "No hay resultados";
-                                return View("ListaProducto");
+                                Session["res"] = "No hay resultados";
+                                return RedirectToAction("ListaProducto");
                             }
                         }
                         return View("ListaProducto", _PaginadorProducto);
@@ -865,11 +901,11 @@ namespace MerxProject.Controllers
 
                             if (_TotalRegistros < 1)
                             {
-                                ViewBag.error = "No hay resultados";
-                                return View("ListaProducto");
+                                Session["res"] = "No hay resultados";
+                                return RedirectToAction("ListaProducto");
                             }
                         }
-                        return View("ListaProducto", _PaginadorProductos);
+                        return View("ListaProducto", _PaginadorProducto);
 
                     case "CatMaterial":
                         if (string.IsNullOrWhiteSpace(parameter))
@@ -986,11 +1022,11 @@ namespace MerxProject.Controllers
 
                             if (_TotalRegistros < 1)
                             {
-                                ViewBag.error = "No hay resultados";
-                                return View("ListaProducto");
+                                Session["res"] = "No hay resultados";
+                                return RedirectToAction("ListaProducto");
                             }
                         }
-                        return View("ListaProducto", _PaginadorProductos);
+                        return View("ListaProducto", _PaginadorProducto);
 
                     case "CatMueble":
                         if (string.IsNullOrWhiteSpace(parameter))
@@ -1107,11 +1143,11 @@ namespace MerxProject.Controllers
 
                             if (_TotalRegistros < 1)
                             {
-                                ViewBag.error = "No hay resultados";
-                                return View("ListaProducto");
+                                Session["res"] = "No hay resultados";
+                                return RedirectToAction("ListaProducto");
                             }
                         }
-                        return View("ListaProducto", _PaginadorProductos);
+                        return View("ListaProducto", _PaginadorProducto);
                         
                     default:
                         ViewBag.error = "No hay resultados";
@@ -1132,7 +1168,7 @@ namespace MerxProject.Controllers
                             PaginaActual = pagina,
                             Resultado = _Producto
                         };
-                        return View("ListaProducto", _PaginadorProductos);
+                        return View("ListaProducto", _PaginadorProducto);
                 }
             }
         }

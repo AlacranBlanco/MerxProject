@@ -17,11 +17,17 @@ namespace MerxProject.Controllers
 
         private List<Herramienta> _Herramientas;
         private PaginadorGenerico<Herramienta> _PaginadorHerramientas;
+
         // GET: Herramienta
         [Authorize (Roles = "Administrador, Empleado")]
         public ActionResult ListaHerramienta(int pagina = 1)
         {
             int _TotalRegistros = 0;
+
+            if (User.IsInRole("Administrador"))
+            {
+                ViewBag.Admin = true;
+            }
 
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -43,12 +49,31 @@ namespace MerxProject.Controllers
                     Resultado = _Herramientas
                 };
 
+                var Reportes = new List<Tuple<int, int>>();
+                var ListaReportes = DbModel.HerramientaReportes.ToList();
+                
+                foreach (var item in _Herramientas)
+                {
+                    var romper = false;
+                    foreach (var rep in ListaReportes)
+                    {
+                        if (romper) break;
+                        if(item.Id == rep.herramienta.Id)
+                        {
+                            var count = DbModel.HerramientaReportes.Where(x => x.herramienta.Id == rep.herramienta.Id).Count();
+                            Reportes.Add(new Tuple<int, int>(item.Id, count));
+                            romper = true;
+                        }
+                        
+                    }
+                }
+                ViewBag.reportes = Reportes;
 
                 return View(_PaginadorHerramientas);
             }
         }
 
-        public ActionResult BuscarHerramieta(string param, int pagina = 1)
+        public ActionResult BuscarHerramienta(string param, int pagina = 1)
         {
             int _TotalRegistros = 0;
             if (!string.IsNullOrWhiteSpace(param))
@@ -79,8 +104,8 @@ namespace MerxProject.Controllers
                     };
                     if(_TotalRegistros < 1)
                     {
-                        ViewBag.error = "No hay resultados";
-                        return View("ListaHerramienta");
+                        Session["res"] = "No hay resultados";
+                        return RedirectToAction("ListaHerramienta");
                     }
                     else
                     {
@@ -90,8 +115,8 @@ namespace MerxProject.Controllers
             }
             else
             {
-                ViewBag.error = "No hay resultados";
-                return View("ListaHerramienta");
+                Session["res"] = "No hay resultados";
+                return RedirectToAction("ListaHerramienta");
             }
         }
 
@@ -167,7 +192,6 @@ namespace MerxProject.Controllers
                     var Detalle = DbModel.DetalleHerramientas.Where(x => x.Herramienta.Id == herramienta.Id).ToList();
 
                     res = null;
-                    bool Usando = false;
 
                     foreach (var item in Detalle)
                     {
@@ -175,17 +199,15 @@ namespace MerxProject.Controllers
                         {
                             res = ServicioHerramienta(herramienta.Id, "5");
                             Session["tipo"] = "Exito";
-                            break;
+                            Session["res"] = res;
+                            return RedirectToAction("ListaHerramienta");
                         }
                     }
-                    if (Usando)
-                    {
-                        res = "El usuario actual no tiene esta herramienta en uso";
-                    }
-                    
-
-                    Session["res"] = res;
+                    Session["res"] = "El usuario actual no tiene esta herramienta en uso";
                     return RedirectToAction("ListaHerramienta");
+
+
+
                 }
                 return RedirectToAction("ListaHerramienta");
             }
@@ -196,6 +218,7 @@ namespace MerxProject.Controllers
         {
             string resultado;
             
+
 
             using (var DbModel = new ApplicationDbContext())
             {
@@ -323,7 +346,6 @@ namespace MerxProject.Controllers
                 using (ApplicationDbContext DbModel = new ApplicationDbContext())
                 {
                     var Herramientas = DbModel.Herramientas.ToList();
-                    DetalleHerramienta detalle = new DetalleHerramienta();
                     var Detalles = DbModel.DetalleHerramientas.Where(x => x.Herramienta.Id == id).ToList();
 
                     if (Detalles.Count() > 0)
@@ -354,6 +376,7 @@ namespace MerxProject.Controllers
                     {
                         string resultado = "Nadie está usando esta herramienta";
                         Session["res"] = resultado;
+                        ViewBag.reload = true;
                         return RedirectToAction("ListaHerramienta");
                     }
                 }
@@ -402,7 +425,7 @@ namespace MerxProject.Controllers
                             DbModel.Herramientas.AddOrUpdate(herramienta);
                             DbModel.DetalleHerramientas.Remove(detalleHerramienta);
                             DbModel.SaveChanges();
-                            return "Exito";
+                            return "Herramienta devuelta";
                         }
                     }
                     catch (Exception ex)
@@ -418,5 +441,141 @@ namespace MerxProject.Controllers
             }
         }
 
+        public ActionResult reportarHerramienta(int Id, string accion)
+        {
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                var usuario = DbModel.Usuarios.Where(x => x.User == User.Identity.Name).FirstOrDefault();
+                var empleado = DbModel.Empleados.Where(x => x.Usuarioss.idUsuario == usuario.idUsuario).FirstOrDefault();
+                var persona = DbModel.Personas.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
+
+                try
+                {
+                    var herramienta = DbModel.Herramientas.Find(Id);
+
+                    if (accion == "6")
+                    {
+                        var reportes = new HerramientaReporte()
+                        {
+                            DateTime = DateTime.Now,
+                            Empleado = persona.Nombre,
+                            herramienta = herramienta
+                        };
+
+                        DbModel.HerramientaReportes.Add(reportes);
+                        var i = DbModel.DetalleHerramientas.Where(x => x.Herramienta.Id == herramienta.Id && x.Empleado == persona.Nombre).Count();
+                        if (i > 0)
+                        {
+                            if (!herramienta.Reportada)
+                            {
+                                herramienta.Reportada = true;
+                                DbModel.Herramientas.AddOrUpdate(herramienta);
+                            }
+                            var Detalle = DbModel.DetalleHerramientas.Where(x => x.Herramienta.Id == herramienta.Id && x.Empleado == persona.Nombre).FirstOrDefault();
+                            DbModel.DetalleHerramientas.Remove(Detalle);
+                            DbModel.SaveChanges();
+                            Session["res"] = "Reporte añadido";
+                            Session["tipo"] = "Exito";
+                            RedirectToAction("ListaHerramienta");
+                        }
+                        else
+                        {
+                            Session["res"] = "No se tiene una herramienta de este tipo en uso";
+                            RedirectToAction("ListaHerramienta");
+                        }
+                    }
+                    else if (accion == "7")
+                    {
+                        var Herramientas = DbModel.Herramientas.ToList();
+                        var reportes = DbModel.HerramientaReportes.Where(x => x.herramienta.Id == Id).ToList();
+
+                        if (reportes.Count() > 0)
+                        {
+                            ViewBag.Herramienta = reportes;
+                            return View(reportes);
+                        }
+                        else
+                        {
+                            string resultado = "Nadie ha reportado esta herramienta";
+                            Session["res"] = resultado;
+                            RedirectToAction("ListaHerramienta");
+                        }
+                    }
+                    else
+                    {
+                        Session["res"] = "Usuario no encontrado";
+                        RedirectToAction("ListaHerramienta");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Session["res"] = ex.Message;
+                    return RedirectToAction("ListaHerramienta");
+                }
+                return RedirectToAction("ListaHerramienta");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult reportarHerramienta(int reporte, string accion, int Id)
+        {
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                var usuario = DbModel.Usuarios.Where(x => x.User == User.Identity.Name).FirstOrDefault();
+                var empleado = DbModel.Empleados.Where(x => x.Usuarioss.idUsuario == usuario.idUsuario).FirstOrDefault();
+                var persona = DbModel.Personas.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
+
+                var herramientaReporte = DbModel.HerramientaReportes.Find(reporte);
+
+
+                try
+                {
+                    var herramienta = DbModel.Herramientas.Find(Id);
+                    var Reportes = DbModel.HerramientaReportes.Where(x => x.herramienta.Id == Id).Count();
+                    if (Reportes > 1)
+                    {
+                        herramienta.Reportada = true;
+                    }
+                    else
+                    {
+                        herramienta.Reportada = false;
+                    }
+
+                    if (accion == "8")
+                    {
+                        herramienta.EnUso -= 1;
+                        DbModel.Herramientas.AddOrUpdate(herramienta);
+                        DbModel.HerramientaReportes.Attach(herramientaReporte);
+                        DbModel.HerramientaReportes.Remove(herramientaReporte);
+                        DbModel.SaveChanges();
+                        Session["res"] = "Reporte eliminado";
+                        Session["tipo"] = "Exito";
+                        return RedirectToAction("ListaHerramienta");
+                    }
+                    else if (accion == "9")
+                    {
+                        herramienta.EnUso -= 1;
+                        herramienta.Cantidad -= 1;
+                        DbModel.HerramientaReportes.Attach(herramientaReporte);
+                        DbModel.HerramientaReportes.Remove(herramientaReporte);
+                        DbModel.Herramientas.AddOrUpdate(herramienta);
+                        DbModel.SaveChanges();
+                        Session["res"] = "Reporte solucionado";
+                        Session["tipo"] = "Exito";
+                        return RedirectToAction("ListaHerramienta");
+                    }
+                    else
+                    {
+                        Session["res"] = "Error";
+                        return RedirectToAction("ListaHerramienta");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Session["res"] = ex.Message;
+                    return RedirectToAction("ListaHerramienta");
+                }
+            }
+        }
     }
 }

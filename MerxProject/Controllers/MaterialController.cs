@@ -242,7 +242,7 @@ namespace MerxProject.Controllers
                 if (_TotalRegistros < 1)
                 {
                     Session["res"] = ("No hay resultados");
-                    return View("ListaMaterial");
+                    return RedirectToAction("ListaMaterial");
                 }
                 else
                 {

@@ -371,7 +371,7 @@ namespace MerxProject.Controllers
                     if (_TotalRegistros < 1)
                     {
                         ViewBag.error = "No hay resultados";
-                        return View("ListaEmpleado");
+                        return RedirectToAction("ListaEmpleado");
                     }
                     else
                     {

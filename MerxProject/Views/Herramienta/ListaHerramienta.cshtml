@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Lista de herramientas";
-
+    
 }
 <link href="~/Content/assets/css/main.css" rel="stylesheet" />
 <h2>Lista de Herramientas</h2>
@@ -104,28 +104,50 @@
         <th>
             Imagen
         </th>
+        <th>
+            Estado
+        </th>
     </tr>
     @foreach (var item in Model.Resultado)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Precio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cantidad)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EnUso)
+        </td>
+        <td>
+            <img src="~/Content/assets/img/Herramienta/@item.Imagen" width="100px" />
+        </td>
+        <td>
+            @if (item.EnUso > 0)
+            {
+                using (Html.BeginForm("reportarHerramienta", "Herramienta", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="6" />
+                    <input type="submit" name="name" value="Reportar herramienta" class="btn btn-primary btn-sm" />
+                }
+            }
+            @if (ViewBag.admin != null)
+            {
+                if (ViewBag.admin && item.Reportada)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalReport('@Url.Action("reportarHerramienta", "Herramienta", new { id = item.Id, accion = "7" })')">Ver reportes</button>
+                }
+            }
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EnUso)
-            </td>
-            <td>
-                <img src="~/Content/assets/img/Herramienta/@item.Imagen" width="100px" />
-            </td>
+
             <td>
                 @if (item.EnUso < item.Cantidad)
                 {
@@ -146,8 +168,36 @@
             <td>
                 @if (item.EnUso > 0)
                 {
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                    if (ViewBag.reportes != null)
+                    {
+                        var reportes = new List<Tuple<int, int>>();
+                        reportes = ViewBag.reportes;
+                        if (reportes.Any(x=>x.Item1 == item.Id))
+                        {
+                            foreach (var rep in reportes)
+                            {
+                                if (rep.Item1 == item.Id)
+                                {
+                                    if (rep.Item2 != item.EnUso)
+                                    {
+                                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                    }
+
                 }
+            </td>
+            <td>
                 <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "2" })')">Editar herramienta</button>
                 <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
@@ -206,13 +256,26 @@ else
     @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalReport" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalShow" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@if (ViewBag.reload != null)
+{
+    if (ViewBag.reload)
+    {
+        <script>
+            $(document).ready(function () {
+                Location.reload(true);
+            })
+        </script>
+    }
+}
 <script type="text/javascript">
+
 
     $(document).ready(function () {
         $('#Nuevo').click(function () {
@@ -223,6 +286,13 @@ else
             });
         });
     });
+
+    function createModalReport(url) {
+        $.get(url, function (data) {
+            $("#idModalReport").html(data);
+            $("#idModalReport").modal('show');
+        });
+    }
 
     function createModalShow(url) {
         $.get(url, function (data) {

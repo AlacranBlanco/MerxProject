@@ -22,5 +22,6 @@ namespace MerxProject.Models
         public decimal Precio { get; set; }
         public virtual List<DetalleCompra> DetalleCompras { get; set; }
         public int EnUso { get; set; }
+        public bool Reportada { get; set; }
     }
 }

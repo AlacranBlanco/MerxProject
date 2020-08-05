@@ -241,7 +241,7 @@ namespace MerxProject.Controllers
                 if (_TotalRegistros < 1)
                 {
                     ViewBag.alert = ("No hay resultados");
-                    return View("ListaMueble");
+                    return RedirectToAction("ListaMueble");
                 }
                 else
                 {

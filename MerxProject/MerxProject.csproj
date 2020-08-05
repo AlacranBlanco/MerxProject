@@ -248,6 +248,7 @@
     <Compile Include="Models\DetalleHerramienta.cs" />
     <Compile Include="Models\Herramienta.cs" />
     <Compile Include="Models\Color.cs" />
+    <Compile Include="Models\HerramientaReporte.cs" />
     <Compile Include="Models\Inventario.cs" />
     <Compile Include="Models\CarritoCompras\CarritoCompra.cs" />
     <Compile Include="Models\Direccion\Direcciones.cs" />
@@ -749,6 +750,7 @@
     <Content Include="Views\Herramienta\popUpHerramienta.cshtml" />
     <Content Include="Views\Herramienta\VerHerramienta.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
+    <Content Include="Views\Herramienta\reportarHerramienta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
