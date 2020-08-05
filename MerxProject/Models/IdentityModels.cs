@@ -55,6 +55,8 @@ namespace MerxProject.Models
         public DbSet<Compra> Compras { get; set; }
         public DbSet<DetalleCompra> DetalleCompra { get; set; }
         public DbSet<Herramienta> Herramientas { get; set; }
+        public DbSet<DetalleHerramienta> DetalleHerramientas { get; set; }
+        public DbSet<HerramientaReporte> HerramientaReportes { get; set; }
         public DbSet<Direcciones> Direcciones { get; set; }
 
         public DbSet<Paises> Paises { get; set; }

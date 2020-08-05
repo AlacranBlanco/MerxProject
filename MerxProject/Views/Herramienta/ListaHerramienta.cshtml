@@ -1,11 +1,11 @@
-﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Producto>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Herramienta>
 
 @{
-    ViewBag.Title = "Lista Mueble";
-
+    ViewBag.Title = "Lista de herramientas";
+    
 }
 <link href="~/Content/assets/css/main.css" rel="stylesheet" />
-<h2>Lista de productos</h2>
+<h2>Lista de Herramientas</h2>
 @if (Session["res"] != null)
 {
     string color;
@@ -63,28 +63,15 @@
     </div>
 }
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpProductos", "Producto", new { applicationUser = "", accion = "1" })'></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpHerramienta", "Herramienta", new { applicationUser = "", accion = "1" })'></div>
 <br />
-@using (Html.BeginForm("BuscarLista", "Producto", FormMethod.Post))
+@using (Html.BeginForm("BuscarHerramienta", "Herramienta", FormMethod.Post))
 {
     <div class="container">
         <div class="row">
             <div class="col-xs-8">
                 <div class="input-group" style="display: inline; vertical-align: top; line-height: 28px;">
-                    <select id="orden" name="orden" class="form-control">
-                        <option value="">Orden</option>
-                        <option value="Asc">Ascendente</option>
-                        <option value="Desc">Descendente</option>
-                    </select>
-                    <select id="categoria" name="categoria" class="form-control">
-                        <option value="">Categoria</option>
-                        <option value="Nombre">Nombre</option>
-                        <option value="Precio">Precio</option>
-                        <option value="CatMueble">Categoria Mueble</option>
-                        <option value="CatMaterial">Categoría Material</option>
-                    </select>
-                    <input type="hidden" name="search_param" value="all" id="search_param">
-                    <input type="text" class="form-control" name="parameter" placeholder="Search term...">
+                    <input type="text" class="form-control" name="param" placeholder="Search term...">
                     <input type="submit" name="Subir" value="Buscar" class="btn btn-primary" />
 
                 </div>
@@ -103,49 +90,116 @@
             Nombre
         </th>
         <th>
-            Descripción        
+            Descripción
         </th>
         <th>
             Precio
         </th>
         <th>
-            Tipo de mueble
+            Cantidad
         </th>
         <th>
-            Tipo de material
+            En uso
         </th>
         <th>
             Imagen
         </th>
         <th>
-            Cantidad general
+            Estado
         </th>
     </tr>
     @foreach (var item in Model.Resultado)
     {
-        <tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Precio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cantidad)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EnUso)
+        </td>
+        <td>
+            <img src="~/Content/assets/img/Herramienta/@item.Imagen" width="100px" />
+        </td>
+        <td>
+            @if (item.EnUso > 0)
+            {
+                using (Html.BeginForm("reportarHerramienta", "Herramienta", FormMethod.Get))
+                {
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="6" />
+                    <input type="submit" name="name" value="Reportar herramienta" class="btn btn-primary btn-sm" />
+                }
+            }
+            @if (ViewBag.admin != null)
+            {
+                if (ViewBag.admin && item.Reportada)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalReport('@Url.Action("reportarHerramienta", "Herramienta", new { id = item.Id, accion = "7" })')">Ver reportes</button>
+                }
+            }
+            </td>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+                @if (item.EnUso < item.Cantidad)
+                {
+                    using (Html.BeginForm("popUpHerramienta", "Herramienta", FormMethod.Get))
+                    {
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <input type="hidden" name="accion" value="4" />
+                        <input type="submit" name="name" value="Tomar herramienta" class="btn btn-primary btn-sm" />
+                    }
+                }
+                @using (Html.BeginForm("popUpHerramienta", "Herramienta", FormMethod.Get))
+                {
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <input type="hidden" name="accion" value="5" />
+                    <input type="submit" name="name" value="Devolver herramienta" class="btn btn-primary btn-sm" />
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
+                @if (item.EnUso > 0)
+                {
+                    if (ViewBag.reportes != null)
+                    {
+                        var reportes = new List<Tuple<int, int>>();
+                        reportes = ViewBag.reportes;
+                        if (reportes.Any(x=>x.Item1 == item.Id))
+                        {
+                            foreach (var rep in reportes)
+                            {
+                                if (rep.Item1 == item.Id)
+                                {
+                                    if (rep.Item2 != item.EnUso)
+                                    {
+                                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                    }
+
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriaMueble.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriaMaterial.Nombre)
-            </td>
-            <td>
-                <img src="~/Content/assets/img/Productos/@item.Imagen" width="100px" />
-            </td>
-            <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="color_@item.Id" onclick="createModalColor('@Url.Action("popUpProductosColor", "Producto" , new {id=item.Id, accion = "0"})')">Inventario</button>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "2" })')">Editar Producto</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "2" })')">Editar herramienta</button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
 
@@ -202,13 +256,26 @@ else
     @Html.ActionLink(">>", "ListaProducto", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalColor" tabindex="-1"></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalReport" tabindex="-1"></div>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalShow" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+@if (ViewBag.reload != null)
+{
+    if (ViewBag.reload)
+    {
+        <script>
+            $(document).ready(function () {
+                Location.reload(true);
+            })
+        </script>
+    }
+}
 <script type="text/javascript">
+
 
     $(document).ready(function () {
         $('#Nuevo').click(function () {
@@ -220,10 +287,17 @@ else
         });
     });
 
-    function createModalColor(url) {
+    function createModalReport(url) {
         $.get(url, function (data) {
-            $("#idModalColor").html(data);
-            $("#idModalColor").modal('show');
+            $("#idModalReport").html(data);
+            $("#idModalReport").modal('show');
+        });
+    }
+
+    function createModalShow(url) {
+        $.get(url, function (data) {
+            $("#idModalShow").html(data);
+            $("#idModalShow").modal('show');
         });
     }
 

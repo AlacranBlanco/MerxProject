@@ -228,8 +228,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ComprasController.cs" />
     <Compile Include="Controllers\EmpleadoController.cs" />
+    <Compile Include="Controllers\HerramientaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -249,8 +251,10 @@
     <Compile Include="Models\Compra.cs" />
     <Compile Include="Models\Cupones\Cupon.cs" />
     <Compile Include="Models\DetalleCompra.cs" />
+    <Compile Include="Models\DetalleHerramienta.cs" />
     <Compile Include="Models\Herramienta.cs" />
     <Compile Include="Models\Color.cs" />
+    <Compile Include="Models\HerramientaReporte.cs" />
     <Compile Include="Models\Inventario.cs" />
     <Compile Include="Models\CarritoCompras\CarritoCompra.cs" />
     <Compile Include="Models\Direccion\Direcciones.cs" />
@@ -761,6 +765,11 @@
     <Content Include="Views\Tienda\PagoConPaypal.cshtml" />
     <Content Include="Views\Tienda\PagoProducto.cshtml" />
     <Content Include="Views\Tienda\Success.cshtml" />
+    <Content Include="Views\Herramienta\ListaHerramienta.cshtml" />
+    <Content Include="Views\Herramienta\popUpHerramienta.cshtml" />
+    <Content Include="Views\Herramienta\VerHerramienta.cshtml" />
+    <Content Include="Views\Admin\Dashboard.cshtml" />
+    <Content Include="Views\Herramienta\reportarHerramienta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

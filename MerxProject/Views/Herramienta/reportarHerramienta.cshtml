@@ -1,0 +1,73 @@
+﻿@using MerxProject.Models;
+@{
+    Layout = null;
+    var Tiempo = new List<Tuple<int, TimeSpan>>();
+    var Herramienta = new List<HerramientaReporte>();
+    Tiempo = ViewBag.Tiempo;
+    Herramienta = ViewBag.Herramienta;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal" onclick="location.reload(true)">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+
+                            <tr>
+                                <th>
+                                    Empleado
+                                </th>
+                                <th>
+                                    Fecha de reporte
+                                </th>
+                                <th>
+                                    Acciones
+                                </th>
+                            </tr>
+                            @foreach (var item in Herramienta)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Empleado)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateTime)
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("reportarHerramienta", "Herramienta", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="Id" value="@item.herramienta.Id" />
+                                            <input type="hidden" name="Reporte" value="@item.Id" />
+                                            <input type="hidden" name="accion" value="8" />
+                                            <input type="submit" name="name" value="Descartar reporte" />
+                                        }
+                                    </td>
+                                    <td>
+                                        @using (Html.BeginForm("reportarHerramienta", "Herramienta", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="Id" value="@item.herramienta.Id" />
+                                            <input type="hidden" name="Reporte" value="@item.Id" />
+                                            <input type="hidden" name="accion" value="9" />
+                                            <input type="submit" name="name" value="Descartar herramienta" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

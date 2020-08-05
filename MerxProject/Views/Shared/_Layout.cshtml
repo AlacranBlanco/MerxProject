@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -23,72 +25,93 @@
     <meta name="msapplication-TileImage" content="../Content/assets/ico/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    <title>@ViewBag.Title - Menú administrador</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <div class="logo mr-auto">
-                    <a href="../Home/Index"><img src="~/Content/assets/img/MerxWhite.png" alt="" class="img-fluidMerx" max-width="100px" height="40" style="padding-top:5px; padding-right:20px; padding-left:5px;"></a>
+
+    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @style = "display:inline;" }))
+
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top" style="display:inline-block">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="logo mr-auto">
+                        <a href="../Home/Index"><img src="~/Content/assets/img/MerxWhite.png" alt="" class="img-fluidMerx" max-width="100px" height="40" style="padding-top:5px; padding-right:20px; padding-left:5px;"></a>
+                    </div>
+
                 </div>
+
+                <div class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav" style="white-space:nowrap;">
+                        <li>@Html.ActionLink("Dashboard", "Dashboard", "Admin")</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar Productos</a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Procesos", "ListaProcesos", "Proceso")</li>
+                                <li><a href="../Producto/ListaProducto">Productos</a></li>
+                                <li><a href="../Mueble/ListaMueble">Categorias muebles</a></li>
+                                <li><a href="#">Productos de clientes</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar recursos</a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Proveedores", "ListaProveedor", "Proveedor")</li>
+                                <li>@Html.ActionLink("Materiales", "ListaMaterial", "Material")</li>
+                                <li>@Html.ActionLink("Herramientas", "ListaHerramienta", "Herramienta")</li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Usuarios</a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Clientes", "listaWey", "Account")</li>
+                                <li>@Html.ActionLink("Empleados", "ListaEmpleado", "Empleado")</li>
+                            </ul>
+                        </li>
+                        @if (Request.IsAuthenticated)
+                        {
+                            string Nombre = "Usuario";
+                            if (Session["user"] != null)
+                            {
+                                Nombre = Session["user"].ToString();
+                            }
+                            <li>
+                                @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                            </li>
+                            <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                            <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                        }
+                    </ul>
+                    
+                </div>
+
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar Productos</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="../Producto/ListaProducto">Productos</a></li>
-                            <li><a href="../Mueble/ListaMueble">Categorias muebles</a></li>
-                            <li><a href="#">Productos de clientes</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar materia prima</a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Proveedores", "ListaProveedor", "Proveedor")</li>
-                            <li>@Html.ActionLink("Materiales", "ListaMaterial", "Material")</li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Administrar procesos</a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Herramientas", "ListaHerramienta", "Herramienta")</li>
-                            <li>@Html.ActionLink("Procesos", "ListaProcesos", "Proceso")</li>
-                        </ul>
-                    </li>
-                    <li>@Html.ActionLink("Clientes", "listaWey", "Account")</li>
-                    <li>@Html.ActionLink("Empleados", "ListaEmpleado", "Empleado")</li>
-
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
-        </footer>
-    </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-    <script type="text/javascript">
-  
-    </script>
-</body>
+    }
+        <div class="container body-content">
+            <br />
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year -  Merx &copy; </p>
+            </footer>
+        </div>
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+    </body>
 </html>
 
