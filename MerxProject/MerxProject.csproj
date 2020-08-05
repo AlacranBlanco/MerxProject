@@ -79,6 +79,9 @@
     <Reference Include="NinjaNye.SearchExtensions, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NinjaNye.SearchExtensions.3.0.1\lib\net45\NinjaNye.SearchExtensions.dll</HintPath>
     </Reference>
+    <Reference Include="PayPal, Version=1.9.1.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\PayPal.1.9.1\lib\net451\PayPal.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -235,13 +238,16 @@
     <Compile Include="Controllers\ProcesoController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Controllers\ProveedorController.cs" />
+    <Compile Include="Controllers\TiendaController.cs" />
     <Compile Include="Facebook\FacebookBackChannelHandler.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CarritoCompras\CarritoComprasViewModel.cs" />
     <Compile Include="Models\Compra.cs" />
+    <Compile Include="Models\Cupones\Cupon.cs" />
     <Compile Include="Models\DetalleCompra.cs" />
     <Compile Include="Models\Herramienta.cs" />
     <Compile Include="Models\Color.cs" />
@@ -251,7 +257,12 @@
     <Compile Include="Models\Direccion\Paises.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Order\Orders.cs" />
+    <Compile Include="Models\Order\OrdersDetails.cs" />
     <Compile Include="Models\PaginadorGenerico.cs" />
+    <Compile Include="Models\PagoViewModels\PagoViewModel.cs" />
+    <Compile Include="Models\PaypalConfiguration.cs" />
+    <Compile Include="Models\PaypalLogger.cs" />
     <Compile Include="Models\Persona\Persona.cs" />
     <Compile Include="Models\Proceso.cs" />
     <Compile Include="Models\ProductosFavorito\ProductosFavoritos.cs" />
@@ -745,6 +756,11 @@
     <Content Include="Views\Compras\popUpDetalleCompra.cshtml" />
     <Content Include="Views\Compras\_popUpDetalleCompra.cshtml" />
     <Content Include="Views\Compras\ListaDetalleCompra.cshtml" />
+    <Content Include="Views\Tienda\Failure.cshtml" />
+    <Content Include="Views\Tienda\IndexTienda.cshtml" />
+    <Content Include="Views\Tienda\PagoConPaypal.cshtml" />
+    <Content Include="Views\Tienda\PagoProducto.cshtml" />
+    <Content Include="Views\Tienda\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

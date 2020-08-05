@@ -18,7 +18,7 @@ namespace MerxProject.Models.Direccion
         [Required]
         public string CodigoPostal { get; set; }
         [Required]
-        public string Estado { get; set;  }
+        public string Estado { get; set; }
         [Required]
         public string Ciudad { get; set; }
         [Required]

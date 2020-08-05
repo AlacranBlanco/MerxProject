@@ -2,119 +2,331 @@
 
 @{
     ViewBag.Title = "Tienda Virtual";
-    Layout = "~/Views/Shared/_LayoutProducto.cshtml";
+    //Layout = "~/Views/Shared/_LayoutProducto.cshtml";
+    Layout = null;
     int radio_Id = 0;
+    int h = 0;
+    int idAux = 0, idAux2 = 1;
 }
 
 <title>Muebleria Merx - Tienda Virtual</title>
+<script src="~/Content/SweetAlert/sweetalert2.all.min.js"></script>
+
+@if (ViewBag.outStock == 1)
+{
+    <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire(
+                'Espera!',
+                'El producto ya no tiene más existencias por el momento.',
+                'warning'
+            )
+        }, false);
 
 
-<!-- ======= Hero Section ======= -->
-<section id="hero-store" class="d-flex align-items-center justify-content-center">
-    <div class="container text-center position-relative align-content-center justify-content-center " data-aos="fade-in" data-aos-delay="100">
-        <div class="container text-center position-relative" data-aos="fade-in" data-aos-delay="100">
-            <h1>Tienda Merx</h1>
+
+
+    </script>
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Little Closet template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="~/Content/ProductAssets/styles/bootstrap-4.1.2/bootstrap.min.css">
+    <link href="~/Content/ProductAssets/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ProductAssets/plugins/flexslider/flexslider.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ProductAssets/styles/productChido.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/ProductAssets/styles/product_responsive.css">
+</head>
+<body>
+
+    <!-- Menu -->
+
+    <div class="menu">
+
+        <!-- Search -->
+        <div class="menu_search">
+            <form action="#" id="menu_search_form" class="menu_search_form">
+                <input type="text" class="search_input" placeholder="Search Item" required="required">
+                <button class="menu_search_button"><img src="~/Content/ProductAssets/images/search.png" alt=""></button>
+            </form>
         </div>
-    </div>
-</section><!-- End Hero -->
-<!-- ======= Clients Section ======= -->
-<section id="" class="clients">
-    <div class="container">
-        <div class="row">
-            <div class="breadcrumb">
-                <a href="@Url.Action("Index", "Home")" class="breadcrumb-item">Inicio</a>
-                <a href="#" class="breadcrumb-item">Tienda Virtual</a>
+        <!-- Navigation -->
+        <div class="menu_nav">
+            <ul>
+                <li><a href="#">Women</a></li>
+                <li><a href="#">Men</a></li>
+                <li><a href="#">Kids</a></li>
+                <li><a href="#">Home Deco</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <!-- Contact Info -->
+        <div class="menu_contact">
+            <div class="menu_phone d-flex flex-row align-items-center justify-content-start">
+                <div><div><img src="~/Content/ProductAssets/images/phone.svg" alt="https://www.flaticon.com/authors/freepik"></div></div>
+                <div>+1 912-252-7350</div>
+            </div>
+            <div class="menu_social">
+                <ul class="menu_social_list d-flex flex-row align-items-start justify-content-start">
+                    <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                </ul>
             </div>
         </div>
     </div>
-</section><!-- End Clients Section -->
-<div class="super_container">
-    <div class="super_container_inner">
-        <div class="super_overlay"></div>
-        <!-- Products -->
 
-        <div class="product">
-            <div class="container">
-                <div class="row">
+    <div class="super_container">
 
-                    <!-- Product Image -->
-                    <div class="col-lg-6">
-                        <div class="product_image_slider_container">
-                            <div id="slider" class="flexslider">
-                                <ul class="slides">
-                                    <li>
-                                        <img src="@Url.Content(Model.Producto.Imagen)" />
-                                    </li>
-                                </ul>
-                            </div>
-                          
+        <!-- Header -->
+
+        <header class="header">
+            <div class="header_overlay"></div>
+            <div class="header_content d-flex flex-row align-items-center justify-content-start">
+                <div class="logo">
+                    <a href="#">
+                        <div class="d-flex flex-row align-items-center justify-content-start">
+                            <div><img src="~/Content/ProductAssets/images/logo_1.png" alt=""></div>
+                            <div>Little Closet</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="hamburger"><i class="fa fa-bars" aria-hidden="true"></i></div>
+                <nav class="main_nav">
+                    <ul class="d-flex flex-row align-items-start justify-content-start">
+                        <li><a href="#">Women</a></li>
+                        <li><a href="#">Men</a></li>
+                        <li><a href="#">Kids</a></li>
+                        <li><a href="#">Home Deco</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header_right d-flex flex-row align-items-center justify-content-start ml-auto">
+                    <!-- Search -->
+                    <div class="header_search">
+                        <form action="#" id="header_search_form">
+                            <input type="text" class="search_input" placeholder="Search Item" required="required">
+                            <button class="header_search_button"><img src="~/Content/ProductAssets/images/search.png" alt=""></button>
+                        </form>
+                    </div>
+                    <!-- User -->
+                    <div class="user"><a href="#"><div><img src="~/Content/ProductAssets/images/user.svg" alt="https://www.flaticon.com/authors/freepik"><div>1</div></div></a></div>
+                    <!-- Cart -->
+                    <div class="cart"><a href="cart.html"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
+                    <!-- Phone -->
+                    <div class="header_phone d-flex flex-row align-items-center justify-content-start">
+                        <div><div><img src="~/Content/ProductAssets/images/phone.svg" alt="https://www.flaticon.com/authors/freepik"></div></div>
+                        <div>+1 912-252-7350</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="super_container_inner">
+            <div class="super_overlay"></div>
+
+            <!-- Home -->
+
+            <div class="home">
+                <div class="home_container d-flex flex-column align-items-center justify-content-end">
+                    <div class="home_content text-center">
+                        <div class="home_title">Producto</div>
+                        <div class="breadcrumbs d-flex flex-column align-items-center justify-content-center">
+                            <ul class="d-flex flex-row align-items-start justify-content-start text-center">
+                                <li><a href="#">Home</a></li>
+                                <li><a href="category.html">Tienda</a></li>
+                                <li>@Model.Producto.Nombre</li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Product Info -->
-                    <div class="col-lg-6 product_col">
-                        <div class="product_info">
-                            <div class="product_name">@Model.Producto.Nombre</div>
-                            <div class="product_category">In <a href="category.html">Category</a></div>
-                            <div class="product_price">$@Model.Producto.Precio</div>
-                            <div class="product_size">
-                                <div class="product_size_title">Selecciona el Color</div>
-                                <ul class="d-flex flex-row align-items-start justify-content-start">
+            <!-- Product -->
 
-                                    @for (int i = 0; i < Model.InventarioCollection.Count; i++)
-                                    {
-                                        radio_Id++;
-                                        if (Model.InventarioCollection[i].Cantidad == 0)
+            <div class="product">
+                <div class="container">
+                    <div class="row">
+
+                        <!-- Product Image -->
+                        <div class="col-lg-6">
+
+                            <img id="background-image" src="@Url.Content(Model.Producto.Imagen)" />
+
+
+
+                            @*// Mesa*@
+                            @*<svg version="1.1" id="product-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                                 width="700px" height="400px" viewBox="0 0 700 400" style="enable-background:new 0 0 700 400;" xml:space="preserve">
+                                <polygon id="product-shape" points="14.796,59.241 14.796,68.963 30.537,84.704
+                                    30.537,270.814 33.315,275.444 51.371,275.444 56.926,132.389 66.185,143.037 72.204,347.204 74.519,352.296 95.815,352.296
+                                    101.833,149.056 528.223,118.5 528.223,218.037 537.019,222.667 550.907,222.204 553.686,116.185 633.314,109.704 638.407,275.444
+                                    648.593,279.148 665.723,278.686 670.352,77.296 688.407,75.444 688.407,66.185 552.296,31.926 " />
+
+                                </svg>*@
+
+
+                            @*Sofa*@
+                            <svg version="1.1" id="product-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                 width="700px" height="400px" viewBox="0 0 700 400" style="enable-background:new 0 0 700 400;" xml:space="preserve">
+<path id="product-shape" d="M51.833,311.093l-1.852-34.723v-13.426v-27.777V200l-1.852-30.574
+	v-23.148l3.704-5.556l6.944-2.778h4.167h1.852l38.426-5.092V99.981l3.704-4.167h21.296v-8.333V77.296V66.648v-7.87V47.667
+	l1.852-6.944v-3.704h7.87c0,0,8.333,2.315,10.185,1.852s19.445,0.463,19.445,0.463l37.5,2.314c0,0,16.204,0,19.907,0
+	s24.538-1.389,26.389-1.389s27.314-3.241,27.314-3.241s26.852-2.778,28.704-2.778s14.352-1.852,14.352-1.852h12.5h8.796l3.241,6.482
+	v8.333v10.185v7.408v9.722v12.037L350,93.963l3.686-0.926V52.296v-3.704v-7.408v-4.629l5.556-0.463h5.092l6.944,1.852h23.148
+	l34.723,0.463l25,2.315h13.426l6.481,1.852l5.093,1.389l2.314-1.389l10.186-0.463h53.24h14.353l5.555-2.778h3.704l2.777,0.463
+	l1.853,3.241v4.167v15.278V81v9.259v2.315l18.981,0.463l4.166,0.926v3.241v6.481v11.574v11.111l39.815,2.314l7.87,4.167l3.704,2.777
+	l2.777,6.019v6.019v11.111v41.268V301.37v5.556h-4.63h-35.647l-520.833,4.167H51.833z" />
+
+</svg>
+
+
+
+
+
+                        </div>
+
+
+                        <!-- Product Info -->
+                        <div class="col-lg-6 product_col">
+                            <div class="product_info">
+                                <div class="product_name">@Model.Producto.Nombre</div>
+                                <div class="product_category">In <a href="category.html">Category</a></div>
+                                <div class="product_price">$@Model.Producto.Precio</div>
+                                <div class="product_size">
+                                    <div class="product_size_title">Select Color</div>
+                                    <ul class="d-flex flex-row align-items-start justify-content-start">
+                                        @for (int i = 1; i < Model.InventarioCollection.Count; i++)
                                         {
-                                            <li>
-                                                <input type="radio" id=@radio_Id disabled name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
-                                                @*<label for=@radio_Id ></label>*@
-                                            </li>
+                                            radio_Id++;
+                                            if (Model.InventarioCollection[i].Cantidad >= 1)
+                                            {
+                                                <li>
+                                                    <input type="radio" id="hue" name="option" value="@Model.ColorsCollection[i].Codigo" class="regular_radio" onClick="changeSrc()" style="background: @Model.ColorsCollection[i].Codigo">
+                                                    @*<label for=@radio_Id></label>*@
+                                                </li>
+
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <input type="radio" id=@radio_Id name="option" disabled value="@Model.ColorsCollection[i].Codigo" onClick="changeSrc()" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
+                                                    @*<label for=@radio_Id ></label>*@
+                                                </li>
+                                            }
                                         }
-                                        else
+                                    </ul>
+                                </div>
+                                <div class="product_text">
+                                    <p>@Model.Producto.Descripcion</p>
+                                </div>
+                                <div class="product_buttons">
+                                    <div class="text-right d-flex flex-row align-items-start justify-content-start">
+
+                                        @if (ViewBag.NoLogIn == 0)
                                         {
-                                            <li>
-                                                <input type="radio" id=@radio_Id name="product_radio" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
-                                                @*<label for=@radio_Id></label>*@
-                                            </li>
+                                            <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
+
+                                                <a id="favo" name=@idAux>
+                                                    <div>
+                                                        <div>
+                                                            <img src="~/Content/ProductAssets/images/heart.svg" class="svg" />
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+
+                                                <a id="carri" name=@idAux2>
+
+                                                    <div>
+                                                        <div>
+
+                                                            <img src="~/Content/ProductAssets/images/cart.svg" class="svg" />
+
+                                                        </div>
+                                                    </div>
+
+                                                </a>
+                                            </div>
+
                                         }
-                                    }
-                                    @*<li>
-                                        <input type="radio" id="radio_1" disabled name="product_radio" class="regular_radio radio_1">
-                                        <label for="radio_1">XS</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" id="radio_2" name="product_radio" class="regular_radio radio_2" checked>
-                                        <label for="radio_2">S</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" id="radio_3" name="product_radio" class="regular_radio radio_3">
-                                        <label for="radio_3">M</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" id="radio_4" name="product_radio" class="regular_radio radio_4">
-                                        <label for="radio_4">L</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" id="radio_5" name="product_radio" class="regular_radio radio_5">
-                                        <label for="radio_5">XL</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" id="radio_6" disabled name="product_radio" class="regular_radio radio_6">
-                                        <label for="radio_6">XXL</label>
-                                    </li>*@
-                                </ul>
-                            </div>
-                            <div class="product_text">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec consequat lorem. Maecenas elementum at diam consequat bibendum. Mauris iaculis fringilla ex, sit amet semper libero facilisis sit amet. Nunc ut aliquet metus. Praesent pulvinar justo sed velit tempus bibendum. Quisque dictum lorem id mi viverra, in auctor justo laoreet. Nam at massa malesuada, ullamcorper metus vel, consequat risus. Phasellus ultricies velit vel accumsan porta.</p>
-                            </div>
-                            <div class="product_buttons">
-                                <div class="text-right d-flex flex-row align-items-start justify-content-start">
-                                    <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
-                                        <div><div><img src="~/Content/ProductAssets/images/heart1.png" class="image" alt=""><div>+</div></div></div>
-                                    </div>
-                                    <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
-                                        <div><div><img src="~/Content/ProductAssets/images/cart.svg" class="image" alt=""><div>+</div></div></div>
+
+                                        @if (ViewBag.NoLogIn == 1)
+                                        {
+                                            <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
+
+                                                @if (Model.ProductosFavId.Count > 0)
+                                                {
+
+                                                    using (Html.BeginForm("AgregarProductoFavorito", "Producto", FormMethod.Post, new { id = idAux }))
+                                                    {
+                                                        <input type="hidden" name="id" value=@Model.Producto.Id id=@idAux>
+                                                        <input type="hidden" name="accion" value="2" id=@idAux>
+                                                        <a id=@idAux name=@idAux href="" onclick="$('#@idAux').submit(); return false;">
+                                                            @*<a id=@idAux name=@idAux href="@Url.Action("AgregarProductoFavorito", "Producto", new { id = Model[h].Id })">*@
+
+                                                            <div>
+                                                                <div>
+
+                                                                    <img src="~/Content/ProductAssets/images/heartRojo.svg" class="img" />
+                                                                </div>
+                                                            </div>
+
+                                                        </a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    using (Html.BeginForm("AgregarProductoFavorito", "Producto", FormMethod.Post, new { id = idAux }))
+                                                    {
+                                                        <input type="hidden" name="id" value=@Model.Producto.Id id=@idAux>
+                                                        <input type="hidden" name="accion" value="1" id=@idAux>
+                                                        <a id=@idAux name=@idAux href="" onclick="$('#@idAux').submit(); return false;">
+                                                            <div>
+                                                                <div>
+
+                                                                    <img src="~/Content/ProductAssets/images/heartBlanco.svg" class="svg" />
+                                                                </div>
+                                                            </div>
+
+                                                        </a>
+                                                    }
+                                                }
+
+                                            </div>
+
+                                        }
+
+
+                                        <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+
+                                            @using (Html.BeginForm("AgregarProductoCarrito", "Producto", FormMethod.Post, new { id = "formCarrito" }))
+                                            {
+                                                <input type="hidden" name="id" value=@Model.Producto.Id id=@idAux2>
+                                                <input type="hidden" name="accion" value="1" id=@idAux2>
+                                                <input type="hidden" name="color" value="" id="ColorId">
+                                                <input type="hidden" name="cantidadProducto" value="1" id=@idAux2>
+                                                <input type="hidden" name="esCarrito" value="False" id=@idAux2>
+                                                <a href="" onclick="$('#formCarrito').submit(); return false;">
+                                                    <div>
+                                                        <div>
+                                                            <img src="~/Content/ProductAssets/images/cart_0.svg" class="svg" />
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            }
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +334,404 @@
                     </div>
                 </div>
             </div>
+
+
+
+            <!-- Footer -->
+
+            <footer class="footer">
+                <div class="footer_content">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- About -->
+                            <div class="col-lg-4 footer_col">
+                                <div class="footer_about">
+                                    <div class="footer_logo">
+                                        <a href="#">
+                                            <div class="d-flex flex-row align-items-center justify-content-start">
+                                                <div class="footer_logo_icon"><img src="images/logo_2.png" alt=""></div>
+                                                <div>Little Closet</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="footer_about_text">
+                                        <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Fusce venenatis vel velit vel euismod.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Links -->
+                            <div class="col-lg-4 footer_col">
+                                <div class="footer_menu">
+                                    <div class="footer_title">Support</div>
+                                    <ul class="footer_list">
+                                        <li>
+                                            <a href="#"><div>Customer Service<div class="footer_tag_1">online now</div></div></a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div>Return Policy</div></a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div>Size Guide<div class="footer_tag_2">recommended</div></div></a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div>Terms and Conditions</div></a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><div>Contact</div></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Footer Contact -->
+                            <div class="col-lg-4 footer_col">
+                                <div class="footer_contact">
+                                    <div class="footer_title">Stay in Touch</div>
+                                    <div class="newsletter">
+                                        <form action="#" id="newsletter_form" class="newsletter_form">
+                                            <input type="email" class="newsletter_input" placeholder="Subscribe to our Newsletter" required="required">
+                                            <button class="newsletter_button">+</button>
+                                        </form>
+                                    </div>
+                                    <div class="footer_social">
+                                        <div class="footer_title">Social</div>
+                                        <ul class="footer_social_list d-flex flex-row align-items-start justify-content-start">
+                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer_bar">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="footer_bar_content d-flex flex-md-row flex-column align-items-center justify-content-start">
+                                    <div class="copyright order-md-1 order-2">
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                        Copyright &copy;
+                                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    </div>
+                                    <nav class="footer_nav ml-md-auto order-md-2 order-1">
+                                        <ul class="d-flex flex-row align-items-center justify-content-start">
+                                            <li><a href="category.html">Women</a></li>
+                                            <li><a href="category.html">Men</a></li>
+                                            <li><a href="category.html">Kids</a></li>
+                                            <li><a href="category.html">Home Deco</a></li>
+                                            <li><a href="#">Contact</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
+
     </div>
-</div>
-<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+    <script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script>
+    <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/popper.js"></script>
+    <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/bootstrap.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/TweenMax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/TimelineMax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/scrollmagic/ScrollMagic.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/animation.gsap.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/ScrollToPlugin.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+    <script src="~/Content/ProductAssets/plugins/easing/easing.js"></script>
+    <script src="~/Content/ProductAssets/plugins/progressbar/progressbar.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/parallax-js-master/parallax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/flexslider/jquery.flexslider-min.js"></script>
+    <script src="~/Content/ProductAssets/js/product.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinyColorPicker/1.1.1/jqColorPicker.min.js"></script>
+    <script src="https://rawgithub.com/kangax/fabric.js/master/dist/fabric.js"></script>
+
+</body>
+</html>
+
+
+<script type='text/javascript'>
+
+
+    function changeSrc() {
+
+        var rates = document.getElementsByName('option');
+        var rate_value;
+        for (var i = 0; i < rates.length; i++) {
+            if (rates[i].checked) {
+                rate_value = rates[i].value;
+            }
+        }
+
+        console.log(rate_value);
+
+        $('#ColorId').val(rate_value);
+
+
+    }
+
+
+        function hexToRgb(color) {
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        color = color.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : {
+            r: 0,
+            g: 0,
+            b: 0
+        };
+    }
+    $(document).ready(function () {
+
+    // Reference the color shape that was drawn over the image
+    const overlay = document.getElementById("product-shape");
+
+        $('input[type="radio"]').on("change", function (color) {
+            console.log(this.value);
+            overlay.style.fill = this.value;
+        });
+    });
+
+
+
+    @*$(document).ready(function () {
+        // create hidden canvas (using image dimensions)
+        var canvas = new fabric.StaticCanvas('canvas');
+        var image;
+        var imgEl = document.createElement('img');
+        imgEl.crossOrigin = 'anonymous';
+        imgEl.onload = function () {
+            image = new fabric.Image(imgEl);
+            image.filters = [new fabric.Image.filters.HueRotation()];
+            canvas.add(image);
+        }
+        imgEl.src = '@Url.Content(Model.Producto.Imagen)';
+
+
+        $('input[type="radio"]').on("change", function (color) {
+            console.log(this.value);
+
+            var rgb = hexToRgb(this.value);
+            console.log("RGB:", rgb);
+            console.log(rgbToHsl(rgb.r, rgb.g, rgb.b));
+
+            image.filters[0].rotation = 0.25098039215686274;
+            console.log(image.filters[0].rotation);
+            image.applyFilters();
+            canvas.requestRenderAll();
+        });
+    });*@
+
+
+
+
+
+    @*function rgbToHsl(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0; // achromatic
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+
+        return ({
+            h: h,
+            s: s,
+            l: l,
+        });
+    }
+
+
+    $(document).ready(function () {
+
+
+
+
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+
+        var img = new Image();
+        img.crossOrigin = "anonymous";
+                img.onload = start;
+                img.src = "@Url.Content(Model.Producto.Imagen)";
+
+
+
+        function start() {
+            $('input[type="radio"]').on("change", function (color) {
+                console.log(this.value);
+            ctx.drawImage(img, 0, 0);
+            // shift blueish colors to greenish colors
+            //var rgb = getAverageRGB(img);
+            //console.log(rgb)
+
+
+                var rgb = hexToRgb(this.value);
+                console.log("RGB:", rgb);
+                var hslColorNew = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            console.log(-hslColorNew.h);
+                recolorPants(-hslColorNew.h);
+
+
+
+            });
+
+
+            }
+
+
+
+        function recolorPants(colorshift) {
+
+            var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            var data = imgData.data;
+            console.log(data.length);
+            for (var i = 0; i < data.length; i += 4) {
+                red = data[i + 0];
+                green = data[i + 1];
+                blue = data[i + 2];
+                alpha = data[i + 3];
+
+                if (alpha < 200) {
+                    continue;
+                }
+
+                var hsl = rgbToHsl(red, green, blue);
+                var hue = hsl.h * 360;
+
+                if (hue > 200 && hue < 300) {
+                    var newRgb = hslToRgb(hsl.h + colorshift, hsl.s, hsl.l);
+                    data[i + 0] = newRgb.r;
+                    data[i + 1] = newRgb.g;
+                    data[i + 2] = newRgb.b;
+                    data[i + 3] = 255;
+                }
+            }
+
+
+
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            var max = Math.max(r, g, b),
+                min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+
+            if (max == min) {
+                h = s = 0; // achromatic
+            } else {
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r:
+                        h = (g - b) / d + (g < b ? 6 : 0);
+                        break;
+                    case g:
+                        h = (b - r) / d + 2;
+                        break;
+                    case b:
+                        h = (r - g) / d + 4;
+                        break;
+                }
+                h /= 6;
+            }
+
+            return ({
+                h: h,
+                s: s,
+                l: l,
+            });
+        }
+
+
+        function hslToRgb(h, s, l) {
+            var r, g, b;
+
+            if (s == 0) {
+                r = g = b = l; // achromatic
+            } else {
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                var p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+
+            return ({
+                r: Math.round(r * 255),
+                g: Math.round(g * 255),
+                b: Math.round(b * 255),
+            });
+                }
+
+
+    });*@
+
+    //document.getElementById("imgxD").onload = function () {
+    //    var c = document.getElementById("myCanvas");
+    //    var ctx = c.getContext("2d");
+    //    var img = document.getElementById("imgxD");
+    //    ctx.drawImage(img, 0, 0);
+    //    var imgData = ctx.getImageData(0, 0, c.width, c.height);
+
+    //    // invert colors
+    //    var i;
+    //    for (i = 0; i < imgData.data.length; i += 4) {
+    //        imgData.data[i] = 255 - imgData.data[i];
+    //        imgData.data[i + 1] = 255 - imgData.data[i + 1];
+    //        imgData.data[i + 2] = 255 - imgData.data[i + 2];
+    //        imgData.data[i + 3] = 255;
+    //    }
+    //    ctx.putImageData(imgData, 0, 0);
+    //};
+
+
+
+</script>

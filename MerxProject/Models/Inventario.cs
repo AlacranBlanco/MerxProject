@@ -8,7 +8,7 @@ namespace MerxProject.Models
 {
     public class Inventario
     {
-
+        [Key]
         public int Id { get; set; }
 
         public Producto Producto { get; set; }
