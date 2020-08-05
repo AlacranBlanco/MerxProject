@@ -145,6 +145,7 @@
                                             <input type="hidden" value=@ViewBag.total name="total" />
                                             <input type="hidden" value=@ViewBag.cupon name="cupon" />
                                             <input type="hidden" value=@ViewBag.ship name="ship" />
+
                                             <input type="submit" id="setText" class="checkout_input  checkout_address_3" value="Cargar Información">
                                         </div>
                                         <div>
@@ -215,51 +216,87 @@
                                             <div class="cart_extra_total_value ml-auto">@ViewBag.total</div>
                                         </li>
                                     </ul>
-                                    <div class="payment_options">
-                                        <div class="checkout_title">Payment</div>
-                                        <ul>
-                                            <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
-                                                <label class="radio_container">
-                                                    <input type="radio" id="radio_1" name="payment_radio" class="payment_radio">
-                                                    <span class="radio_mark"></span>
-                                                    <span class="radio_text">Paypal</span>
-                                                </label>
-                                            </li>
 
-                                        </ul>
-                                    </div>
-                                    <div class="cart_text">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pharetra tempor so dales. Phasellus sagittis auctor gravida. Integ er bibendum sodales arcu id te mpus. Ut consectetur lacus.</p>
-                                    </div>
 
-                                    @using (Html.BeginForm("ProcessOrder", "Tienda", FormMethod.Get, new { id = "processOrder" }))
+
+
+                                    @*using (Html.BeginForm("ProcessOrder", "Tienda", FormMethod.Get, new { id = "processOrder" }))
+        {
+            <input type="hidden" name="direccion" value=@ViewBag.direccion id="pago3">
+            <input type="hidden" value=@ViewBag.subtotal name="subtotal" />
+            <input type="hidden" value=@ViewBag.total name="total" />
+            <input type="hidden" value=@ViewBag.cupon name="cupon" />
+            <input type="hidden" value=@ViewBag.ship name="ship" />
+
+            <div class="checkout_button trans_200" hidden>
+                <a id="2" name="2" href="" onclick="$('#processOrder').submit(); return false;">
+                    Crear Orden de Compra
+                </a>
+
+            </div>
+
+        }*@
+                                    @if (ViewBag.ordenPendiente == 1)
                                     {
-                                        <input type="hidden" name="direccion" value=@ViewBag.direccion id="pago3">
 
-                                        <div class="checkout_button trans_200">
-                                            <a id="2" name="2" href="" onclick="$('#processOrder').submit(); return false;">
-                                                place order
-                                            </a>
+                                        <div class="payment_options">
+                                            <div class="checkout_title">Payment</div>
+                                            <ul>
+                                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                                    <label class="radio_container">
+                                                        <input type="radio" id="radio_1" name="payment_radio" class="payment_radio">
+                                                        <span class="radio_mark"></span>
+                                                        <span class="radio_text">Paypal</span>
+                                                    </label>
+                                                </li>
 
+                                            </ul>
+                                        </div>
+                                        <div class="cart_text">
+                                            <p>Ahora podrás realizar tus pagos de una forma más segura con PayPal!.</p>
                                         </div>
 
+                                        using (Html.BeginForm("PagoConPaypal", "Tienda", FormMethod.Get, new { id = "paymentPaypal" }))
+                                        {
+
+
+                                            <input type="hidden" name="totalPagoPyapal" value=@ViewBag.total id="pago4">
+                                            <input type="hidden" name="totalship" value=@ViewBag.ship id="pago43">
+
+                                            <div class="checkout_button trans_200">
+                                                <a id="77" name="77" href="" onclick="$('#paymentPaypal').submit(); return false;">
+                                                    Paypal
+                                                </a>
+
+                                            </div>
+
+                                        }
                                     }
-
-
-                                    @using (Html.BeginForm("PagoConPaypal", "Tienda", FormMethod.Get, new { id = "paymentPaypal" }))
+                                    else
                                     {
 
 
-                                        <input type="hidden" name="totalPagoPyapal" value=@ViewBag.total id="pago4">
-                                        <input type="hidden" name="totalship" value=@ViewBag.ship id="pago43">
-
-                                        <div class="checkout_button trans_200">
-                                            <a id="77" name="77" href="" onclick="$('#paymentPaypal').submit(); return false;">
-                                                Paypal
-                                            </a>
-
+                                       
+                                        <div class="cart_text">
+                                            <p>Deberás asignar una dirección para continuar con el pago.</p>
                                         </div>
 
+
+                                        using (Html.BeginForm("PagoConPaypal", "Tienda", FormMethod.Get, new { id = "paymentPaypal" }))
+                                        {
+
+
+                                            <input type="hidden" name="totalPagoPyapal" value=@ViewBag.total id="pago4">
+                                            <input type="hidden" name="totalship" value=@ViewBag.ship id="pago43">
+
+                                            <div class="checkout_button trans_200" hidden>
+                                                <a id="77" name="77" href="" onclick="$('#paymentPaypal').submit(); return false;">
+                                                    Paypal
+                                                </a>
+
+                                            </div>
+
+                                        }
                                     }
 
 

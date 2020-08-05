@@ -48,7 +48,7 @@ namespace MerxProject.Controllers
 
                 model.CantidadesProductos = new List<CarritoCompra>();
                 int counts = 0;
-                float precioTotal = 0;
+                double precioTotal = 0;
                 int j = 0, i = 0;
 
                 while (i < model.CarritoCollection.Count)
@@ -59,7 +59,7 @@ namespace MerxProject.Controllers
                         if (model.CarritoCollectionRepetido[j].ColorNombre == model.CarritoCollection[i].ColorNombre)
                         {
                             counts++;
-                            precioTotal += model.CarritoCollectionRepetido[i].Precio;
+                            precioTotal += model.CarritoCollectionRepetido[j].Precio;
                             j++;
                         }
                         else
@@ -85,12 +85,14 @@ namespace MerxProject.Controllers
 
                 }
 
+                
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
-                var cupons = DbModel.Cupon.FirstOrDefault(x => x.IdPersona == persona.idPersona);
-
-                if (cupons != null)
+                var cupons = DbModel.Cupon.Where(x => x.IdPersona == persona.idPersona).OrderByDescending(x => x.idOrder).ToList();
+                int idOrdens = cupons[0].idOrder.Value;
+                var validarCuponOrder = DbModel.Orders.FirstOrDefault(x => x.IdOrder == idOrdens);
+                if (validarCuponOrder.Estatus == "Procesando" || validarCuponOrder.NombreCustomer == "Nueva")
                 {
-                    ViewBag.descuentoGuardado = cupons.Descuento / 100.00;
+                    ViewBag.descuentoGuardado = cupons[0].Descuento / 100.00;
                 }
 
                 return View(model);
@@ -100,44 +102,66 @@ namespace MerxProject.Controllers
         [HttpPost]
         public async Task<ActionResult> IndexTienda(string cupon, string ship, int subtotal)
         {
+            var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+            var ordenesCompra = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
 
+          
 
             var cupons = DbModel.Cupon.FirstOrDefault(x => x.CodigoCupon == cupon);
             if (cupons != null)
             {
                 double descuento = (cupons.Descuento / 100.00);
+                descuento *= subtotal;
 
                 var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
-                cupons.IdPersona = idPersona.idPersona;
-                cupons.Utilizado = true;
 
                 using (this.DbModel = new ApplicationDbContext())
                 {
-
-                    MerxProject.Models.Order.Orders order = new Models.Order.Orders()
+                    // En caso de que haya generado uan Orden sin cupo pero luego regreso para asignarle un decuento a la compra, procedemos a editar el Orden Actual.
+                    if (ordenesCompra != null)
                     {
-                        NombreCustomer = "Nueva",
-                        NumeroCustomer = "",
-                        DireccionCustomer = "",
-                        EmailCustomer = "",
-                        idPersona = idPersona.idPersona,
-                        DiaOrden = DateTime.Now,
-                        TipoPago = "",
-                        Estatus = ""
+                      
+                        cupons.IdPersona = idPersona.idPersona;
+                        cupons.Utilizado = true;
+                        cupons.idOrder = ordenesCompra.IdOrder;
 
-                    };
+                        DbModel.Cupon.AddOrUpdate(cupons);
+                        DbModel.SaveChanges();
+                    }
+                    else
+                    {
 
-                    DbModel.Orders.Add(order);
-                    DbModel.SaveChanges();
+                       
+                        cupons.IdPersona = idPersona.idPersona;
+                        cupons.Utilizado = true;
+
+                        MerxProject.Models.Order.Orders order = new Models.Order.Orders()
+                        {
+                            NombreCustomer = "Nueva",
+                            NumeroCustomer = "",
+                            DireccionCustomer = "",
+                            EmailCustomer = "",
+                            idPersona = idPersona.idPersona,
+                            DiaOrden = DateTime.Now,
+                            TipoPago = "",
+                            Estatus = ""
+
+                        };
+
+                        DbModel.Orders.Add(order);
+                        DbModel.SaveChanges();
 
 
-                    cupons.idOrder = order.IdOrder;
-                    DbModel.Cupon.AddOrUpdate(cupons);
-                    DbModel.SaveChanges();
+                        cupons.idOrder = order.IdOrder;
+
+                        DbModel.Cupon.AddOrUpdate(cupons);
+                        DbModel.SaveChanges();
+                    }
+                    
                 }
 
                 ViewBag.radioBtn = ship;
-                ViewBag.subTotalDesc = subtotal * descuento;
+                ViewBag.subTotalDesc = subtotal - descuento;
                 IndexTienda(null);
                 return View();
             }
@@ -153,16 +177,17 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> PagoProducto(string subtotal, string total, string cupon, string ship)
+        public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship)
         {
+           
 
             using (this.DbModel = new ApplicationDbContext())
             {
+
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
-
-
+                var ordenPendiente = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
-
+                double ships = 0;
 
                 if (ship != "Free")
                 {
@@ -178,11 +203,42 @@ namespace MerxProject.Controllers
 
                     }
 
+                    if (ordenPendiente != null)
+                    {
+                        var dir = DbModel.Direcciones.FirstOrDefault(x => x.Id == ordenPendiente.idDireccion);
+                        ships = Convert.ToDouble(ship);
+                        ViewBag.MySkills = fromDatabaseEF;
+                        ViewBag.subtotal = subtotal;
+                        ViewBag.ordenPendiente = 1;
+                        ViewBag.total = (Convert.ToDouble(total) + Convert.ToDouble(ships));
+                        ViewBag.cupon = cupon;
+                        ViewBag.ship = ship;
+                        return View(dir);
+                    }
+                    else
+                    {
+                        //Significa que no hay orden o esta con estatos "Nueva"
+                        ViewBag.ordenPendiente = 0;
+                    }
 
-                    double ships = Convert.ToDouble(ship);
+
+                    if (dire > 0)
+                    {
+                        var dir = DbModel.Direcciones.FirstOrDefault(x => x.Id == dire);
+                        ships = Convert.ToDouble(ship);
+                        ViewBag.MySkills = fromDatabaseEF;
+                        ViewBag.subtotal = subtotal;
+                        ViewBag.total = (Convert.ToDouble(total) + Convert.ToDouble(ships));
+                        ViewBag.cupon = cupon;
+                        ViewBag.ship = ship;
+                        return View(dir);
+
+                    }
+
+                    ships = Convert.ToDouble(ship);
                     ViewBag.MySkills = fromDatabaseEF;
                     ViewBag.subtotal = subtotal;
-                    ViewBag.total = (Convert.ToInt32(total) + Convert.ToInt32(ships));
+                    ViewBag.total = (Convert.ToDouble(total) + Convert.ToDouble(ships));
                     ViewBag.cupon = cupon;
                     ViewBag.ship = ship;
                 }
@@ -195,96 +251,54 @@ namespace MerxProject.Controllers
                     ViewBag.ship = ship;
                 }
 
+               
+               
                 return View();
+
+               
             }
 
         }
 
         [HttpPost]
-        public async Task<ActionResult> PagoProducto(Direcciones direcciones, string subtotal, string total, string cupon, string ship)
+        public async Task<ActionResult> PagoProducto(Direcciones direccion, string subtotal, string total, string cupon, string ship)
         {
 
             using (this.DbModel = new ApplicationDbContext())
             {
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
-                var direccion = DbModel.Direcciones.FirstOrDefault(x => x.Id == direcciones.Id);
+                var direccionDettalle = DbModel.Direcciones.FirstOrDefault(x => x.Id == direccion.Id);
 
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
 
 
-                ViewBag.direccion = direccion.Id;
+                ViewBag.direccion = direccionDettalle.Id;
                 ViewBag.MySkills = fromDatabaseEF;
                 ViewBag.subtotal = subtotal;
                 ViewBag.total = total;
+                ViewBag.ordenPendiente = 1;
                 ViewBag.cupon = cupon;
                 ViewBag.ship = ship;
 
+                ProcessOrder(direccion.Id);
 
-
-                return View(direccion);
+                return View(direccionDettalle);
             }
 
         }
 
-        public ActionResult ProcessOrder(int direccion)
+        public void ProcessOrder(int direccion)
         {
 
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
 
+            // Cuando llega "Nueva" significa que se utilizó un cupón en la orden
             var orderFind = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.NombreCustomer == "Nueva");
 
             var datosCustomer = DbModel.Direcciones.FirstOrDefault(x => x.Id == direccion);
             int idOrder = 0;
 
-            if (orderFind != null)
-            {
-                idOrder = orderFind.IdOrder;
-                using (this.DbModel = new ApplicationDbContext())
-                {
-
-                    MerxProject.Models.Order.Orders order = new Models.Order.Orders()
-                    {
-                        IdOrder = orderFind.IdOrder,
-                        NombreCustomer = datosCustomer.NombreCompleto,
-                        NumeroCustomer = datosCustomer.NumTelefono,
-                        DireccionCustomer = datosCustomer.DirCalle + ", " + datosCustomer.CodigoPostal + ", " + datosCustomer.Estado + ", " + datosCustomer.Ciudad + ", " + datosCustomer.Asentamiento,
-                        EmailCustomer = User.Identity.Name,
-                        idPersona = persona.idPersona,
-                        DiaOrden = DateTime.Now,
-                        TipoPago = "Pago Online",
-                        Estatus = "Procesando"
-                    };
-
-                    DbModel.Orders.AddOrUpdate(order);
-                    DbModel.SaveChanges();
-
-                }
-            }
-            else
-            {
-
-                using (this.DbModel = new ApplicationDbContext())
-                {
-
-                    MerxProject.Models.Order.Orders order = new Models.Order.Orders()
-                    {
-                        NombreCustomer = datosCustomer.NombreCompleto,
-                        NumeroCustomer = datosCustomer.NumTelefono,
-                        DireccionCustomer = datosCustomer.DirCalle + ", " + datosCustomer.CodigoPostal + ", " + datosCustomer.Estado + ", " + datosCustomer.Ciudad + ", " + datosCustomer.Asentamiento,
-                        EmailCustomer = User.Identity.Name,
-                        idPersona = persona.idPersona,
-                        DiaOrden = DateTime.Now,
-                        TipoPago = "Pago Online",
-                        Estatus = "Procesando"
-                    };
-
-                    DbModel.Orders.Add(order);
-                    DbModel.SaveChanges();
-                    idOrder = order.IdOrder;
-                }
-            }
-
-
+            // Todo el siguiente bloque es usado para generar un detalle de la orden, dando a conoce productos y precios que el usaurio comprara
             using (this.DbModel = new ApplicationDbContext())
             {
 
@@ -296,7 +310,7 @@ namespace MerxProject.Controllers
 
                 model.CantidadesProductos = new List<CarritoCompra>();
                 int counts = 0;
-                float precioTotal = 0;
+                double precioTotal = 0;
                 int j = 0, i = 0;
 
                 while (i < model.CarritoCollection.Count)
@@ -307,7 +321,7 @@ namespace MerxProject.Controllers
                         if (model.CarritoCollectionRepetido[j].ColorNombre == model.CarritoCollection[i].ColorNombre)
                         {
                             counts++;
-                            precioTotal += model.CarritoCollectionRepetido[i].Precio;
+                            precioTotal += model.CarritoCollectionRepetido[j].Precio;
                             j++;
                         }
                         else
@@ -333,6 +347,104 @@ namespace MerxProject.Controllers
 
                 }
 
+               
+
+                ////return RedirectToAction("PagoProducto", new { dire = direccion, subtotal = subtotal, total = total, cupon = cupon, ship = ship }) ;
+          
+
+
+            // Si llega diferente a null significa que se va actualizar el orden que ya existe gracias al cupon
+            if (orderFind != null)
+            {
+                idOrder = orderFind.IdOrder;
+                
+
+                    MerxProject.Models.Order.Orders order = new Models.Order.Orders()
+                    {
+                        IdOrder = orderFind.IdOrder,
+                        NombreCustomer = datosCustomer.NombreCompleto,
+                        NumeroCustomer = datosCustomer.NumTelefono,
+                        DireccionCustomer = datosCustomer.DirCalle + ", " + datosCustomer.CodigoPostal + ", " + datosCustomer.Estado + ", " + datosCustomer.Ciudad + ", " + datosCustomer.Asentamiento,
+                        EmailCustomer = User.Identity.Name,
+                        idPersona = persona.idPersona,
+                        idDireccion = datosCustomer.Id,
+                        DiaOrden = DateTime.Now,
+                        TipoPago = "Pago Online",
+                        Estatus = "Procesando"
+                    };
+
+                    DbModel.Orders.AddOrUpdate(order);
+                    DbModel.SaveChanges();
+
+
+                }
+            else
+            {
+                var orderUpdate = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
+
+
+
+                    if (orderUpdate != null)
+                    {
+
+                        MerxProject.Models.Order.Orders order = new Models.Order.Orders()
+                        {
+                            IdOrder = orderUpdate.IdOrder,
+                            NombreCustomer = datosCustomer.NombreCompleto,
+                            NumeroCustomer = datosCustomer.NumTelefono,
+                            DireccionCustomer = datosCustomer.DirCalle + ", " + datosCustomer.CodigoPostal + ", " + datosCustomer.Estado + ", " + datosCustomer.Ciudad + ", " + datosCustomer.Asentamiento,
+                            EmailCustomer = User.Identity.Name,
+                            idPersona = persona.idPersona,
+                            DiaOrden = DateTime.Now,
+                            idDireccion = datosCustomer.Id,
+                            TipoPago = "Pago Online",
+                            Estatus = "Procesando"
+                        };
+
+                        DbModel.Orders.AddOrUpdate(order);
+                        DbModel.SaveChanges();
+                        idOrder = orderUpdate.IdOrder;
+                    }
+                    else
+                    {
+
+                        MerxProject.Models.Order.Orders order = new Models.Order.Orders()
+                        {
+                            NombreCustomer = datosCustomer.NombreCompleto,
+                            NumeroCustomer = datosCustomer.NumTelefono,
+                            DireccionCustomer = datosCustomer.DirCalle + ", " + datosCustomer.CodigoPostal + ", " + datosCustomer.Estado + ", " + datosCustomer.Ciudad + ", " + datosCustomer.Asentamiento,
+                            EmailCustomer = User.Identity.Name,
+                            idPersona = persona.idPersona,
+                            DiaOrden = DateTime.Now,
+                            idDireccion = datosCustomer.Id,
+                            TipoPago = "Pago Online",
+                            Estatus = "Procesando"
+                        };
+
+                        DbModel.Orders.Add(order);
+                        DbModel.SaveChanges();
+                        idOrder = order.IdOrder;
+
+                       
+
+
+                    }
+
+
+
+
+                }
+
+
+                var orderDetails = DbModel.OrdersDetails.Where(x => x.idOrder == idOrder).ToList();
+
+                foreach (var item in orderDetails)
+                {
+                    DbModel.OrdersDetails.Remove(item);
+                    DbModel.SaveChanges();
+                }
+
+
                 i = 0;
                 foreach (var item in model.CarritoCollection)
                 {
@@ -340,6 +452,7 @@ namespace MerxProject.Controllers
                     {
                         idOrder = idOrder,
                         idProducto = item.idProducto,
+                        idColor = item.idColor,
                         Cantidad = model.CantidadesProductos[i].Cantidad,
                         Precio = item.Precio
                     };
@@ -348,15 +461,8 @@ namespace MerxProject.Controllers
                     DbModel.OrdersDetails.Add(ordersDetails);
                     DbModel.SaveChanges();
                 }
-
-
-
-
             }
-
-            return View();
-
-        }
+    }
 
         private Payment payment;
 
@@ -365,7 +471,7 @@ namespace MerxProject.Controllers
         {
             //getting the apiContext
             APIContext apiContext = PaypalConfiguration.GetAPIContext();
-
+            var persona = DbModel.Personas.First(x => x.Correo == User.Identity.Name);
             try
             {
                 string payerId = Request.Params["PayerID"];
@@ -407,6 +513,56 @@ namespace MerxProject.Controllers
                 PaypalLogger.Log("Error" + ex.Message);
                 return View("Failure");
             }
+            var orderId = DbModel.Orders.First(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
+            var orderDetails = DbModel.OrdersDetails.Where(x => x.idOrder == orderId.IdOrder).OrderBy(x => x.idColor).ToList();
+            var productos = DbModel.Productos.ToList();
+            var colores = DbModel.Colores.ToList();
+            var inventarioDetail = DbModel.Inventarios.OrderBy(x => x.Color.Id).ToList();
+            int i = 0, j= 0;
+
+            while (i < inventarioDetail.Count) {
+                if (j < orderDetails.Count)
+                {
+                    if (orderDetails[j].idColor == inventarioDetail[i].Color.Id)
+                    {
+
+                        inventarioDetail[i].Id = inventarioDetail[i].Id;
+                        inventarioDetail[i].Cantidad = inventarioDetail[i].Cantidad - orderDetails[j].Cantidad;
+                        inventarioDetail[i].Color.Id = inventarioDetail[i].Color.Id;
+                        inventarioDetail[i].Producto.Id = inventarioDetail[i].Producto.Id;
+
+                        DbModel.Inventarios.AddOrUpdate(inventarioDetail[i]);
+                        DbModel.SaveChanges();
+                        i++;
+                        j++;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+                    
+            }
+
+            var carritoBorrar = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).ToList();
+
+            foreach (var item in carritoBorrar)
+            {
+                DbModel.CarritoCompras.Remove(item);
+                DbModel.SaveChanges();
+            }
+
+            var orderPgado = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
+
+            orderPgado.Estatus = "Pagado";
+            DbModel.Orders.AddOrUpdate(orderPgado);
+            DbModel.SaveChanges();
+
+
             return View("Success");
         }
 
@@ -428,7 +584,7 @@ namespace MerxProject.Controllers
 
             model.CantidadesProductos = new List<CarritoCompra>();
             int counts = 0;
-            float precioTotal = 0;
+            double precioTotal = 0.00;
             int j = 0, i = 0;
 
             while (i < model.CarritoCollection.Count)
@@ -469,17 +625,17 @@ namespace MerxProject.Controllers
 
             i = 0;
 
-            var cuponUsado = DbModel.Cupon.Where(x => x.IdPersona == persona.idPersona).OrderBy(x => x.idOrder).ToList();
-
+            var cuponUsado = DbModel.Cupon.Where(x => x.IdPersona == persona.idPersona).OrderByDescending(x => x.idOrder).ToList();
+            var order = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
             double descuento = 0.00;
 
-            if (cuponUsado[0] != null)
+            if (cuponUsado[0].idOrder == order.IdOrder)
             {
                 descuento = cuponUsado[0].Descuento / 100.00;
 
                 foreach (var item in model.CarritoCollection)
                 {
-                    int DescAns = Convert.ToInt32((Convert.ToDouble(item.Precio) * descuento));
+                    double DescAns = Convert.ToDouble(item.Precio - (Convert.ToDouble(item.Precio) * descuento));
                     itemList.items.Add(new Item()
                     {
                         quantity = model.CantidadesProductos[i].Cantidad.ToString(),
@@ -528,15 +684,15 @@ namespace MerxProject.Controllers
             var amount = new Amount()
             {
                 currency = "MXN",
-                total = (Convert.ToInt32(details.tax) + Convert.ToInt32(details.shipping) + Convert.ToInt32(details.subtotal)).ToString(), // Total must be equal to sum of tax, shipping and subtotal.
+                total = (Convert.ToDouble(details.tax) + Convert.ToDouble(details.shipping) + Convert.ToDouble(details.subtotal)).ToString(), // Total must be equal to sum of tax, shipping and subtotal.
                 details = details
             };
             var transactionList = new List<Transaction>();
             // Adding description about the transaction
             transactionList.Add(new Transaction()
             {
-                description = "Transaction description",
-                invoice_number = "your generated invoice number", //Generate an Invoice No
+                description = "Detalle Transacción",
+                invoice_number = "#" + Convert.ToString((new Random()).Next(100000000)), //Generate an Invoice No
                 amount = amount,
                 item_list = itemList
             });

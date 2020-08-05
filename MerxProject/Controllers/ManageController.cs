@@ -387,7 +387,8 @@ namespace MerxProject.Controllers
             else if (accion.Value == 1)
             {
                 ViewBag.accion = accion;
-                return View();
+                Direcciones direcciones = new Direcciones();
+                return View(direcciones);
             }
             else
             {

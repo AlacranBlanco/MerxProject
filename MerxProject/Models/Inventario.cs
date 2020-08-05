@@ -11,12 +11,10 @@ namespace MerxProject.Models
         [Key]
         public int Id { get; set; }
         public int Cantidad { get; set; }
-        public int Color_Id { get; set; }
-        public int Producto_Id { get; set; }
 
         // Relaciones con otras tablas
-        public virtual Color Color { get; set; }
-        public virtual Producto Producto { get; set; }
+        public Color Color { get; set; }
+        public Producto Producto { get; set; }
 
     }
 }

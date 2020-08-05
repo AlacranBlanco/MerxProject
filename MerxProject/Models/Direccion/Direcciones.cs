@@ -27,5 +27,6 @@ namespace MerxProject.Models.Direccion
         public string NumTelefono { get; set; }
 
         public int IdPersona { get; set; }
+
     }
 }

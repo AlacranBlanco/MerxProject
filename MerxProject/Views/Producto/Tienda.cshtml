@@ -14,6 +14,23 @@
 <script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script>
 
 
+@if (ViewBag.outStock == 1)
+{
+    <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire(
+                'Espera!',
+                'El producto en color "@ViewBag.nombreColor" ya no tiene más existencias por el momento.',
+                'warning'
+            )
+        }, false);
+
+
+
+
+    </script>
+}
 
 
 
@@ -257,6 +274,8 @@
                                                             <input type="hidden" name="id" value=@Model.ProductoCollection[h].Id id=@idAux2>
                                                             <input type="hidden" name="accion" value="1" id=@idAux2>
                                                             <input type="hidden" name="pagi" value=@ViewBag.pagina id=@idAux>
+                                                            <input type="hidden" name="cantidadProducto" value="1" id=@idAux>
+                                                            <input type="hidden" name="namePag" value="Tienda" id=@idAux>
                                                             <a id=@idAux2 name=@idAux2 href="" onclick="$('#@idAux2').submit(); return false;">
 
                                                                 <div>

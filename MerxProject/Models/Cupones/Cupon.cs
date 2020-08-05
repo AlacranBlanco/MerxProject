@@ -17,8 +17,8 @@ namespace MerxProject.Models.Cupones
 
         public Boolean Utilizado { get; set; }
 
-        public int IdPersona { get; set; }
+        public int? IdPersona { get; set; }
 
-        public int idOrder { get; set; }
+        public int? idOrder { get; set; }
     }
 }

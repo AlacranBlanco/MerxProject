@@ -614,10 +614,11 @@ section {
     font-weight: 700;
     color: #4a4a4a;
     padding-left: 26px;
+    
 }
 
 .svg path, .svg rect, .svg polygon {
-    fill: #778990;
+    fill: transparent;
     -webkit-transition: all 200ms ease;
     -moz-transition: all 200ms ease;
     -ms-transition: all 200ms ease;
@@ -625,11 +626,13 @@ section {
     transition: all 200ms ease;
 }
 
-.svg:hover path,
+/*.svg:hover path,
 .svg:hover rect,
 .svg:hover polygon {
     fill: #2fce98;
-}
+}*/
+
+
 
 /*********************************
 4. Menu
