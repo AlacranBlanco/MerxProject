@@ -27,5 +27,7 @@ namespace MerxProject.Models.Order
         public string DireccionCustomer { get; set; }
 
         public int idPersona { get; set; }
+
+        public int idDireccion { get; set; }
     }
 }

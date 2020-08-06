@@ -37,45 +37,97 @@ namespace MerxProject.Controllers
         }
 
         // GET: Producto
-        [HttpGet]
         [AllowAnonymous]
-        public ActionResult Tienda(int? NoLogIn, int pag = 1)
+        [HttpGet]
+        public ActionResult Tienda(int? NoLogIn, int? OutStock, string colorNombre = null, int pag = 1)
         {
             if (pag <= 0) pag = 1;
-            if (NoLogIn != null) ViewBag.NoLogIn = 0;
-            var email = User.Identity.Name;
-            var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
-            
 
-            TiendaViewModel tiendaViewModel = new TiendaViewModel();
-            tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
-
-            tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
-
-            tiendaViewModel.ProductosFavId = new List<int>();
-
-            int idxAux = 0;
-            foreach (var item in tiendaViewModel.ProductoCollection)
+            if (OutStock != null)
             {
-                if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
+                ViewBag.outStock = 1;
+                ViewBag.nombreColor = colorNombre;
+            }
+            else
+            {
+                ViewBag.outStock = 0;
+            }
+
+            var email = User.Identity.Name;
+
+            if (email != "")
+            {
+                ViewBag.NoLogIn = 1;
+                var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+
+
+                TiendaViewModel tiendaViewModel = new TiendaViewModel();
+                tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+
+                tiendaViewModel.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+                tiendaViewModel.ProductosCarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+
+                tiendaViewModel.ProductosFavId = new List<int>();
+                tiendaViewModel.ProductosCarrito = new List<int>();
+
+                int idxAux = 0;
+                foreach (var item in tiendaViewModel.ProductoCollection)
                 {
-                    if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                    if (idxAux < tiendaViewModel.ProductosFavoritosColelction.Count)
                     {
-                        tiendaViewModel.ProductosFavId.Add(item.Id);
-                        idxAux++;
+                        if (item.Id == tiendaViewModel.ProductosFavoritosColelction[idxAux].idProducto)
+                        {
+                            tiendaViewModel.ProductosFavId.Add(item.Id);
+
+                            idxAux++;
+                        }
+                        else
+                        {
+
+                            tiendaViewModel.ProductosFavId.Add(-1);
+                        }
                     }
                     else
                     {
-                        tiendaViewModel.ProductosFavId.Add(-12);
+                        tiendaViewModel.ProductosFavId.Add(-1);
                     }
+
                 }
-                else
+                int idxAux2 = 0;
+
+                foreach (var item in tiendaViewModel.ProductoCollection)
                 {
-                    tiendaViewModel.ProductosFavId.Add(-12);
+                    if (idxAux2 < tiendaViewModel.ProductosCarritoCollection.Count)
+                    {
+                        if (item.Id == tiendaViewModel.ProductosCarritoCollection[idxAux2].idProducto)
+                        {
+                            tiendaViewModel.ProductosCarrito.Add(item.Id);
+
+                            idxAux2++;
+                        }
+                        else
+                        {
+
+                            tiendaViewModel.ProductosCarrito.Add(-1);
+                        }
+                    }
+                    else
+                    {
+                        tiendaViewModel.ProductosCarrito.Add(-1);
+                    }
+
                 }
-            }
                 ViewBag.pagina = pag;
                 return View(tiendaViewModel);
+            }
+            else
+            {
+                ViewBag.NoLogIn = 0;
+                TiendaViewModel tiendaViewModel = new TiendaViewModel();
+                tiendaViewModel.ProductoCollection = DbModel.Productos.ToList();
+                ViewBag.pagina = pag;
+                return View(tiendaViewModel);
+            }
         }
 
         [HttpPost]
@@ -83,6 +135,8 @@ namespace MerxProject.Controllers
         {
             return View();
         }
+
+
         public ActionResult MostrarTodos(int pagina = 1)
         {
             int _TotalRegistros = 0;
@@ -569,594 +623,8 @@ namespace MerxProject.Controllers
         {
             return View("");
         }
-
+        
         [Authorize(Roles = "Administrador, Empleado")]
-        public ActionResult BuscarLista(string orden, string categoria, string parameter, int pagina = 1)
-        {
-           
-            int _TotalRegistros = 0;
-            using (ApplicationDbContext DbModel = new ApplicationDbContext())
-            {
-                var Materiales = DbModel.Materiales.ToList();
-                var Muebles = DbModel.Muebles.ToList();
-                ViewBag.Materiales = Materiales;
-                ViewBag.Muebles = Muebles;
-
-                if (string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden) && string.IsNullOrWhiteSpace(parameter))
-                {
-                    _TotalRegistros = DbModel.Productos.Count();
-                    // Obtenemos la 'página de registros' de la tabla Productos
-                    _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
-                                                     .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                     .Take(_RegistrosPorPagina)
-                                                     .ToList();
-                    // Número total de páginas de la tabla Productos
-                    var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                    // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                    _PaginadorProducto = new PaginadorGenerico<Producto>()
-                    {
-                        RegistrosPorPagina = _RegistrosPorPagina,
-                        TotalRegistros = _TotalRegistros,
-                        TotalPaginas = _TotalPaginas,
-                        PaginaActual = pagina,
-                        Resultado = _Producto
-                    };
-                    return View("ListaProducto", _PaginadorProducto);
-                }
-                else if (string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden) && !string.IsNullOrWhiteSpace(parameter))
-                {
-                    _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                     (x.Precio.ToString().Contains(parameter)) ||
-                                                     (x.Descripcion.Contains(parameter)) ||
-                                                     (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                     (x.CategoriaMueble.Nombre.Contains(parameter)))
-                                                     .Count();
-                    if (_TotalRegistros > 0)
-                    {
-
-
-                        // Obtenemos la 'página de registros' de la tabla Productos
-                        _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
-                                                         .Where(x => x.Nombre.Contains(parameter) ||
-                                                         (x.Precio.ToString().Contains(parameter)) ||
-                                                         (x.Descripcion.Contains(parameter)) ||
-                                                         (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                         (x.CategoriaMueble.Nombre.Contains(parameter)))
-                                                         .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                         .Take(_RegistrosPorPagina)
-                                                         .ToList();
-                        // Número total de páginas de la tabla Productos
-                        var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                        // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                        _PaginadorProducto = new PaginadorGenerico<Producto>()
-                        {
-                            RegistrosPorPagina = _RegistrosPorPagina,
-                            TotalRegistros = _TotalRegistros,
-                            TotalPaginas = _TotalPaginas,
-                            PaginaActual = pagina,
-                            Resultado = _Producto
-                        };
-                        return View("ListaProducto", _PaginadorProducto);
-                    }
-                }
-                else if(!string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden))
-                {
-                    orden = "Asc";
-                }
-                else if(string.IsNullOrWhiteSpace(categoria) && !string.IsNullOrWhiteSpace(orden))
-                {
-                    categoria = "Nombre";
-                }
-
-                switch (categoria)
-                {
-                    case "Precio":
-                        if (string.IsNullOrWhiteSpace(parameter))
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x=> x.Precio).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderByDescending(x => x.Precio)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.Precio).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderBy(x => x.Precio)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                        }
-                        else
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderByDescending(x => x.Precio)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderByDescending(x => x.Precio)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderBy(x => x.Precio)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderBy(x => x.Precio)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-
-                            if (_TotalRegistros < 1)
-                            {
-                                Session["res"] = "No hay resultados";
-                                return RedirectToAction("ListaProducto");
-                            }
-                        }
-                        return View("ListaProducto", _PaginadorProducto);
-
-                    case "Nombre":
-                        if (string.IsNullOrWhiteSpace(parameter))
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderByDescending(x => x.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                        }
-                        else
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderByDescending(x => x.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderByDescending(x => x.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderBy(x => x.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderBy(x => x.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-
-                            if (_TotalRegistros < 1)
-                            {
-                                Session["res"] = "No hay resultados";
-                                return RedirectToAction("ListaProducto");
-                            }
-                        }
-                        return View("ListaProducto", _PaginadorProducto);
-
-                    case "CatMaterial":
-                        if (string.IsNullOrWhiteSpace(parameter))
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.CategoriaMaterial.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderByDescending(x => x.CategoriaMaterial.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.CategoriaMaterial.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderBy(x => x.CategoriaMaterial.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                        }
-                        else
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderByDescending(x => x.CategoriaMaterial.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderByDescending(x => x.CategoriaMaterial.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderBy(x => x.CategoriaMaterial.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderBy(x => x.CategoriaMaterial.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-
-                            if (_TotalRegistros < 1)
-                            {
-                                Session["res"] = "No hay resultados";
-                                return RedirectToAction("ListaProducto");
-                            }
-                        }
-                        return View("ListaProducto", _PaginadorProducto);
-
-                    case "CatMueble":
-                        if (string.IsNullOrWhiteSpace(parameter))
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.CategoriaMueble.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderByDescending(x => x.CategoriaMueble.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.CategoriaMueble.Nombre).Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.OrderBy(x => x.CategoriaMueble.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                        }
-                        else
-                        {
-                            if (orden == "Desc")
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderByDescending(x => x.CategoriaMueble.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderByDescending(x => x.CategoriaMueble.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-                            else
-                            {
-                                // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                    (x.Descripcion.Contains(parameter)) ||
-                                                                    (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                    (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                    (x.Precio.ToString().Contains(parameter)))
-                                                                    .OrderBy(x => x.CategoriaMueble.Nombre)
-                                                                    .Count();
-                                // Obtenemos la 'página de registros' de la tabla Productos
-                                _Producto = DbModel.Productos.Where(x => x.Nombre.Contains(parameter) ||
-                                                                 (x.Descripcion.Contains(parameter)) ||
-                                                                 (x.CategoriaMaterial.Nombre.Contains(parameter)) ||
-                                                                 (x.CategoriaMueble.Nombre.Contains(parameter)) ||
-                                                                 (x.Precio.ToString().Contains(parameter)))
-                                                                 .OrderBy(x => x.CategoriaMueble.Nombre)
-                                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                                 .Take(_RegistrosPorPagina)
-                                                                 .ToList();
-                                // Número total de páginas de la tabla Productos
-                                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                                _PaginadorProducto = new PaginadorGenerico<Producto>()
-                                {
-                                    RegistrosPorPagina = _RegistrosPorPagina,
-                                    TotalRegistros = _TotalRegistros,
-                                    TotalPaginas = _TotalPaginas,
-                                    PaginaActual = pagina,
-                                    Resultado = _Producto
-                                };
-                            }
-
-                            if (_TotalRegistros < 1)
-                            {
-                                Session["res"] = "No hay resultados";
-                                return RedirectToAction("ListaProducto");
-                            }
-                        }
-                        return View("ListaProducto", _PaginadorProducto);
-                        
-                    default:
-                        ViewBag.error = "No hay resultados";
-                        _TotalRegistros = DbModel.Productos.Count();
-                        // Obtenemos la 'página de registros' de la tabla Productos
-                        _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
-                                                         .Skip((pagina - 1) * _RegistrosPorPagina)
-                                                         .Take(_RegistrosPorPagina)
-                                                         .ToList();
-                        // Número total de páginas de la tabla Productos
-                        var _TP = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
-                        // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
-                        _PaginadorProducto = new PaginadorGenerico<Producto>()
-                        {
-                            RegistrosPorPagina = _RegistrosPorPagina,
-                            TotalRegistros = _TotalRegistros,
-                            TotalPaginas = _TP,
-                            PaginaActual = pagina,
-                            Resultado = _Producto
-                        };
-                        return View("ListaProducto", _PaginadorProducto);
-                }
-            }
-        }[Authorize(Roles = "Administrador, Empleado")]
         public ActionResult BuscarLista(string orden, string categoria, string parameter, int pagina = 1)
         {
            
@@ -1745,101 +1213,81 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Bamboo1(string name)
+        public ActionResult Bamboo1(int? OutStock,  string name, string colorNombre = null)
         {
 
-            if(name != null)
+            if (OutStock != null)
             {
-                VentaViewModels ventaViewModels = new VentaViewModels();
+                ViewBag.outStock = 1;
+                ViewBag.nombreColor = colorNombre;
+            }
+            else
+            {
+                ViewBag.outStock = 0;
+            }
 
-                ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
-                ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Id == ventaViewModels.Producto.Id).ToList();
-                ventaViewModels.ColorsCollection = new List<Color>();
-                foreach (var item in ventaViewModels.InventarioCollection)
+            var email = User.Identity.Name;
+
+            if (name != null)
+            {
+
+                if (email != "")
                 {
-                    var colorDetail = DbModel.Colores.FirstOrDefault(x => x.Id == item.Color.Id);
-                    ventaViewModels.ColorsCollection.Add(colorDetail);
+                    ViewBag.NoLogIn = 1;
+                    var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+                    var Colores = DbModel.Colores.ToList();
+                    VentaViewModels ventaViewModels = new VentaViewModels();
+                    ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
+                    ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id).ToList();
+                    ventaViewModels.ColorsCollection = new List<Color>();
+                    foreach (var item in ventaViewModels.InventarioCollection)
+                    {
+                        var colorDetail = DbModel.Colores.FirstOrDefault(x => x.Id == item.Color.Id);
+                        ventaViewModels.ColorsCollection.Add(colorDetail);
+                    }
+                    ventaViewModels.ProductosFavoritosColelction = new List<ProductosFavoritos>();
+
+                    ventaViewModels.ProductosFavoritosColelction = DbModel.ProductosFavoritos.Where(x => x.idPersona == usuarioLoggeado.idPersona).OrderBy(x => x.idProducto).ToList();
+
+                    ventaViewModels.ProductosFavId = new List<int>();
+
+                    foreach (var item in ventaViewModels.ProductosFavoritosColelction)
+                    {
+
+                        if (item.idProducto == ventaViewModels.Producto.Id)
+                        {
+                            ventaViewModels.ProductosFavId.Add(item.idProducto);
+                            break;
+                        }
+
+
+
+                    }
+                    return View(ventaViewModels);
                 }
-            return View(ventaViewModels);
+                else
+                {
+                    ViewBag.NoLogIn = 0;
+                    VentaViewModels ventaViewModels = new VentaViewModels();
+                    ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
+                    ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id).ToList();
+                    ventaViewModels.ColorsCollection = new List<Color>();
+                    foreach (var item in ventaViewModels.InventarioCollection)
+                    {
+                        var colorDetail = DbModel.Colores.FirstOrDefault(x => x.Id == item.Color.Id);
+                        ventaViewModels.ColorsCollection.Add(colorDetail);
+                    }
+                    return View(ventaViewModels);
+                }
+
+
             }
             else
             {
                 return Redirect("Tienda");
             }
-        }
-
-        [HttpPost]
-        public ActionResult AgregarProductoFavorito(int? pagi, Producto producto, int accion)
-        {
-            var correo = User.Identity.Name;
-            if (correo != "")
-            {
-                if (accion == 1)
-                {
-                    ProductosFavoritos productosFavoritos = new ProductosFavoritos();
-                    using (this.DbModel = new ApplicationDbContext())
-                    {
-
-                        var idPersonas = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
-                        var nombreProdcuto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                        productosFavoritos.Nombre = nombreProdcuto.Nombre;
-                        productosFavoritos.idProducto = producto.Id;
-                        productosFavoritos.idPersona = idPersonas.idPersona;
-                        DbModel.ProductosFavoritos.Add(productosFavoritos);
-                        DbModel.SaveChanges();
-                    }
-                    if (pagi != null)
-                    {
-                        return RedirectToAction("Tienda", new { pag = pagi });
-                    }
-                    else
-                    {
-
-                        using (this.DbModel = new ApplicationDbContext())
-                        {
-
-                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                            return RedirectToAction("Bamboo1", new { name = nombreProducto.Nombre });
-                        }
-                    }
-
-                }
-                else if (accion == 2)
-                {
-                    // Eliminación
-                    var productoFav = DbModel.ProductosFavoritos.FirstOrDefault(x => x.idProducto == producto.Id);
-
-                    if (productoFav != null)
-                    {
-                        DbModel.ProductosFavoritos.Remove(productoFav);
-                        DbModel.SaveChanges();
-
-                        if (pagi != null)
-                        {
-                            return RedirectToAction("Tienda", new { pag = pagi });
-                        }
-                        else
-                        {
-                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                            return RedirectToAction("Bamboo1", new { name = nombreProducto.Nombre });
-                        }
-
-                    }
-                }
-
-            }
-            else
-            {
-                // El usuario no ha sido logeado, le mandamos un mensaje
-                ViewBag.NoLogIn = 0;
-                ViewBag.pagina = 1;
-                Tienda(0, 1);
-                return View("Tienda");
-            }
 
 
-
-            return View("Tienda");
 
         }
 
@@ -1855,7 +1303,17 @@ namespace MerxProject.Controllers
 
                     if (cantidadProducto != null)
                     {
-                        var Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
+                        Color Color = new Color();
+
+                        if (color == null)
+                        {
+                            Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == "#FFFFFF");
+                        }
+                        else
+                        {
+                            Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
+                        }
+                        
                         var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
                         var carritoCantidad = DbModel.CarritoCompras.Where(x => x.ColorNombre == Color.Nombre).ToList();
 
@@ -1871,8 +1329,17 @@ namespace MerxProject.Controllers
                         {
                             if (carritoCantidad.Count + cantidadProducto > inventario.Cantidad)
                             {
-                                var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre });
+
+                                if (pagi != null)
+                                {
+                                    return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = Color.Nombre });
+                                }
+                                else
+                                {
+                                    var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                    return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = Color.Nombre });
+                                }
+                               
                             }
                         }
 
@@ -1893,19 +1360,25 @@ namespace MerxProject.Controllers
                             var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
                             agregarProductoCarrito.ColorNombre = Color.Nombre;
                             agregarProductoCarrito.CodigoColor = Color.Codigo;
+                            agregarProductoCarrito.idColor = Color.Id;
                             agregarProductoCarrito.Cantidad = inventario.Cantidad;
                         }
                         else
                         {
-                            var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
-                            var Color = DbModel.Colores.FirstOrDefault(x => x.Id == inventario.Color.Id);
+                            Inventario inventario = new Inventario();
+                            inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
+                            //inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
+                            
+                            var Color = DbModel.Colores.FirstOrDefault(x => x.Id == 1);
                             agregarProductoCarrito.ColorNombre = Color.Nombre;
                             agregarProductoCarrito.CodigoColor = Color.Codigo;
+                            agregarProductoCarrito.idColor = Color.Id;
                             agregarProductoCarrito.Cantidad = inventario.Cantidad;
                         }
                         agregarProductoCarrito.Imagen = nombreProdcuto.Imagen;
                         agregarProductoCarrito.idProducto = producto.Id;
                         agregarProductoCarrito.idPersona = idPersonas.idPersona;
+                        
                         DbModel.CarritoCompras.Add(agregarProductoCarrito);
                         DbModel.SaveChanges();
                     }
@@ -1937,7 +1410,7 @@ namespace MerxProject.Controllers
                 {
                     // Eliminación
 
-                    var productoCarrito = DbModel.CarritoCompras.FirstOrDefault(x => x.ColorNombre == color);
+                    var productoCarrito = DbModel.CarritoCompras.FirstOrDefault(x => x.CodigoColor == color);
 
                     if (productoCarrito != null)
                     {

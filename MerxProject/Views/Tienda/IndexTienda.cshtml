@@ -7,7 +7,7 @@
     int indiceProducto = 1;
     int i = 0;
     int idAux = 0, idAux2 = 50;
-    float subtotal = 0;
+    double subtotal = 0;
     double subTotalAux = 0;
 }
 
@@ -252,7 +252,7 @@
                                                             {
                                                                 <input type="hidden" name="id" value=@item.idProducto id=@idAux>
                                                                 <input type="hidden" name="accion" value="2" id=@idAux>
-                                                                <input type="hidden" name="color" value="@item.ColorNombre" id=@idAux>
+                                                                <input type="hidden" name="color" value="@item.CodigoColor" id=@idAux>
                                                                 <a onclick="$('#@idAux').submit(); return false;">-</a>
                                                             }
 
@@ -262,7 +262,7 @@
                                                             {
                                                                 <input type="hidden" name="id" value=@item.idProducto id=@idAux2>
                                                                 <input type="hidden" name="accion" value="1" id=@idAux2>
-                                                                <input type="hidden" name="color" value="@item.ColorNombre" id=@idAux2>
+                                                                <input type="hidden" name="color" value="@item.CodigoColor" id=@idAux2>
                                                                 <input type="hidden" name="esCarrito" value="True" id=@idAux2>
                                                                 <input type="hidden" name="cantidadProducto" value="@Model.CantidadesProductos[i].Cantidad" id=@idAux2>
 
@@ -371,14 +371,18 @@
                                             <div class="cart_extra_total_title">Total</div>
                                             @if (ViewBag.subTotalDesc != null)
                                             {
-                                                <div class="cart_extra_total_value ml-auto">$@ViewBag.subTotalDesc</div>
+                                                subTotalAux = @ViewBag.subTotalDesc;
+                                                <div class="cart_extra_total_value ml-auto">$@subTotalAux</div>
                                             }
                                             else
                                             {
                                                 if (ViewBag.descuentoGuardado != null)
                                                 {
 
-                                                    subTotalAux = ViewBag.descuentoGuardado * subtotal;
+                                                    //subTotalAux = ViewBag.descuentoGuardado * subtotal;
+
+                                                    subTotalAux = (subtotal - (ViewBag.descuentoGuardado * subtotal));
+
                                                     <div class="cart_extra_total_value ml-auto">$@subTotalAux</div>
                                                 }
                                                 else
@@ -397,7 +401,16 @@
 
                                         <input type="hidden" name="subtotal" value=@subtotal id="pago3">
 
+                                        if (subTotalAux  > 0)
+                                        {
                                         <input type="hidden" name="total" value="@subTotalAux" id="pago">
+
+                                        }
+                                        else
+                                        {
+
+                                        <input type="hidden" name="total" value="@subtotal" id="pago">
+                                        }
                                         <input type="hidden" name="cupon" value=@ViewBag.descuentoGuardado id="pago1">
                                         <input type="hidden" name="ship" value="" id="shipWe2">
                                         <input type="hidden" name="ship" value="" id="shipWe2">
@@ -405,7 +418,7 @@
 
                                         <div class="checkout_button trans_200">
                                             <a id=@idAux name=@idAux href="" onclick="$('#payment').submit(); return false;">
-                                                proceed to checkout
+                                                Proceder al Pago
                                             </a>
 
                                         </div>

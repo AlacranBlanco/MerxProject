@@ -13,7 +13,7 @@ namespace MerxProject.Models.CarritoCompras
 
         public string Nombre { get; set; }
 
-        public float Precio { get; set; }
+        public double Precio { get; set; }
 
         public string ColorNombre { get; set; }
 
@@ -26,6 +26,7 @@ namespace MerxProject.Models.CarritoCompras
         public int idPersona { get; set; }
 
         public int idProducto { get; set; }
+        public int idColor { get; set; }
 
     }
 }

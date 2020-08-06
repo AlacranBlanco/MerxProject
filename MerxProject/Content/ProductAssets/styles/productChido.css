@@ -614,10 +614,18 @@ section {
     font-weight: 700;
     color: #4a4a4a;
     padding-left: 26px;
+<<<<<<< HEAD
 }
 
 .svg path, .svg rect, .svg polygon {
     fill: #778990;
+=======
+    
+}
+
+.svg path, .svg rect, .svg polygon {
+    fill: transparent;
+>>>>>>> BraulioMonroy
     -webkit-transition: all 200ms ease;
     -moz-transition: all 200ms ease;
     -ms-transition: all 200ms ease;
@@ -625,11 +633,21 @@ section {
     transition: all 200ms ease;
 }
 
+<<<<<<< HEAD
 .svg:hover path,
 .svg:hover rect,
 .svg:hover polygon {
     fill: #2fce98;
 }
+=======
+/*.svg:hover path,
+.svg:hover rect,
+.svg:hover polygon {
+    fill: #2fce98;
+}*/
+
+
+>>>>>>> BraulioMonroy
 
 /*********************************
 4. Menu
