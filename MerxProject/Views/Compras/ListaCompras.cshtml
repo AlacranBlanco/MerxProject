@@ -48,17 +48,31 @@
             </td>
             <td>
                 <button class="btn btn-primary btn-sm" data-toggle="modal" id="details_@item.Id"
-                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "4" })')">
-                    Ver Detalles
+                        onclick="createModal('@Url.Action("ListaDetalleCompra", "Compras" , new {idCompra=item.Id, accion = "4" })')">
+                    Detalles
                 </button>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
-                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "2" })')">
-                    Editar
-                </button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
-                        onclick="createModal('@Url.Action("popUpCompras", "Compras" , new {id=item.Id, accion = "3" })')">
-                    Eliminar
-                </button>
+                @if (item.Estatus < 2)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                            onclick="createModal('@Url.Action("popUpCompras", "Compras", new { id = item.Id, accion = "2" })')">
+                        Editar
+                    </button>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                            onclick="createModal('@Url.Action("popUpCompras", "Compras", new { id = item.Id, accion = "3" })')">
+                        Cancelar
+                    </button>
+                }
+                @if (item.Estatus >= 2)
+                {
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                            disabled>
+                        Editar
+                    </button>
+                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                            disabled>
+                        Cancelar
+                    </button>
+                }
             </td>
         </tr>
 
@@ -91,8 +105,7 @@
 
     function createModal(url) {
         $.get(url, function (data) {
-            $("#idModalElminar").html(data);
-            $("#idModalElminar").modal('show');
+            
         });
 
     }

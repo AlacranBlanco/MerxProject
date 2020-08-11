@@ -18,6 +18,8 @@
                         {
                             @Html.AntiForgeryToken()
                                 <div class="form-horizontal">
+                                @if (ViewBag.accion == "1" || ViewBag.accion == "2")
+                                {
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Folio, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -62,13 +64,15 @@
                                             @Html.HiddenFor(model => model.Estatus)
                                         </div>
                                     </div>
-
+                                }
+                                @if (ViewBag.accion == "3")
+                                {
+                                    <h3>¿Desea cancelar la compra @Model.Folio?</h3>
+                                }
                                     <div class="form-group">
                                         <div class="col-md-offset-2 col-md-10">
                                             <input type="hidden" name="accion" value="@ViewBag.Accion" />
-                                            <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">@ViewBag.title</button>
-                                            <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
-                                                 data-url='@Url.Action("ListaDetalleCompra", "Compras", new { idCompra = Model.Id} )'></div>
+                                            
                                             <br />
                                             <input type="submit" value="@ViewBag.title" class="btn btn-default" />
                                         </div>
