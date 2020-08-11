@@ -73,7 +73,7 @@
             <div class="header-container d-flex align-items-center">
                 <div class="logo mr-auto">
                     <!-- Uncomment below if you prefer to use an image logo -->
-                    <a href="Index"><img src="~/Content/assets/img/logo.png" alt="" class="img-fluidMerx"></a>
+                    <a href="@Url.Action("Index","Home")"><img src="~/Content/assets/img/logo.png" alt="" class="img-fluidMerx"></a>
                 </div>
 
                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @style = "display:inline;" }))
@@ -81,38 +81,23 @@
                 <nav class="nav-menu d-none d-lg-block">
                     <ul style="white-space:nowrap;">
                         <li class="active"><a href="#header">Inicio</a></li>
-<<<<<<< HEAD
                         <li><a href="#about">Acerca de nosotros</a></li>
                         <li><a href="#services">Servicios</a></li>
                         <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
                         <li><a href="@Url.Action("ConsultarPedido", "Proceso")">Pedido</a></li>
                         <li><a href="#contact">Contacto</a></li>
-=======
-                        <li><a href="@Url.Action("Index", "Home")">Acerca de nosotros</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Servicios</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Productos</a></li>
-                        <li><a href="#">Tienda</a></li>
-                        <li class="drop-down">
-                            <a href="">Categorias</a>
-                            <ul>
-                                <li><a href="#">Mesas</a></li>
-                                <li><a href="#">Sillones</a></li>
-                                <li><a href="#">Camas</a></li>
-                                <li><a href="#">Escritorios</a></li>
-                                <li><a href="#">Sillas</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="@Url.Action("Index", "Home")">Contacto</a></li>
->>>>>>> BraulioMonroy
-
                         @if (Request.IsAuthenticated)
                         {
                             string Nombre = "Usuario";
                             if (Session["user"] != null)
                             {
                                 Nombre = Session["user"].ToString();
-                            }
 
+                                if (Nombre.Contains('@'))
+                                {
+                                    Nombre = Nombre.Substring(0, Nombre.IndexOf('@'));
+                                }
+                            }
                             <li>
                                 @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage"})
                             </li>

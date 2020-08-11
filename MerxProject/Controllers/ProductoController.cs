@@ -237,7 +237,7 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var Materiales = DbModel.Materiales.ToList();
+                var Materiales = DbModel.Materiales.Where(x =>x.Piezas == true).ToList();
                 var Muebles = DbModel.Muebles.ToList();
                 ViewBag.Materiales = Materiales;
                 ViewBag.Muebles = Muebles;
@@ -432,7 +432,7 @@ namespace MerxProject.Controllers
                                 var inv = new Inventario()
                                 {
                                     Cantidad = 0,
-                                    Color = colores.Where(x => x.Id == 1).FirstOrDefault(),
+                                    Color = colores.Where(x => x.Nombre == "Natural").FirstOrDefault(),
                                     Producto = productos
                                 };
                                 DbModel.Inventarios.Add(inv);
@@ -580,13 +580,23 @@ namespace MerxProject.Controllers
                     }
                     else
                     {
+                        var Colores = DbModel.Colores.ToList();
                         inv = DbModel.Inventarios.Find(Convert.ToInt16(radio));
-                        DbModel.Inventarios.Remove(inv);
-                        DbModel.SaveChanges();
-                        resultado = "Eliminación realizada";
-                        Session["res"] = resultado;
-                        Session["tipo"] = "Exito";
-                        return RedirectToAction("ListaProducto");
+                        if (DbModel.Procesos.Where(x => x.Inventario.Id == inv.Id).Count() < 1 && inv.Color.Nombre != "Natural")
+                        {
+                            DbModel.Inventarios.Remove(inv);
+                            DbModel.SaveChanges();
+                            resultado = "Eliminación realizada";
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProducto");
+                        }
+                        else
+                        {
+                            Session["res"] = "Hay productos en proceso con este color o es un color predeterminado";
+                            return RedirectToAction("ListaProducto");
+                        }
+                            
                     }
                 }
                 catch (Exception ex)
@@ -603,19 +613,33 @@ namespace MerxProject.Controllers
         [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaProducto(int pagina = 1)
         {
+            int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 var Materiales = DbModel.Materiales.ToList();
                 var Muebles = DbModel.Muebles.ToList();
                 ViewBag.Materiales = Materiales;
                 ViewBag.Muebles = Muebles;
-
-                var productos = DbModel.Productos.ToList();
-                return View(productos);
+                _TotalRegistros = DbModel.Productos.Count();
+                // Obtenemos la 'página de registros' de la tabla Productos
+                _Producto = DbModel.Productos.OrderBy(x => x.Nombre)
+                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                 .Take(_RegistrosPorPagina)
+                                                 .ToList();
+                // Número total de páginas de la tabla Productos
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorProducto = new PaginadorGenerico<Producto>()
+                {
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Producto
+                };
+                return View("ListaProducto", _PaginadorProducto);
             }
         }
-
-
 
         [AllowAnonymous]
         [HttpGet]

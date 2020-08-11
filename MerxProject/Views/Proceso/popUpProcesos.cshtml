@@ -25,13 +25,6 @@
                             <div class="form-horizontal">
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="form-group">
                                     <label class="control-label col-md-2">Buscar producto</label>      
                                     <div class="col-md-10">
                                         <input type="text" name="parametro" value="" placeholder="Buscar" id="parameter" class="form-control" onchange="GetProd(this.value);"/>
@@ -41,6 +34,7 @@
                                     @Html.LabelFor(model => model.Inventario.Producto, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
                                         <select id="ddlstate" class="form-control" onchange="GetInv(this.value);" required>
+                                            <option>Selecciona una opcion</option>
                                             @foreach (var item in productos)
                                             {
                                                 <option value="@item.Id">@item.Nombre</option>

@@ -84,6 +84,10 @@ namespace MerxProject.Controllers
         [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaProcesos (int pagina = 1)
         {
+            if (User.IsInRole("Administrador"))
+            {
+                ViewBag.Admin = true;
+            }
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -149,19 +153,106 @@ namespace MerxProject.Controllers
                     }
                     else if (accion == "2")
                     {
-                     
-                        var procesos = DbModel.Procesos.Find(Id);
+                        var CatMue = DbModel.Muebles.ToList();
+                        var CatMat = DbModel.Materiales.ToList();
+                        var prod = DbModel.Productos.ToList();
+                        var color = DbModel.Colores.ToList();
+                        var Inv = DbModel.Inventarios.ToList();
+                        var procesos = DbModel.Procesos.Where(x=>x.Id==Id).First();
+
                         procesos.Tiempo = DateTime.Now;
                         procesos.Estado = "En espera";
                         switch (procesos.Nombre)
                         {
                             case "Corte":
+                                var Piezas = DbModel.Piezas.ToList();
+                                var Mueble = DbModel.DetalleMuebles.Where(x => x.Mueble.Id == procesos.Inventario.Producto.CategoriaMueble.Id).ToList();
+                                var Material = DbModel.PiezaMateriales.Where(x => x.Material.Id == procesos.Inventario.Producto.CategoriaMaterial.Id).ToList();
+                                bool FaltanPiezas = false;
+                                
+                                foreach (var item in Mueble)
+                                {
+                                    if (FaltanPiezas)
+                                    {
+                                        break;
+                                    }
+                                    foreach (var Pieza in Material)
+                                    {
+                                        if (item.Pieza.Id == Pieza.Pieza.Id)
+                                        {
+                                            if (item.Cantidad <= Pieza.Cantidad)
+                                            {
+                                                Pieza.Cantidad -= item.Cantidad;
+                                                DbModel.PiezaMateriales.AddOrUpdate(Pieza);
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                int faltante = item.Cantidad - Pieza.Cantidad;
+                                                Session["res"] = "Faltan " + faltante + " piezas de " + item.Pieza.Nombre;
+                                                FaltanPiezas = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (FaltanPiezas)
+                                {
+                                    return RedirectToAction("ListaProcesos");
+                                }
                                 procesos.Nombre = "Construcción";
                                 break;
                             case "Construcción":
-                                procesos.Nombre = "Detallado";
+                                procesos.Nombre = "Detallado"; 
                                 break;
                             case "Detallado":
+                                if(procesos.Inventario.Color.Nombre == "Natural")
+                                {
+                                    var mat = DbModel.Materiales.Where(x => x.Nombre == procesos.Inventario.Producto.CategoriaMaterial.Nombre).FirstOrDefault().Nombre;
+                                    if (!mat.Contains("Bambú"))
+                                    {
+                                        var Barniz = DbModel.Materiales.Where(x => x.Nombre == "Barniz").FirstOrDefault();
+                                        if (Barniz.Cantidad > procesos.Inventario.Producto.CategoriaMueble.GalonesUsados)
+                                        {
+                                            //1 galón de barniz por cada 9 metros cuadrados.
+                                            Barniz.Cantidad -= procesos.Inventario.Producto.CategoriaMueble.GalonesUsados;
+                                            DbModel.Materiales.AddOrUpdate(Barniz);
+                                        }
+                                        else
+                                        {
+                                            Session["res"] = "Ya no hay barniz suficiente para continuar";
+                                            return RedirectToAction("ListaProceso");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var BarnizEspecial = DbModel.Materiales.Where(x => x.Nombre == "Barniz Bambú").FirstOrDefault();
+                                        if(BarnizEspecial.Cantidad > procesos.Inventario.Producto.CategoriaMueble.GalonesUsados)
+                                        {
+                                            BarnizEspecial.Cantidad -= procesos.Inventario.Producto.CategoriaMueble.GalonesUsados;
+                                            DbModel.Materiales.AddOrUpdate(BarnizEspecial);
+                                        }
+                                        else
+                                        {
+                                            Session["res"] = "Ya no hay barniz especial para bambú suficiente para continuar";
+                                            return RedirectToAction("ListaProceso");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    var Pintura = DbModel.Materiales.Where(x => x.Nombre == "Pintura " + procesos.Inventario.Color.Nombre).FirstOrDefault();
+                                    if(Pintura.Cantidad > procesos.Inventario.Producto.CategoriaMueble.GalonesUsados)
+                                    {
+                                        Pintura.Cantidad -= procesos.Inventario.Producto.CategoriaMueble.GalonesUsados;
+                                        DbModel.Materiales.AddOrUpdate(Pintura);
+                                    }
+                                    else
+                                    {
+                                        Session["res"] = "Ya no hay pintura "+ procesos.Inventario.Color.Nombre +" suficiente para continuar";
+                                        return RedirectToAction("ListaProcesos");
+                                    }
+                                }
                                 procesos.Nombre = "Pintado";
                                 break;
                             case "Pintado":
@@ -273,20 +364,27 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
+                var CatMue = DbModel.Muebles.ToList();
+                var CatMat = DbModel.Materiales.ToList();
+                var prod = DbModel.Productos.ToList();
+                var color = DbModel.Colores.ToList();
+                var Inv = DbModel.Inventarios.ToList();
+                var procesos = DbModel.Procesos.Where(x => x.Id == Id).First();
+
                 var usuario = DbModel.Usuarios.Where(x => x.User == User.Identity.Name).FirstOrDefault();
                 var empleado = DbModel.Empleados.Where(x => x.Usuarioss.idUsuario == usuario.idUsuario).FirstOrDefault();
                 var persona = DbModel.Personas.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
+                
 
                 if (persona!=null && cliente == null)
                 {
                     try
                     {
-                        var inventario = DbModel.Inventarios.ToList();
-                        var proceso = DbModel.Procesos.Find(Id);
-                        if (proceso.Nombre == "Finalizado")
+                        
+                        if (procesos.Nombre == "Finalizado")
                         {
-                            proceso.Estado = "Finalizado";
-                            DbModel.Procesos.AddOrUpdate(proceso);
+                            procesos.Estado = "Finalizado";
+                            DbModel.Procesos.AddOrUpdate(procesos);
                             DbModel.SaveChanges();
                             Session["res"] = "Proceso ya finalizado, esperando confirmación del cliente";
                             Session["tipo"] = "Exito";
@@ -294,10 +392,10 @@ namespace MerxProject.Controllers
                         }
                         else
                         {
-                            proceso.Estado = "En proceso";
-                            proceso.Empleado = persona.Nombre;
-                            proceso.Tiempo = DateTime.Now;
-                            DbModel.Procesos.AddOrUpdate(proceso);
+                            procesos.Estado = "En proceso";
+                            procesos.Empleado = persona.Nombre;
+                            procesos.Tiempo = DateTime.Now;
+                            DbModel.Procesos.AddOrUpdate(procesos);
                             DbModel.SaveChanges();
                             Session["res"] = "Proceso iniciado";
                             Session["tipo"] = "Exito";
@@ -312,11 +410,25 @@ namespace MerxProject.Controllers
                 }
                 else if(cliente != null)
                 {
-                    var proceso = DbModel.Procesos.Find(Id);
-                    DbModel.Procesos.Remove(proceso);
-                    DbModel.SaveChanges();
-                    Session["res"] = "Gracias por su confianza";
-                    return RedirectToAction("ConsultarPedido");
+                    
+                    if (cliente == 1)
+                    {
+                        DbModel.Procesos.Remove(procesos);
+                        DbModel.SaveChanges();
+                        Session["res"] = "Gracias por su confianza";
+                        Session["tipo"] = "Exito";
+                        return RedirectToAction("ConsultarPedido");
+                    }
+                    else
+                    {   
+                        procesos.Inventario.Cantidad += 1;
+                        DbModel.Inventarios.AddOrUpdate(procesos.Inventario);
+                        DbModel.Procesos.Remove(procesos);
+                        DbModel.SaveChanges();
+                        Session["res"] = "Proceso finalizado";
+                        Session["tipo"] = "Exito";
+                        return RedirectToAction("ListaProcesos");
+                    }
                 }
                 else
                 {

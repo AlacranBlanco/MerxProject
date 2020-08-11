@@ -6,15 +6,14 @@ using System.Web;
 
 namespace MerxProject.Models
 {
-    public class Mueble
+    public class DetalleMueble
     {
         public int Id { get; set; }
         [Required]
-        public string Nombre { get; set; }
+        public Mueble Mueble { get; set; }
         [Required]
-        public string Descripcion { get; set; }
-        public string Imagen { get; set; }
+        public Pieza Pieza { get; set; }
         [Required]
-        public double GalonesUsados { get; set; }
+        public int Cantidad { get; set; }
     }
 }

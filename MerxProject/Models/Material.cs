@@ -14,12 +14,15 @@ namespace MerxProject.Models
         public string Nombre { get; set; }
         [Required]
         public string Descripcion { get; set; }
-        [Required]
         public string Imagen { get; set; }
         [Required]
-        public string Cantidad { get; set; }
+        public double Cantidad { get; set; }
+        [Required]
+        public string Medida { get; set; }
         [Required]
         public decimal Precio { get; set; }
+        [Required]
+        public bool Piezas { get; set; }
         public virtual List<DetalleCompra> DetalleCompras { get; set; }
     }
 }

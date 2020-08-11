@@ -47,8 +47,11 @@ namespace MerxProject.Models
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }
         public DbSet<Color> Colores { get; set; }
+        public DbSet<Pieza> Piezas { get; set; }
         public DbSet<Mueble> Muebles { get; set; }
         public DbSet<Material> Materiales { get; set; }
+        public DbSet<PiezaMaterial> PiezaMateriales { get; set; }
+        public DbSet<DetalleMueble> DetalleMuebles { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Proceso> Procesos { get; set; }

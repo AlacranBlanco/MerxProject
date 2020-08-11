@@ -74,28 +74,42 @@
                     <a href="Index"><img src="~/Content/assets/img/logo.png" alt="" class="img-fluidMerx"></a>
                 </div>
 
-                <nav class="nav-menu d-none d-lg-block">
-                    <ul>
-                        <li class="active"><a href="#header">Inicio</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Acerca de nosotros</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Servicios</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Productos</a></li>
-                        <li><a href="#">Tienda</a></li>
-                        <li class="drop-down">
-                            <a href="">Categorias</a>
-                            <ul>
-                                <li><a href="#">Mesas</a></li>
-                                <li><a href="#">Sillones</a></li>
-                                <li><a href="#">Camas</a></li>
-                                <li><a href="#">Escritorios</a></li>
-                                <li><a href="#">Sillas</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="@Url.Action("Index", "Home")">Contacto</a></li>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @style = "display:inline;" }))
+                {
+                    <nav class="nav-menu d-none d-lg-block">
+                        <ul style="white-space:nowrap;">
+                            <li class="active"><a href="@Url.Action("Index","Home")">Inicio</a></li>
+                            <li><a href="@Url.Action("Index","Home")">Acerca de nosotros</a></li>
+                            <li><a href="@Url.Action("Index","Home")">Servicios</a></li>
+                            <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
+                            <li><a href="@Url.Action("ConsultarPedido", "Proceso")">Pedido</a></li>
+                            <li><a href="@Url.Action("Index","Home")">Contacto</a></li>
+                            @if (Request.IsAuthenticated)
+                            {
+                                string Nombre = "Usuario";
+                                if (Session["user"] != null)
+                                {
+                                    Nombre = Session["user"].ToString();
+                                    if (Nombre.Contains('@'))
+                                    {
+                                        Nombre = Nombre.Substring(0, Nombre.IndexOf('@'));
+                                    }
+                                }
 
-                        <li class="get-started"><a href="#about">Iniciar</a></li>
-                    </ul>
-                </nav><!-- .nav-menu -->
+                                <li>
+                                    @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                                </li>
+                                <li style="display: inline">
+                                    <a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("Registrarse", "Login", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                            }
+                        </ul>
+                    </nav><!-- .nav-menu -->
+                }
             </div><!-- End Header Container -->
         </div>
     </header><!-- End Header -->

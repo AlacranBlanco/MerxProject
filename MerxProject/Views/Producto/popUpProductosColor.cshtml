@@ -39,7 +39,14 @@
                                         <div class="col-md-2">
                                             <label class="control-label col-md-2">Color @item.Color.Nombre</label>
                                             <div class="col-md-10">
-                                                <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Color.Codigo;"></span>
+                                                @if (item.Color.Codigo != null)
+                                                {
+                                                    <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Color.Codigo;"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: white";></span>
+                                                }
                                             </div>
                                             <div class="col-md-10">
                                                 <input type="radio" name="radio" value="@item.Id" class="" />

@@ -1,43 +1,117 @@
 ﻿@model IEnumerable<MerxProject.Models.ApplicationUser>
 @{
     ViewBag.Title = "Dashboard";
-
 }
-
 <h2>Dashboard</h2>
+<div class="col-md-12">
+    <div class="col-md-6 card">
+        <h3 class="card-title">Ganancias del mes</h3>
+        @if (!ViewBag.nulo)
+        {
+            <div id="Barchart" class="card-body">
+            </div>
+        }
+        else
+        {
+            <p class="card-text">No hay ventas en este mes</p>
+        }
+    </div>
+    <div class="col-md-6">
+        <h3>Productos más vendidos</h3>
+            @if(ViewBag.Productos != null)
+            {
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                    </tr>
+                @foreach(var item in ViewBag.Productos)
+                {
+                    <tr>
+                        <td>@item.Producto</td>
+                        <td>@item.Cantidad</td>
+                    </tr>
+                       
+                }
+                </table>
+            }
+            else
+            {
+                <p>No hay productos más vendudos en este mes</p>
+            }
+    </div>
+    <div class="col-md-12">
+        <h3>Procesos actuales</h3>
+        @if(ViewBag.Procesos  != null)
+        {
+        <table class="table table-borderless">
+            <tr>
+                <th>Id</th>
+                <th>Estatus</th>
+                <th>Proceso actual</th>
+                <th>Tiempo</th>
+                <th>Empleado</th>
+            </tr>
+            @foreach (var item in ViewBag.Procesos)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Status</td>
+                    <td>@item.ProcesoActual</td>
+                    <td>@item.Horas horas</td>
+                    <td>@item.Empleado</td>
+                </tr>
+
+            }
+        </table>
+        }
+        else
+        {
+            <p>No hay procesos actualmente</p>
+        }
+    </div>
+</div>
 
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="~/Content/assets/css/c3.css" rel="stylesheet">
 
+<!-- Load d3.js and c3.js -->
+<script src="~/Content/assets/js/d3-5.8.2.min.js" charset="utf-8"></script>
+<script src="~/Content/assets/js/c3.js"></script>
 <script type="text/javascript">
 
-    $(document).ready(function () {
-        $('#Nuevo').click(function () {
-            var url = $('#idModalRegistrar').data('url');
-            $.get(url, function (data) {
-                $("#idModalRegistrar").html(data);
-                $("#idModalRegistrar").modal('show');
-            });
-        });
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("BarChart","Admin")",
+        data: {},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            successFunc(response);
+        },
     });
 
-
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalUpdate").html(data);
-            $("#idModalUpdate").modal('show');
+    function successFunc(jsondata) {
+        var chart = c3.generate({
+            bindto: '#Barchart',
+            data: {
+                json: jsondata,
+                keys: {
+                    value: ['dia','Ganancia'],
+                },
+                columns: ['dia'],
+                type: 'bar',
+            },
+            color: {
+                pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+            },
         });
-
     }
 
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalElminar").html(data);
-            $("#idModalElminar").modal('show');
-        });
-
-    }
+    
 
 
 </script>

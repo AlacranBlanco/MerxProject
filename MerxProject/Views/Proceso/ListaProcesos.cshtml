@@ -150,6 +150,18 @@
                     <input type="submit" name="name" value="Iniciar proceso" class="btn btn-primary btn-sm" />
                 }
             }
+            @if (item.Nombre == "Finalizado" && ViewBag.Admin != null)
+            {
+                if (ViewBag.Admin)
+                {
+                    using (Html.BeginForm("TomarPedido", "Proceso", FormMethod.Get))
+                    {
+                        <input type="hidden" name="Cliente" value="2" />
+                        <input type="hidden" name="Id" value="@item.Id" />
+                        <input type="submit" name="name" value="Terminar proceso" class="btn btn-primary btn-sm"/>
+                    }
+                }
+            }
             @if (item.Estado == "En proceso")
             {
                 using (Html.BeginForm("popUpProcesos", "Proceso", FormMethod.Get))
