@@ -329,6 +329,13 @@
     <Content Include="Content\assets\img\ico\ms-icon-70x70.png" />
     <Content Include="Content\assets\img\logo.png" />
     <Content Include="Content\assets\img\MerxWhite.png" />
+    <Content Include="Content\assets\img\portfolio\chair1.jpg" />
+    <Content Include="Content\assets\img\portfolio\esc11.jpg" />
+    <Content Include="Content\assets\img\portfolio\esc22.jpg" />
+    <Content Include="Content\assets\img\portfolio\esc33.jpg" />
+    <Content Include="Content\assets\img\portfolio\mesa11.jpg" />
+    <Content Include="Content\assets\img\portfolio\mesa22.jpg" />
+    <Content Include="Content\assets\img\portfolio\mesa33.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-1.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-2.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-3.jpg" />
@@ -341,6 +348,9 @@
     <Content Include="Content\assets\img\portfolio\portfolio-details-1.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-details-2.jpg" />
     <Content Include="Content\assets\img\portfolio\portfolio-details-3.jpg" />
+    <Content Include="Content\assets\img\portfolio\silla11.jpg" />
+    <Content Include="Content\assets\img\portfolio\silla22.png" />
+    <Content Include="Content\assets\img\portfolio\silla33.png" />
     <Content Include="Content\assets\img\products\chair.png" />
     <Content Include="Content\assets\img\products\loveSeat.png" />
     <Content Include="Content\assets\img\products\nightTable.png" />
