@@ -258,7 +258,8 @@ namespace MerxProject.Controllers
                 else if (user != null && user.EmailConfirmed)
                 {
                     Session["user"] = user.UserName;
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Index", "Home");
+                    //return RedirectToLocal(returnUrl);
                 }
                 else
                 {
@@ -327,8 +328,10 @@ namespace MerxProject.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
+        [HttpGet]
         public ActionResult Register()
         {
+            
             return View();
         }
 

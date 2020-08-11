@@ -21,21 +21,21 @@
 <script>
 
 
-        function changeSrc() {
+    function changeSrc() {
 
-            var rates = document.getElementsByName('ship');
-            var rate_value;
-            for (var i = 0; i < rates.length; i++) {
-                if (rates[i].checked) {
-                    rate_value = rates[i].value;
-                }
+        var rates = document.getElementsByName('ship');
+        var rate_value;
+        for (var i = 0; i < rates.length; i++) {
+            if (rates[i].checked) {
+                rate_value = rates[i].value;
             }
-
-            console.log(rate_value);
-            $("#shipWe").text(rate_value);
-            $("#shipWe2").val(rate_value);
-
         }
+
+        console.log(rate_value);
+        $("#shipWe").text(rate_value);
+        $("#shipWe2").val(rate_value);
+
+    }
 
 
 
@@ -48,7 +48,20 @@
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire(
                 'Espera!',
-                'El cuón que intentaste ingresar no existe.',
+                'El cupón que intentaste ingresar no existe.',
+                'warning'
+            )
+        }, false);
+
+    </script>
+}
+else if (ViewBag.CupNotExit == 2)
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire(
+                'Espera!',
+                'El cupón que intentaste ya ha sido utilizado anteriormente.',
                 'warning'
             )
         }, false);
@@ -228,7 +241,7 @@
                                                     <div><div class="product_image"><img src="@Url.Content(item.Imagen)" alt=""></div></div>
                                                     <div class="product_name_container">
                                                         <div class="product_name"><a href="product.html">@item.Nombre</a></div>
-                                                        <div class="product_text" style="color:green">Hay @item.Cantidad Disponibles</div>
+                                                        <div class="product_text" style="color:green">Hay @item.Stock Disponibles</div>
                                                     </div>
                                                 </div>
                                                 @if (item.ColorNombre == "Blanco")
@@ -245,7 +258,7 @@
                                                 <div class="product_quantity_container">
                                                     <div class="product_quantity ml-lg-auto mr-lg-auto text-center">
 
-                                                        <span class="product_text product_num">@Model.CantidadesProductos[i].Cantidad</span>
+                                                        <span class="product_text product_num">@item.Cantidad</span>
                                                         <div class="qty_sub qty_button trans_200 text-center">
 
                                                             @using (Html.BeginForm("AgregarProductoCarrito", "Producto", FormMethod.Post, new { id = idAux }))
@@ -264,7 +277,7 @@
                                                                 <input type="hidden" name="accion" value="1" id=@idAux2>
                                                                 <input type="hidden" name="color" value="@item.CodigoColor" id=@idAux2>
                                                                 <input type="hidden" name="esCarrito" value="True" id=@idAux2>
-                                                                <input type="hidden" name="cantidadProducto" value="@Model.CantidadesProductos[i].Cantidad" id=@idAux2>
+                                                                <input type="hidden" name="cantidadProducto" value="@item.Cantidad" id=@idAux2>
 
 
                                                                 <a onclick="$('#@idAux2').submit(); return false;">+</a>
@@ -272,9 +285,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="product_total product_text"><span>Total: </span>$@Model.CantidadesProductos[i].Precio</div>
+                                                <div class="product_total product_text"><span>Total: </span>$@item.precioTotal</div>
                                             </li>
-                                            subtotal += Model.CantidadesProductos[i].Precio;
+                                            subtotal += item.precioTotal;
                                             indiceProducto++;
                                             i++;
                                             idAux++;
@@ -401,15 +414,15 @@
 
                                         <input type="hidden" name="subtotal" value=@subtotal id="pago3">
 
-                                        if (subTotalAux  > 0)
+                                        if (subTotalAux > 0)
                                         {
-                                        <input type="hidden" name="total" value="@subTotalAux" id="pago">
+                                            <input type="hidden" name="total" value="@subTotalAux" id="pago">
 
                                         }
                                         else
                                         {
 
-                                        <input type="hidden" name="total" value="@subtotal" id="pago">
+                                            <input type="hidden" name="total" value="@subtotal" id="pago">
                                         }
                                         <input type="hidden" name="cupon" value=@ViewBag.descuentoGuardado id="pago1">
                                         <input type="hidden" name="ship" value="" id="shipWe2">
