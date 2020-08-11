@@ -1,39 +1,53 @@
-﻿@model IEnumerable<MerxProject.Models.Proveedor>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Proveedor>
 
 @{
-    ViewBag.Title = "ListaProveedor";
+                ViewBag.Title = "ListaProveedor";
 }
 <h2>Proveedores</h2>
 <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" 
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
      data-url='@Url.Action("popUpProveedores", "Proveedor", new { applicationUser = "", accion = "1" })'></div>
+<br />
+@using (Html.BeginForm("BuscarLista", "Proveedor", FormMethod.Post))
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="input-group" style="display: inline; vertical-align: top; line-height: 28px;">
+                    <input type="text" class="form-control" name="parameter" placeholder="Search term...">
+                    <input type="submit" name="Subir" value="Buscar" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <br />
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Persona.Nombre)
+            Nombre
         </th>
         <th>
-            @Html.DisplayName("Razón Social")
+            Razón Social
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Giro)
+            Giro
         </th>
         <th>
-            @Html.DisplayName("Correo Electrónico")
+            Correo Electrónico
         </th>
         <th>
-            @Html.DisplayName("Teléfono")
+            Teléfono
         </th>
         <th>
-            @Html.DisplayName("Domicilio")
+            Domicilio
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Persona.Ciudad)
+            Ciudad
         </th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Resultado)
     {
         <tr>
             <td>
@@ -58,15 +72,73 @@
                 @Html.DisplayFor(modelItem => item.Persona.Ciudad)
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" 
-                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "2" })')">
+                    Editar
+                </button>
+                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                        onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "3" })')">
+                    Eliminar
+                </button>
             </td>
         </tr>
 
     }
 </table>
+
+
+@*Paginador de registros*@
+@if (Model.Resultado.Count() > 0)
+{
+    <span>
+        <strong>@Model.TotalRegistros</strong> registros encontrados
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+    <span>
+        Página <strong>@(Model.PaginaActual)</strong> de
+        <strong>@Model.TotalPaginas</strong>
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+}
+else
+{
+    <span>No hay resultados para esta búsqueda</span>
+    <span>&nbsp;|&nbsp;</span>
+}
+@if (Model.PaginaActual > 1)
+{
+    @Html.ActionLink("<<", "ListaProveedor", new { pagina = 1 },
+        new { @class = "btn btn-sm btn-default"})
+    <span></span>
+    @Html.ActionLink("Anterior", "ListaProveedor", new { pagina = Model.PaginaActual - 1 },
+        new { @class = "btn btn-sm btn-default" });
+}
+else
+{
+    @Html.ActionLink("<<", "ListaProveedor", new { pagina = 1 },
+        new { @class = "btn btn-sm btn-default disabled" })
+    <span></span>
+    @Html.ActionLink("Anterior", "ListaProveedor", new { pagina = 1 },
+        new { @class = "btn btn-sm btn-default disabled" })
+}
+<span></span>
+@if (Model.PaginaActual < Model.TotalPaginas)
+{
+    @Html.ActionLink("Siguiente", "ListaProveedor", new { pagina = Model.PaginaActual + 1 },
+                    new { @class = "btn btn-sm btn-default" })
+    <span></span>
+    @Html.ActionLink(">>", "ListaProveedor", new { pagina = Model.TotalPaginas },
+                    new { @class = "btn btn-sm btn-default" })
+}
+else
+{
+    @Html.ActionLink("Siguiente", "ListaProveedor", new { pagina = Model.TotalPaginas - 1 },
+                    new { @class = "btn btn-sm btn-default disabled" })
+    <span></span>
+    @Html.ActionLink(">>", "ListaProveedor", new { pagina = Model.TotalPaginas },
+                    new { @class = "btn btn-sm btn-default disabled" })
+}
+
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

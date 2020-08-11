@@ -12,6 +12,12 @@ namespace MerxProject.Controllers
 {
     public class ProveedorController : Controller
     {
+        private readonly int _RegistrosPorPagina = 10;
+
+        private List<Proveedor> _Proveedores;
+        private PaginadorGenerico<Proveedor> _PaginadorProveedores;
+
+
         [AllowAnonymous]
         [HttpGet]
         public ActionResult popUpProveedores(int? Id, string accion)
@@ -144,16 +150,83 @@ namespace MerxProject.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult ListaProveedor()
+        public ActionResult ListaProveedor(int pagina = 1)
         {
+            int _TotalRegistros = 0;
+
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var proveedores = DbModel.Proveedores.Include("Persona").ToList();
-                /*foreach (var i in proveedores)
+                // Número total de registros de la tabla Productos
+                _TotalRegistros = DbModel.Proveedores.Include("Persona").Count();
+                // Obtenemos la 'página de registros' de la tabla Productos
+                _Proveedores = DbModel.Proveedores.Include("Persona").OrderBy(x => x.Id)
+                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                 .Take(_RegistrosPorPagina)
+                                                 .ToList();
+                // Número total de páginas de la tabla Productos
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorProveedores = new PaginadorGenerico<Proveedor>()
                 {
-                i.Persona = (Persona)i.Persona;
-                }*/
-                return View(proveedores);
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Proveedores
+                };
+
+
+                return View(_PaginadorProveedores);
+            }
+        }
+
+        public ActionResult BuscarLista(string parameter, int pagina = 1)
+        {
+            int _TotalRegistros = 0;
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                // Número total de registros de la tabla Productos donde sean parecidos al parámetro
+                _TotalRegistros = DbModel.Proveedores.Include("Persona").Where(x => x.RazonSocial.Contains(parameter) ||
+                                                        x.RFC.Contains(parameter) || x.Persona.Nombre.Contains(parameter) ||
+                                                        x.Persona.Direccion.Contains(parameter) ||
+                                                        x.Persona.Telefono.Contains(parameter) ||
+                                                        x.Persona.Ciudad.Contains(parameter) ||
+                                                        x.Persona.Estado.Contains(parameter) ||
+                                                        x.Persona.CodigoPostal.Contains(parameter) ||
+                                                      (x.Persona.Correo.Contains(parameter))).Count();
+                // Obtenemos la 'página de registros' de la tabla Productos donde sean parecidos al parámetro
+                _Proveedores = DbModel.Proveedores.Include("Persona").Where(x => x.RazonSocial.Contains(parameter) ||
+                                                        x.RFC.Contains(parameter) || x.Persona.Nombre.Contains(parameter) ||
+                                                        x.Persona.Direccion.Contains(parameter) || 
+                                                        x.Persona.Telefono.Contains(parameter) ||
+                                                        x.Persona.Ciudad.Contains(parameter) ||
+                                                        x.Persona.Estado.Contains(parameter) ||
+                                                        x.Persona.CodigoPostal.Contains(parameter) ||
+                                                      (x.Persona.Correo.Contains(parameter))).OrderBy(x => x.Persona.Nombre)
+                                                      .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                      .Take(_RegistrosPorPagina)
+                                                      .ToList();
+                // Número total de páginas de la tabla Productos donde sean parecidos al parámetro
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorProveedores = new PaginadorGenerico<Proveedor>()
+                {
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Proveedores
+                };
+
+                if (_TotalRegistros < 1)
+                {
+                    Session["res"] = ("No hay resultados");
+                    return RedirectToAction("ListaMaterial");
+                }
+                else
+                {
+                    return View("ListaProveedor", _PaginadorProveedores);
+                }
             }
         }
     }

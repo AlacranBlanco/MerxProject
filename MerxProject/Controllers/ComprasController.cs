@@ -49,22 +49,11 @@ namespace MerxProject.Controllers
                 else if (accion == "3")
                 {
                     var compra = DbModel.Compras.Find(Id);
-                    compra.Estatus = 2;
-                    ViewBag.title = "Eliminar";
+                    ViewBag.title = "Cancelar";
                     ViewBag.Accion = "3";
                     return View(compra);
                 }
-                else if (accion == "4")
-                {
-                    if (Id != null)
-                    {
-                        var detalleCompra = DbModel.DetalleCompra
-                            .Include("Herramienta").Include("MateriaPrima").Include("Compra")
-                            .Where(e => e.Compra.Id == Id).ToList();
-
-                        return View("ListaDetalleCompra", detalleCompra);
-                    }
-                }
+                
             }
             return RedirectToAction("popUpCompras");
         }
@@ -121,9 +110,10 @@ namespace MerxProject.Controllers
 
                         try
                         {
-                            DbModel.Compras.Remove(compra);
+                            compra.Estatus = 4;
+                            DbModel.Compras.AddOrUpdate(compra);
                             DbModel.SaveChanges();
-                            resultado = "Eliminación finalizada";
+                            resultado = "Cancelación finalizada";
                             ViewBag.res = resultado;
                             return RedirectToAction("ListaCompras");
                         }
@@ -150,7 +140,10 @@ namespace MerxProject.Controllers
                             // Aquí código para crear
                             try
                             {
-
+                                compras.Folio = compras.Proveedor.RFC.Substring(0,4).ToUpper() + 
+                                                compras.FechaRegistro.Year + compras.FechaRegistro.Month +
+                                                compras.FechaRegistro.Day + compras.FechaRegistro.Hour +
+                                                compras.FechaRegistro.Minute + compras.FechaRegistro.Second;
                                 DbModel.Compras.Add(compras);
                                 DbModel.SaveChanges();
                                 resultado = "Inserción realizada";
@@ -181,11 +174,12 @@ namespace MerxProject.Controllers
         [HttpGet]
         [AllowAnonymous]
         public ActionResult ListaCompras()
+
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 var compras = DbModel.Compras.Include("Empleado.Personass").Include("Proveedor.Persona").ToList();
-                foreach(Compra compra in compras)
+                foreach (Compra compra in compras)
                 {
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
                 }
@@ -202,19 +196,23 @@ namespace MerxProject.Controllers
             {
                 if (idCompra != null)
                 {
+                    var compra = DbModel.Compras.Where(e => e.Id == idCompra).FirstOrDefault();
                     var detalleCompra = DbModel.DetalleCompra
                         .Include("Herramienta").Include("MateriaPrima").Include("Compra")
                         .Where(e => e.Compra.Id == idCompra).ToList();
-
-                    return View("ListaDetalleCompra", detalleCompra);
+                    ViewBag.title = "Detalle de Compra " + compra.Folio;
+                    ViewBag.Accion = "4";
+                    ViewBag.compra = compra;
+                    ViewBag.total = compra.MontoTotal;
+                    return View(detalleCompra);
                 }
-                return View("ListaDetalleCompra");
+                return View();
             }
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult popUpDetalleCompra(int? Id, string accion, string tipo)
+        public ActionResult popUpDetalleCompra(int Id, string accion, string tipo)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -233,37 +231,28 @@ namespace MerxProject.Controllers
                         }
                     }
                     var detalleCompra = new DetalleCompra();
+                    var compra = DbModel.Compras.Where(e => e.Id == Id).FirstOrDefault();
+
+                    detalleCompra.Compra = compra;
+                    
                     ViewBag.title = "Nuevo";
                     ViewBag.Accion = "1";
-                    //return PartialView("_popUpDetalleCompra", detalleCompra);
-                    return View("popUpDetalleCompra", detalleCompra);
+                    return PartialView("popUpDetalleCompra", detalleCompra);
+                    //return View(detalleCompra);
                 }
-                else if (accion == "2")
-                {
-                    if (tipo != null)
-                    {
-                        if (tipo.Equals("H"))
-                        {
-                            ViewBag.Articulos = DbModel.Herramientas.ToList();
-                        }
-                        else if (tipo.Equals("MP"))
-                        {
-                            ViewBag.Articulos = DbModel.Materiales.ToList();
-                        }
-                    }
-                    var detalleCompra = DbModel.DetalleCompra.Find(Id);
-
-                    ViewBag.title = "Editar";
-                    ViewBag.Accion = "2";
-                    //return PartialView("_popUpDetalleCompra", detalleCompra);
-                    return View("popUpDetalleCompra", detalleCompra);
-                }
+                
                 else if (accion == "3")
                 {
                     var detalleCompra = DbModel.DetalleCompra.Find(Id);
+                    var compra = DbModel.Compras.Where(e => e.Id == Id).FirstOrDefault();
+                    var detalles = DbModel.DetalleCompra.Include("MateriaPrima").Include("Herramienta").Where(e => e.Compra.Id == Id).ToList();
+
+                    DbModel.DetalleCompra.Remove(detalleCompra);
+                    DbModel.SaveChanges();
                     ViewBag.title = "Eliminar";
                     ViewBag.Accion = "3";
-                    return PartialView(detalleCompra);
+                    ViewBag.compra = compra;
+                    return View("ListaDetalleCompra", detalles);
                 }
             }
             return RedirectToAction("popUpCompras");
@@ -271,58 +260,40 @@ namespace MerxProject.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> popUpDetalleCompra(DetalleCompra detalleCompra, string accion, HttpPostedFileBase postedFile)
+        public async Task<ActionResult> popUpDetalleCompra(DetalleCompra detalleCompra, int? idCompra, string accion, HttpPostedFileBase postedFile)
         {
             string resultado;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 // Si el applicationUser viene diferente de null, significa que el usaurio quiere Editar
-                if (detalleCompra.Id > 0 && accion == "2")
-                {
-                    // Edición
-                    var detCompra = DbModel.DetalleCompra.Find(detalleCompra.Id);
-
-                    if (detCompra != null)
-                    {
-                        try
-                        {
-                            DbModel.DetalleCompra.AddOrUpdate(detalleCompra);
-                            DbModel.SaveChanges();
-                            resultado = "Actualización realizada";
-                            ViewBag.res = resultado;
-                            return RedirectToAction("popUpCompras");
-
-                        }
-                        catch (Exception ex)
-                        {
-                            resultado = ex.Message;
-                            ViewBag.res = resultado;
-                            return RedirectToAction("popUpCompras");
-                        }
-                    }
-
-                }
-                else if (detalleCompra.Id > 0 && accion == "3")
+                if (detalleCompra.Id > 0 && accion == "3")
                 {
                     // Eliminación
                     var detCompra = DbModel.DetalleCompra.Find(detalleCompra.Id);
+                    var compra = DbModel.Compras.Include("Proveedor").Include("Empleado").Where(e => e.Id == idCompra).FirstOrDefault();
 
                     if (detCompra != null)
                     {
 
                         try
                         {
+                            var detalles = DbModel.DetalleCompra.Include("MateriaPrima").Include("Herramienta").Where(e => e.Compra.Id == idCompra).ToList();
+                            compra.MontoTotal -= detCompra.PrecioTotal;
+                            if(detalles.Count() <= 0)
+                            {
+                                compra.Estatus = 0;
+                            }
                             DbModel.DetalleCompra.Remove(detCompra);
                             DbModel.SaveChanges();
                             resultado = "Eliminación finalizada";
                             ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
+                            return View();
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
-                            return RedirectToAction("ListaCompras");
+                            return View();
                         }
                     }
                 }
@@ -330,21 +301,79 @@ namespace MerxProject.Controllers
                 {
                     if (detalleCompra != null)
                     {
+                        bool b = false;   
                         // Aquí código para crear
                         try
                         {
+                            var compra = DbModel.Compras.Include("Proveedor").Include("Empleado").Where(e => e.Id == idCompra).FirstOrDefault();
+                            var detalles = DbModel.DetalleCompra.Include("MateriaPrima").Include("Herramienta").Where(e => e.Compra.Id == idCompra).ToList();
+                            detalleCompra.Unidad = ((Unidades[])(Enum.GetValues(typeof(Unidades))))[Convert.ToInt32(detalleCompra.Unidad)].ToString();
 
-                            DbModel.DetalleCompra.Add(detalleCompra);
+                            if (detalleCompra.Herramienta != null)
+                            {
+                                var herramienta = DbModel.Herramientas.Where(e => e.Id == detalleCompra.Herramienta.Id).FirstOrDefault();
+                                detalleCompra.Herramienta = herramienta;
+                                detalleCompra.PrecioUnitario = herramienta.Precio;
+                                detalleCompra.PrecioTotal = detalleCompra.PrecioUnitario * detalleCompra.Cantidad;
+                                if (detalles.Count() > 0)
+                                {
+                                    foreach (DetalleCompra det in detalles)
+                                    {
+                                        if (det.Herramienta.Id == detalleCompra.Herramienta.Id && detalleCompra.Unidad == det.Unidad)
+                                        {
+                                            det.Cantidad += detalleCompra.Cantidad;
+                                            det.PrecioTotal += detalleCompra.PrecioTotal;
+                                            DbModel.DetalleCompra.AddOrUpdate(det);
+                                            b = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        
+                            else if (detalleCompra.MateriaPrima != null)
+                            {
+                                var material = DbModel.Materiales.Where(e => e.Id == detalleCompra.MateriaPrima.Id).FirstOrDefault();
+                                detalleCompra.MateriaPrima = material;
+                                detalleCompra.PrecioUnitario = material.Precio;
+                                detalleCompra.PrecioTotal = detalleCompra.PrecioUnitario * detalleCompra.Cantidad;
+                                if (detalles.Count() > 0)
+                                {
+                                    foreach (DetalleCompra det in detalles)
+                                    {
+                                        if (det.MateriaPrima.Id == detalleCompra.MateriaPrima.Id && detalleCompra.Unidad == det.Unidad)
+                                        {
+                                            det.Cantidad += detalleCompra.Cantidad;
+                                            det.PrecioTotal += detalleCompra.PrecioTotal;
+                                            DbModel.DetalleCompra.AddOrUpdate(det);
+                                            b = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            compra.MontoTotal += detalleCompra.PrecioTotal;
+                            compra.Estatus = 1;
+                            detalleCompra.Compra = compra;
+
+                            if (!b)
+                            {
+                                DbModel.DetalleCompra.Add(detalleCompra);
+                            }
+                            DbModel.Compras.AddOrUpdate(compra);
+
                             DbModel.SaveChanges();
                             resultado = "Inserción realizada";
                             ViewBag.res = resultado;
-                            return RedirectToAction("PopUpCompras");
+                            ViewBag.compra = compra;
+                            return PartialView("popUpDetalleCompra", detalleCompra);
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
-                            return RedirectToAction("PopUpCompras");
+                            return PartialView("popUpDetalleCompra", detalleCompra);
                         }
                     }
                     resultado = "Error";
@@ -355,24 +384,18 @@ namespace MerxProject.Controllers
                     */
                 }
 
-                return RedirectToAction("ListaCompras");
+                return RedirectToAction("ListaDetalleCompra");
             }
         }
 
-        public ActionResult ListaArticulos(int tipo)
+   
+        public ActionResult DatosArticulo(int id)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                if(tipo == 0)
-                {
-                    var Articulos = DbModel.Herramientas.ToList();
-                    return Json(Articulos, JsonRequestBehavior.AllowGet);
-                }
-                else if (tipo == 1)
-                {
-                    var Articulos = DbModel.Materiales.ToList();
-                    return Json(Articulos, JsonRequestBehavior.AllowGet);
-                }
+                var Articulo = DbModel.Herramientas.ToList();
+                    //return Json(Articulos, JsonRequestBehavior.AllowGet);
+                
                 return PartialView("_ListaDetalleCompra");
             }
         }
