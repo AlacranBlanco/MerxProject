@@ -76,6 +76,8 @@ namespace MerxProject.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+           
+            ViewBag.userEmail = User.Identity.Name;
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
@@ -464,6 +466,58 @@ namespace MerxProject.Controllers
             }
 
             return View();
+
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ChangeEmail(string email, string isChanged = null, string emailExist = null)
+        {
+            var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
+            var model = UserManager.FindByEmail(email);
+            var carritoExist =  DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).ToList();
+            ViewBag.carritoExist = carritoExist.Count();
+            if (isChanged == "1"){ ViewBag.isChanged = 1; }
+            if (emailExist == "1") { ViewBag.emailExist = 1; }
+            return View(model);
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeEmail(ApplicationUser applicationUser, string emailNuevo)
+        {
+            var result = DbModel.Personas.FirstOrDefault(x => x.Correo == emailNuevo);
+
+            if (result != null)
+            {
+               
+                return RedirectToAction("ChangeEmail", new { email = applicationUser.Email, isChanged = "", emailExist = "1" });
+            }
+            else
+            {
+                var getUser = UserManager.FindByEmail(applicationUser.Email);
+                var personaUpd = DbModel.Personas.FirstOrDefault(x => x.Correo == getUser.Email);
+
+                getUser.Email = emailNuevo;
+                getUser.UserName = emailNuevo;
+                getUser.EmailConfirmed = false;
+
+                var userMana = UserManager.Update(getUser);
+                personaUpd.Correo =  emailNuevo;
+
+                DbModel.Personas.AddOrUpdate(personaUpd);
+                DbModel.SaveChanges();
+
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(getUser.Id);
+                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = getUser.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(getUser.Id, "Confirmar cuenta", callbackUrl);
+
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home");
+
+                // return RedirectToAction("ChangeEmail", new { email = emailNuevo, isChanged = "1", emailExist = "" });
+            }
+
+          
 
         }
 

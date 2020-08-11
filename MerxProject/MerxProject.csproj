@@ -777,6 +777,7 @@
     <Content Include="Views\Material\popUpInventario.cshtml" />
     <Content Include="Views\Color\ListaColor.cshtml" />
     <Content Include="Views\Color\popUpColores.cshtml" />
+    <Content Include="Views\Manage\ChangeEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,11 +1,26 @@
-﻿@model MerxProject.Models.Direccion.Direcciones
+﻿@model MerxProject.Models.ApplicationUser
 
 @{
     Layout = null;
 }
 
 
+<script src="~/Content/SweetAlert/sweetalert2.all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
+@if (ViewBag.isChanged == 1)
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire(
+                'Espera!',
+                'Acabamos de enviar un correo de activación al nuevo correo deseado. Por favor es necesario que lo actives para continuar usando tu cuenta con normalidad.',
+                'warning'
+            )
+        }, false);
+
+    </script>
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -50,15 +65,37 @@
                 <div class="header_right d-flex flex-row align-items-center justify-content-start ml-auto">
 
 
-                    <!-- User -->
-                    <div class="user"><a href="@Url.Action("Index", "Manage")"><div><img src="~/Content/ProductAssets/images/user.svg" alt="https://www.flaticon.com/authors/freepik"><div>1</div></div></a></div>
-                    <!-- Cart -->
-                    <div class="cart"><a href="cart.html"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
-                    <!-- Phone -->
-                    <div class="header_phone d-flex flex-row align-items-center justify-content-start">
-                        <div><div><img src="~/Content/ProductAssets/images/phone.svg" alt="https://www.flaticon.com/authors/freepik"></div></div>
-                        <div>+1 912-252-7350</div>
-                    </div>
+                    @if (Request.IsAuthenticated)
+                    {
+
+                        <!-- User -->
+                        <div class="user"><a href="#"><div><img src="~/Content/ProductAssets/images/user.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
+                        <!-- Cart -->
+                        if (ViewBag.carritoExist > 0)
+                        {
+
+                        <div class="user"><a href="https://localhost:44309/Tienda/indexTienda"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"><div>@ViewBag.carritoExist</div></div></a></div>
+                        }
+                        else
+                        {
+                        <div class="user"><a href="https://localhost:44309/Tienda/indexTienda"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"><div>0</div></div></a></div>
+
+                        }
+                        <!-- Log Out-->
+                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="user"><a href="javascript:document.getElementById('logoutForm').submit()"><div><img src="~/Content/ProductAssets/images/logout.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
+
+                        }
+                    }
+                    else
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                            <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                        </ul>
+                    }
                 </div>
             </div>
         </header>
@@ -89,54 +126,38 @@
 
                     <!-- Billing -->
                     <div class="billing">
-                        <div class="checkout_title">Agregar una nueva dirección</div>
+                        <div class="checkout_title">Modifica tu dirección de correo electrónico</div>
                         <div class="checkout_form_container">
-                            @using (Html.BeginForm("Direcciones", "Manage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "register-form", role = "login-form" }))
+                            @using (Html.BeginForm("ChangeEmail", "Manage", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "register-form", role = "login-form" }))
                             {
                                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                 <div>
                                     <!-- Name -->
-                                    @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "checkout_input", @placeholder = "Nombre Completo", @required = "required" })
-
-                                </div>
-
-                                <br />
-                                <div>
-                                    <!-- Address -->
-                                    @Html.TextBoxFor(m => m.DirCalle, new { @class = "checkout_input", @placeholder = "Dirección de Calle", @required = "required" })
-                                    @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "checkout_input checkout_address_2", @placeholder = "Código Postal", @id = "cp", @onchange = "myFunction(this.value)", @required = "required" })
-                                </div>
-                                <br />
-                                <div>
-
-                                    <input type="button" id="setText" class="checkout_input  checkout_address_3" value="Validar Código Postal" required="required">
-                                </div>
-                                <div>
-                                    <!-- City / Town -->
-                                    @Html.TextBoxFor(m => m.Estado, new { @class = "checkout_input checkout_address_2", @placeholder = "Estado", @id = "input", @required = "required", @readOnly = "readOnly" })
-
-                                </div>
-                                <div>
-                                    @Html.TextBoxFor(m => m.Ciudad, new { @class = "checkout_input checkout_address_2", @placeholder = "Ciudad", @id = "input1", @required = "required", @readOnly = "readOnly" })
-                                </div>
-                                <br />
-                                <div>
-                                    <!-- Vecindario -->
-                                    <select id="dropdown" name="Asentamiento" class="dropdown_item_select checkout_input" require="required">
-                                    </select>
-                                </div>
-                                <br />
-                                <div>
-                                    <!-- Numero Telf -->
-                                    @Html.TextBoxFor(m => m.NumTelefono, new { @class = "checkout_input", @placeholder = "Num. Teléfono", @required = "required" })
+                                    @Html.TextBoxFor(x => x.Email, new { @class = "checkout_input", @readOnly = "readOnly", @required = "required" })
 
                                 </div>
                                 <br />
-                                <div>
-                                    <input type="hidden" name="accion" value=@ViewBag.accion>
-                                    <input type="hidden" name="idPersona" value=@Model.IdPersona>
-                                    <input type="submit" id="checkout_email" class="checkout_input" value="Guardar" required="required">
-                                </div>
+                                if (ViewBag.isChanged == 1)
+                                {
+                                    <div class="cart_text">
+                                        <p>Necesitas activar tu nuevo correo.</p>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <input type="submit" id="checkout_email" class="checkout_input" value="Guardar" disabled>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        <input type="text" name="emailNuevo" class="checkout_input" required />
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <input type="submit" id="checkout_email" class="checkout_input" value="Guardar" required="required">
+                                    </div>
+                                }
+
                             }
                         </div>
                     </div>

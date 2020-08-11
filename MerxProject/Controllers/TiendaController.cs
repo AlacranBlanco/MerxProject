@@ -1,5 +1,6 @@
 ﻿using MerxProject.Models;
 using MerxProject.Models.CarritoCompras;
+using MerxProject.Models.Cupones;
 using MerxProject.Models.Direccion;
 using MerxProject.Models.Order;
 using Microsoft.Ajax.Utilities;
@@ -42,58 +43,26 @@ namespace MerxProject.Controllers
 
                 var model = new CarritoComprasViewModel
                 {
-                    CarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == idPersona.idPersona).OrderBy(x => x.ColorNombre).DistinctBy(x => x.ColorNombre).ToList(),
-                    CarritoCollectionRepetido = DbModel.CarritoCompras.Where(x => x.idPersona == idPersona.idPersona).OrderBy(x => x.ColorNombre).ToList()
+                    CarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == idPersona.idPersona).OrderBy(x => x.Nombre).ToList()
                 };
 
                 model.CantidadesProductos = new List<CarritoCompra>();
-                int counts = 0;
-                double precioTotal = 0;
-                int j = 0, i = 0;
-
-                while (i < model.CarritoCollection.Count)
-                {
-                    CarritoCompra carrito = new CarritoCompra();
-                    if (j < model.CarritoCollectionRepetido.Count)
-                    {
-                        if (model.CarritoCollectionRepetido[j].ColorNombre == model.CarritoCollection[i].ColorNombre)
-                        {
-                            counts++;
-                            precioTotal += model.CarritoCollectionRepetido[j].Precio;
-                            j++;
-                        }
-                        else
-                        {
-                            carrito.Cantidad = counts;
-                            carrito.Precio = precioTotal;
-                            model.CantidadesProductos.Add(carrito);
-                            counts = 0;
-                            precioTotal = 0;
-                            i++;
-
-                        }
-                    }
-                    else
-                    {
-                        carrito.Cantidad = counts;
-                        carrito.Precio = precioTotal;
-                        model.CantidadesProductos.Add(carrito);
-                        counts = 0;
-                        precioTotal = 0;
-                        i++;
-                    }
-
-                }
+                int j = 0;
 
                 
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
                 var cupons = DbModel.Cupon.Where(x => x.IdPersona == persona.idPersona).OrderByDescending(x => x.idOrder).ToList();
-                int idOrdens = cupons[0].idOrder.Value;
-                var validarCuponOrder = DbModel.Orders.FirstOrDefault(x => x.IdOrder == idOrdens);
-                if (validarCuponOrder.Estatus == "Procesando" || validarCuponOrder.NombreCustomer == "Nueva")
+
+                if (cupons.Count > 0)
                 {
-                    ViewBag.descuentoGuardado = cupons[0].Descuento / 100.00;
+                    int idOrdens = cupons[0].idOrder.Value;
+                    var validarCuponOrder = DbModel.Orders.FirstOrDefault(x => x.IdOrder == idOrdens);
+                    if (validarCuponOrder.Estatus == "Procesando" || validarCuponOrder.NombreCustomer == "Nueva")
+                    {
+                        ViewBag.descuentoGuardado = cupons[0].Descuento / 100.00;
+                    }
                 }
+              
 
                 return View(model);
             }
@@ -108,6 +77,14 @@ namespace MerxProject.Controllers
           
 
             var cupons = DbModel.Cupon.FirstOrDefault(x => x.CodigoCupon == cupon);
+
+            if (cupons.Utilizado)
+            {
+                ViewBag.CupNotExit = 2;
+                IndexTienda(null);
+                return View();
+            }
+
             if (cupons != null)
             {
                 double descuento = (cupons.Descuento / 100.00);
@@ -309,45 +286,7 @@ namespace MerxProject.Controllers
                 };
 
                 model.CantidadesProductos = new List<CarritoCompra>();
-                int counts = 0;
-                double precioTotal = 0;
                 int j = 0, i = 0;
-
-                while (i < model.CarritoCollection.Count)
-                {
-                    CarritoCompra carrito = new CarritoCompra();
-                    if (j < model.CarritoCollectionRepetido.Count)
-                    {
-                        if (model.CarritoCollectionRepetido[j].ColorNombre == model.CarritoCollection[i].ColorNombre)
-                        {
-                            counts++;
-                            precioTotal += model.CarritoCollectionRepetido[j].Precio;
-                            j++;
-                        }
-                        else
-                        {
-                            carrito.Cantidad = counts;
-                            carrito.Precio = precioTotal;
-                            model.CantidadesProductos.Add(carrito);
-                            counts = 0;
-                            precioTotal = 0;
-                            i++;
-
-                        }
-                    }
-                    else
-                    {
-                        carrito.Cantidad = counts;
-                        carrito.Precio = precioTotal;
-                        model.CantidadesProductos.Add(carrito);
-                        counts = 0;
-                        precioTotal = 0;
-                        i++;
-                    }
-
-                }
-
-               
 
                 ////return RedirectToAction("PagoProducto", new { dire = direccion, subtotal = subtotal, total = total, cupon = cupon, ship = ship }) ;
           
@@ -578,72 +517,49 @@ namespace MerxProject.Controllers
 
             var model = new CarritoComprasViewModel
             {
-                CarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).OrderBy(x => x.ColorNombre).DistinctBy(x => x.ColorNombre).ToList(),
-                CarritoCollectionRepetido = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).OrderBy(x => x.ColorNombre).ToList()
+                CarritoCollection = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).OrderBy(x => x.ColorNombre).DistinctBy(x => x.ColorNombre).ToList()
             };
 
             model.CantidadesProductos = new List<CarritoCompra>();
-            int counts = 0;
-            double precioTotal = 0.00;
             int j = 0, i = 0;
-
-            while (i < model.CarritoCollection.Count)
-            {
-                CarritoCompra carrito = new CarritoCompra();
-                if (j < model.CarritoCollectionRepetido.Count)
-                {
-                    if (model.CarritoCollectionRepetido[j].ColorNombre == model.CarritoCollection[i].ColorNombre)
-                    {
-                        counts++;
-                        precioTotal += model.CarritoCollectionRepetido[i].Precio;
-                        j++;
-                    }
-                    else
-                    {
-                        carrito.Cantidad = counts;
-                        carrito.Precio = precioTotal;
-                        model.CantidadesProductos.Add(carrito);
-                        counts = 0;
-                        precioTotal = 0;
-                        i++;
-
-                    }
-                }
-                else
-                {
-                    carrito.Cantidad = counts;
-                    carrito.Precio = precioTotal;
-                    model.CantidadesProductos.Add(carrito);
-                    counts = 0;
-                    precioTotal = 0;
-                    i++;
-                }
-
-            }
-
-
-
-            i = 0;
 
             var cuponUsado = DbModel.Cupon.Where(x => x.IdPersona == persona.idPersona).OrderByDescending(x => x.idOrder).ToList();
             var order = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
             double descuento = 0.00;
-
-            if (cuponUsado[0].idOrder == order.IdOrder)
+            if (cuponUsado.Count > 0)
             {
-                descuento = cuponUsado[0].Descuento / 100.00;
 
-                foreach (var item in model.CarritoCollection)
+                if (cuponUsado[0].idOrder == order.IdOrder)
                 {
-                    double DescAns = Convert.ToDouble(item.Precio - (Convert.ToDouble(item.Precio) * descuento));
-                    itemList.items.Add(new Item()
+                    descuento = cuponUsado[0].Descuento / 100.00;
+
+                    foreach (var item in model.CarritoCollection)
                     {
-                        quantity = model.CantidadesProductos[i].Cantidad.ToString(),
-                        name = item.Nombre,
-                        price = DescAns.ToString(),
-                        currency = "MXN",
-                    });
-                    i++;
+                        double DescAns = Convert.ToDouble(item.Precio - (Convert.ToDouble(item.Precio) * descuento));
+                        itemList.items.Add(new Item()
+                        {
+                            quantity = item.Cantidad.ToString(),
+                            name = item.Nombre,
+                            price = DescAns.ToString(),
+                            currency = "MXN",
+                        });
+                        i++;
+                    }
+                }
+                else
+                {
+                    foreach (var item in model.CarritoCollection)
+                    {
+                        itemList.items.Add(new Item()
+                        {
+                            // quantity = model.CantidadesProductos[i].Cantidad.ToString(),
+                            quantity = item.Cantidad.ToString(),
+                            name = item.Nombre,
+                            price = item.Precio.ToString(),
+                            currency = "MXN",
+                        });
+                        i++;
+                    }
                 }
             }
             else
@@ -652,7 +568,7 @@ namespace MerxProject.Controllers
                 {
                     itemList.items.Add(new Item()
                     {
-                        quantity = model.CantidadesProductos[i].Cantidad.ToString(),
+                        quantity = item.Cantidad.ToString(),
                         name = item.Nombre,
                         price = item.Precio.ToString(),
                         currency = "MXN",
@@ -660,7 +576,7 @@ namespace MerxProject.Controllers
                     i++;
                 }
             }
-
+        
 
 
             var payer = new Payer()

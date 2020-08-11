@@ -29,44 +29,46 @@
                         <h2 class="form-title">Cree una cuenta nueva.</h2>
                         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                            @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken()
 
-                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
 
-                            <div class="form-group">
-                                <label for="Nombre Completo"><i class="zmdi zmdi-email"></i></label>
-                                <input type="text" required name="nombre" value="" />
-                                @*@Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })*@
+                        <div class="form-group">
+                            <label for="Nombre Completo"><i class="zmdi zmdi-email"></i></label>
+                            <input type="text" required name="nombre" value="" />
+                            @*@Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })*@
 
-                            </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
+                        <div class="form-group">
+                            <label for="email"><i class="zmdi zmdi-email"></i></label>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
 
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
-                            </div>
+                        </div>
 
 
-                            <div class="form-group">
-                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Repetir Contraseña" })
 
-                            </div>
+                        <div class="form-group">
+                            <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+                        </div>
 
-                            <div class="form-group">
-                                <input type="checkbox" name="agree" id="agree-term" class="agree-term" value="true" />
-                                <label for="agree-term" class="label-agree-term"><span><span></span></span>Acepto  <a href="#" class="term-service">los Términos y Condiciones, la Política de Privacidad y la Política de Cookies</a></label>
-                            </div>
-                            <div class="form-group form-button">
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Registrar" />
-                            </div>
+
+                        <div class="form-group">
+                            <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Repetir Contraseña" })
+
+                        </div>
+
+                     
+
+                        <div class="form-group">
+                            <input type="checkbox" name="agree" id="agree-term" class="agree-term" value="true" />
+                            <label for="agree-term" class="label-agree-term"><span><span></span></span>Acepto  <a href="#" class="term-service">los Términos y Condiciones, la Política de Privacidad y la Política de Cookies</a></label>
+                        </div>
+                        <div class="form-group form-button">
+                            <input type="submit" name="signup" id="signup" class="form-submit" value="Registrar" />
+                        </div>
                         }
                     </div>
                     <div class="signup-image">

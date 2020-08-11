@@ -23,10 +23,16 @@ namespace MerxProject.Models.CarritoCompras
 
         public int Cantidad { get; set; }
 
+        public int Stock { get; set; }
+
+        public double precioTotal { get; set; }
+
+
         public int idPersona { get; set; }
 
         public int idProducto { get; set; }
         public int idColor { get; set; }
+
 
     }
 }
