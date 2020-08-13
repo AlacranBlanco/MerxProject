@@ -14,6 +14,7 @@
     string mensaje = Session["res"].ToString();
     Session.Remove("res");
 
+
     if (Session["tipo"] != null)
     {
         color = "#18ce65";
@@ -40,6 +41,7 @@
             </thead>
         </table>
     </div>
+    Session.Remove("tipo");
 }
 @if (ViewBag.error != null)
 {

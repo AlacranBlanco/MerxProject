@@ -355,7 +355,6 @@ namespace MerxProject.Controllers
 
                 using (this.DbModel = new ApplicationDbContext())
                 {
-
                     Usuario usuario = new Usuario();
                     usuario.User = model.Email;
                     usuario.Password = model.Password;
@@ -370,28 +369,40 @@ namespace MerxProject.Controllers
                     DbModel.Personas.Add(persona);
                     DbModel.SaveChanges();
                     idPersona = persona.idPersona;
+
+
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+
+
+                        // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
+                        // Enviar correo electrónico con este vínculo
+                        var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(DbModel));
+
+                        if (!RoleManager.RoleExists("Cliente"))
+                        {
+                            var role = new IdentityRole();
+                            role.Name = "Cliente";
+                            RoleManager.Create(role);
+                        }
+                        var rol = RoleManager.FindByName("Cliente").Name;
+                        var UsuarioNuevo = UserManager.FindByEmail(model.Email).Id;
+                        UserManager.AddToRole(UsuarioNuevo, rol);
+                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", callbackUrl);
+                        return RedirectToAction("Login", "Account", new { isEmailVerified = 1 });
+
+
+                        // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        // return RedirectToAction("Index", "Home");
+
+                    }
+                    AddErrors(result);
                 }
-
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario };
-                var result = await UserManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-
-
-                    // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Enviar correo electrónico con este vínculo
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", callbackUrl);
-                    return RedirectToAction("Login", "Account", new { isEmailVerified = 1 });
-
-
-                    // await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    // return RedirectToAction("Index", "Home");
-
-                }
-                AddErrors(result);
 
             }
             return View(model);

@@ -372,7 +372,7 @@ namespace MerxProject.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "Cliente")]
         [HttpGet]
         public ActionResult Direcciones(int? id, int? accion)
         {
@@ -399,7 +399,7 @@ namespace MerxProject.Controllers
             }
 
         }
-        [Authorize]
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         public async Task<ActionResult> Direcciones(Direcciones dir, int accion)
         {
@@ -429,7 +429,7 @@ namespace MerxProject.Controllers
             return RedirectToAction("MisDirecciones");
         }
 
-
+        [Authorize(Roles = "Cliente")]
         [HttpGet]
         public ActionResult MisDirecciones()
         {
@@ -440,6 +440,7 @@ namespace MerxProject.Controllers
 
         }
 
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         public async Task<ActionResult> MisDirecciones(int? id, int accion)
         {
@@ -469,6 +470,7 @@ namespace MerxProject.Controllers
 
         }
 
+        [Authorize(Roles = "Cliente")]
         [HttpGet]
         public async Task<ActionResult> ChangeEmail(string email, string isChanged = null, string emailExist = null)
         {

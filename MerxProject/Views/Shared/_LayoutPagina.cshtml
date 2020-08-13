@@ -86,21 +86,6 @@
                         <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
                         <li><a href="@Url.Action("ConsultarPedido", "Proceso")">Pedido</a></li>
                         <li><a href="#contact">Contacto</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Acerca de nosotros</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Servicios</a></li>
-                        <li><a href="@Url.Action("Index", "Home")">Productos</a></li>
-                        <li><a href="#">Tienda</a></li>
-                        <li class="drop-down">
-                            <a href="">Categorias</a>
-                            <ul>
-                                <li><a href="#">Mesas</a></li>
-                                <li><a href="#">Sillones</a></li>
-                                <li><a href="#">Camas</a></li>
-                                <li><a href="#">Escritorios</a></li>
-                                <li><a href="#">Sillas</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="@Url.Action("Index", "Home")">Contacto</a></li>
                         @if (Request.IsAuthenticated)
                         {
                             string Nombre = "Usuario";
@@ -117,7 +102,7 @@
                                 @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage"})
                             </li>
                             <li style="display: inline">
-                                <a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a>
+                                <a href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
                             </li>
                         }
                         else

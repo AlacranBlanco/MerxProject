@@ -25,6 +25,7 @@ namespace MerxProject.Controllers
             this.DbModel = new ApplicationDbContext();
         }
         // GET: Tienda
+        [Authorize(Roles ="Cliente")]
         public ActionResult IndexTienda(int? outStock)
         {
 
@@ -68,6 +69,7 @@ namespace MerxProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         public async Task<ActionResult> IndexTienda(string cupon, string ship, int subtotal)
         {
@@ -153,6 +155,7 @@ namespace MerxProject.Controllers
 
         }
 
+        [Authorize(Roles ="Cliente")]
         [HttpGet]
         public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship)
         {
@@ -263,6 +266,7 @@ namespace MerxProject.Controllers
             }
 
         }
+
 
         public void ProcessOrder(int direccion)
         {

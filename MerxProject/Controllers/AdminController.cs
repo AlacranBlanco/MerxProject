@@ -118,44 +118,58 @@ namespace MerxProject.Controllers
                 var VentasDelMes = DbModel.Orders.Where(x => x.DiaOrden.Month == DateTime.Now.Month).ToList();
                 
                 var ProductoDelMes = new List<ProductoMasVendido>();
-                
-                foreach (var item in VentasDelMes)
+
+                if (VentasDelMes.Count() < 1)
                 {
-                    bool encontrado = false;
-                    Detalles = DbModel.OrdersDetails.Where(x => x.idOrder == item.IdOrder).ToList();
-                    string Nombre = null;
-                    foreach (var Det in Detalles)
+
+                    foreach (var item in VentasDelMes)
                     {
-                        
-                        foreach(var lista in Ids)
+                        bool encontrado = false;
+                        Detalles = DbModel.OrdersDetails.Where(x => x.idOrder == item.IdOrder).ToList();
+                        string Nombre = null;
+                        foreach (var Det in Detalles)
                         {
-                            if(Det.idProducto == lista)
+
+                            foreach (var lista in Ids)
                             {
-                                encontrado = true;
+                                if (Det.idProducto == lista)
+                                {
+                                    encontrado = true;
+                                }
                             }
+                            if (encontrado)
+                            {
+                                break;
+                            }
+                            Ids.Add(Det.idProducto);
+                            int Count = 0;
+                            var prod = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).ToList();
+                            foreach (var cant in prod)
+                            {
+                                Count += cant.Cantidad;
+                            }
+                            Nombre = DbModel.Productos.Find(Det.idProducto).Nombre;
+                            var PV = new ProductoMasVendido()
+                            {
+                                Cantidad = Count,
+                                Producto = Nombre
+                            };
+                            ProductoDelMes.Add(PV);
                         }
-                        if (encontrado)
-                        {
-                            break;
-                        }
-                        Ids.Add(Det.idProducto);
-                        int Count = 0;
-                        var prod = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).ToList();
-                        foreach(var cant in prod)
-                        {
-                            Count += cant.Cantidad;
-                        }
-                        Nombre = DbModel.Productos.Find(Det.idProducto).Nombre;
-                        var PV = new ProductoMasVendido()
-                        {
-                            Cantidad = Count,
-                            Producto = Nombre
-                        };
-                        ProductoDelMes.Add(PV);
+
                     }
-                    
+                    return ProductoDelMes.OrderByDescending(x => x.Cantidad).Take(5).ToList();
                 }
-                return ProductoDelMes.OrderByDescending(x=>x.Cantidad).Take(5).ToList();
+                else
+                {
+                    var PV = new ProductoMasVendido()
+                    {
+                        Cantidad = 0,
+                        Producto = "No se tiene registro de ningún producto"
+                    };
+                    ProductoDelMes.Add(PV);
+                    return ProductoDelMes;
+                }
             }
         }
 
