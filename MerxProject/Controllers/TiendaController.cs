@@ -25,10 +25,14 @@ namespace MerxProject.Controllers
             this.DbModel = new ApplicationDbContext();
         }
         // GET: Tienda
-        [Authorize(Roles ="Cliente")]
-        public ActionResult IndexTienda(int? outStock)
+        [Authorize(Roles = "Cliente")]
+        public ActionResult IndexTienda(int? outStock, string pagoRealizado = null)
         {
-
+           
+            if (pagoRealizado == "True")
+            {
+                ViewBag.pagoRealizado = "True";
+            }
             if (outStock != null)
             {
                 ViewBag.outStock = 1;
@@ -41,6 +45,9 @@ namespace MerxProject.Controllers
             using (this.DbModel = new ApplicationDbContext())
             {
                 var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
+
 
                 var model = new CarritoComprasViewModel
                 {
@@ -157,7 +164,7 @@ namespace MerxProject.Controllers
 
         [Authorize(Roles ="Cliente")]
         [HttpGet]
-        public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship)
+        public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship = "0")
         {
 
 
@@ -167,9 +174,11 @@ namespace MerxProject.Controllers
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
                 var ordenPendiente = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == persona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
                 double ships = 0;
 
-                if (ship != "Free")
+                if (ship != "Gratis")
                 {
 
                     char[] shipAux = ship.ToCharArray();
@@ -244,12 +253,16 @@ namespace MerxProject.Controllers
         public async Task<ActionResult> PagoProducto(Direcciones direccion, string subtotal, string total, string cupon, string ship)
         {
 
+       
+            
             using (this.DbModel = new ApplicationDbContext())
             {
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
                 var direccionDettalle = DbModel.Direcciones.FirstOrDefault(x => x.Id == direccion.Id);
 
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == persona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
 
 
                 ViewBag.direccion = direccionDettalle.Id;
@@ -416,13 +429,17 @@ namespace MerxProject.Controllers
             var persona = DbModel.Personas.First(x => x.Correo == User.Identity.Name);
             try
             {
+                if (totalship == "Gratis")
+                {
+                    totalship = "0";
+                }
                 string payerId = Request.Params["PayerID"];
                 totalPagoPyapal -= Convert.ToInt32(totalship);
                 if (string.IsNullOrEmpty(payerId))
                 {
                     string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/Tienda/PagoConPaypal?";
                     var guid = Convert.ToString((new Random()).Next(100000000));
-                    var CrearPago = this.CrearPago(apiContext, baseURI + "guid=" + guid, totalPagoPyapal);
+                    var CrearPago = this.CrearPago(apiContext, baseURI + "guid=" + guid, totalPagoPyapal, totalship);
 
                     var links = CrearPago.links.GetEnumerator();
                     string paypalRedirectURL = string.Empty;
@@ -459,7 +476,7 @@ namespace MerxProject.Controllers
             var orderDetails = DbModel.OrdersDetails.Where(x => x.idOrder == orderId.IdOrder).OrderBy(x => x.idColor).ToList();
             var productos = DbModel.Productos.ToList();
             var colores = DbModel.Colores.ToList();
-            var inventarioDetail = DbModel.Inventarios.OrderBy(x => x.Color.Id).ToList();
+            var inventarioDetail = DbModel.Inventarios.OrderBy(x => x.Producto.Id).ToList();
             int i = 0, j = 0;
 
             while (i < inventarioDetail.Count)
@@ -506,12 +523,12 @@ namespace MerxProject.Controllers
             DbModel.SaveChanges();
 
 
-            return View("Success");
+            return RedirectToAction("IndexTienda", new { pagoRealizado = "True"});
         }
 
-        private Payment CrearPago(APIContext apiContext, string redirectUrl, double? totalPagoPyapal)
+        private Payment CrearPago(APIContext apiContext, string redirectUrl, double? totalPagoPyapal, string totalship = "0")
         {
-
+           
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
             //create itemlist and add item objects to it
             var itemList = new ItemList()
@@ -597,7 +614,7 @@ namespace MerxProject.Controllers
             var details = new Details()
             {
                 tax = "1",
-                shipping = "1",
+                shipping = totalship,
                 subtotal = totalPagoPyapal.ToString()
             };
             //Final amount with details

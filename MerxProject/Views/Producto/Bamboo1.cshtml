@@ -66,11 +66,8 @@
                 <div class="hamburger"><i class="fa fa-bars" aria-hidden="true"></i></div>
                 <nav class="main_nav">
                     <ul class="d-flex flex-row align-items-start justify-content-start">
-                        <li><a href="#">Women</a></li>
-                        <li><a href="#">Men</a></li>
-                        <li><a href="#">Kids</a></li>
-                        <li><a href="#">Home Deco</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a  href="@Url.Action("Index","Home")">Inicio</a></li>
+                        <li><a  href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
                     </ul>
                 </nav>
                 <div class="header_right d-flex flex-row align-items-center justify-content-start ml-auto">
@@ -80,9 +77,18 @@
                     {
 
                         <!-- User -->
-                        <div class="user"><a href="#"><div><img src="~/Content/ProductAssets/images/user.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
+                        <div class="user"><a href="@Url.Action("Index", "Manage")"><div><img src="~/Content/ProductAssets/images/user.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
                         <!-- Cart -->
-                        <div class="user"><a href="https://localhost:44309/Tienda/indexTienda"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"><div>@ViewBag.cantidadCarrito</div></div></a></div>
+                        if (ViewBag.cantidadCarrito == 0)
+                        {
+                            <div class="user"><a href="@Url.Action("indexTienda", "Tienda")"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"><div>0</div></div></a></div>
+
+                        }
+                        else
+                        {
+
+                            <div class="user"><a href="@Url.Action("indexTienda", "Tienda")"><div><img src="~/Content/ProductAssets/images/cart.svg" alt="https://www.flaticon.com/authors/freepik"><div>@ViewBag.cantidadCarrito</div></div></a></div>
+                        }
                         <!-- Log Out-->
                         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
                         {
@@ -131,7 +137,7 @@
                         <!-- Product Image -->
                         <div class="col-lg-6">
 
-                            <img id="background-image" src="~/Content/assets/img/Productos/@Model.Producto.Imagen" />
+                            <img id="background-image" src="@Url.Content(Model.Producto.Imagen)" />
 
                             @{
                                 rutaSvg = Url.Content(Model.Producto.Imagen).Replace(".png", ".svg");

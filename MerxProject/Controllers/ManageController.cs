@@ -76,7 +76,9 @@ namespace MerxProject.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
-           
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
             ViewBag.userEmail = User.Identity.Name;
             var model = new IndexViewModel
             {
@@ -231,6 +233,10 @@ namespace MerxProject.Controllers
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()
         {
+            var correo = User.Identity.Name;
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
             return View();
         }
 
@@ -240,6 +246,11 @@ namespace MerxProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
+            var correo = User.Identity.Name;
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -274,6 +285,10 @@ namespace MerxProject.Controllers
         // GET: /Manage/SetPassword
         public ActionResult SetPassword()
         {
+            var correo = User.Identity.Name;
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
             return View();
         }
 
@@ -283,6 +298,11 @@ namespace MerxProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
         {
+
+            var correo = User.Identity.Name;
+            var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
             if (ModelState.IsValid)
             {
                 var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
@@ -435,6 +455,8 @@ namespace MerxProject.Controllers
         {
             var correo = User.Identity.Name;
             var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+            var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+            ViewBag.cantidadCarrito = cantidadCarrito.Count;
             var MisDirecciones = DbModel.Direcciones.Where(x => x.IdPersona == idPersona.idPersona).ToList();
             return View(MisDirecciones);
 
@@ -446,6 +468,11 @@ namespace MerxProject.Controllers
         {
             try
             {
+                var correo = User.Identity.Name;
+                var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
+
                 if (accion == 3)
                 {
                     // Eliminación
@@ -477,6 +504,7 @@ namespace MerxProject.Controllers
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
             var model = UserManager.FindByEmail(email);
             var carritoExist =  DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).ToList();
+            ViewBag.cantidadCarrito = carritoExist.Count;
             ViewBag.carritoExist = carritoExist.Count();
             if (isChanged == "1"){ ViewBag.isChanged = 1; }
             if (emailExist == "1") { ViewBag.emailExist = 1; }
@@ -498,7 +526,8 @@ namespace MerxProject.Controllers
             {
                 var getUser = UserManager.FindByEmail(applicationUser.Email);
                 var personaUpd = DbModel.Personas.FirstOrDefault(x => x.Correo == getUser.Email);
-
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == personaUpd.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
                 getUser.Email = emailNuevo;
                 getUser.UserName = emailNuevo;
                 getUser.EmailConfirmed = false;

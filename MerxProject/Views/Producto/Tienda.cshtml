@@ -173,7 +173,7 @@
                             idAux2++;
                             <div class="col-xl-4 col-md-6 grid-item new">
                                 <div class="product">
-                                    <div class="product_image"><img src="~/Content/assets/img/Productos/@Url.Content(Model.ProductoCollection[h].Imagen)" alt=""></div>
+                                    <div class="product_image"><img src="@Url.Content(Model.ProductoCollection[h].Imagen)" alt=""></div>
                                     <div class="product_content">
                                         <div class="product_info d-flex flex-row align-items-start justify-content-start">
                                             <div>
@@ -363,7 +363,7 @@
         $('a[id=favo]').click(function () {
             Swal.fire(
                 'Espera!',
-                'Sólo puede tener 4 direcciones por cuenta, elimina o edita alguna dirección',
+                'Debes iniciar sesion antes de poder realizar un pedido o agregar a favoritos',
                 'warning'
             )
         });
@@ -373,7 +373,7 @@
         $('a[id=carri]').click(function () {
             Swal.fire(
                 'Espera!',
-                'Sólo puede tener 4 direcciones por cuenta, elimina o edita alguna dirección',
+                'Debes iniciar sesion antes de poder realizar un pedido o agregar a favoritos',
                 'warning'
             )
         });

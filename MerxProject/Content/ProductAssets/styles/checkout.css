@@ -800,13 +800,12 @@ section
 6.1 Billing
 *********************************/
 
-.billing
-{
+.billing {
 	padding-top: 51px;
 	padding-left: 300px;
 	padding-right: 250px;
 	padding-bottom: 32px;
-	background: #f8f8f8;
+	background: #D9D9D9;
 }
 .checkout_box
 {
