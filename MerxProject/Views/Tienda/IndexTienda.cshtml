@@ -41,6 +41,20 @@
 
 </script>
 
+@if (ViewBag.pagoRealizado == "True")
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire(
+                'Aprobado!',
+                'Muchas gracias por su compra, para consultar el detalle de la misma revise el historial de su cuenta en Paypal.com',
+                'success'
+            )
+        }, false);
+
+    </script>
+}
+
 
 @if (ViewBag.CupNotExit == 1)
 {
@@ -288,135 +302,139 @@ else if (ViewBag.CupNotExit == 2)
                             </div>
                         </div>
                     </div>
-                    <div class="row cart_extra_row">
+                    @if (ViewBag.cantidadCarrito > 0)
+                    {
+                        <div class="row cart_extra_row">
 
-                        <div class="col-lg-6">
-                            <div class="cart_extra cart_extra_1">
-                                @using (Html.BeginForm("IndexTienda", "Tienda", FormMethod.Post))
-                                {
-                                    <div class="cart_extra_content cart_extra_coupon">
-                                        <div class="cart_extra_title">Coupon code</div>
-                                        <div class="coupon_form_container">
+                            <div class="col-lg-6">
+                                <div class="cart_extra cart_extra_1">
+                                    @using (Html.BeginForm("IndexTienda", "Tienda", FormMethod.Post))
+                                    {
+                                        <div class="cart_extra_content cart_extra_coupon">
+                                            <div class="cart_extra_title">Coupon code</div>
+                                            <div class="coupon_form_container">
+                                                @if (ViewBag.descuentoGuardado != null)
+                                                {
+                                                    <input type="text" class="coupon_input" name="cupon" value="Ya haz canjeado un cupón" disabled>
+                                                }
+                                                else
+                                                {
+                                                    <input type="text" class="coupon_input" name="cupon" required="required">
+                                                    <input type="hidden" name="subtotal" value=@subtotal>
+                                                    <button type="submit" class="coupon_button">Aplicar</button>
+                                                }
+                                            </div>
+                                            <div class="coupon_text">Sólo podrás utilizar un cupón por cada compra.</div>
+                                            <div class="shipping">
+                                                <div class="cart_extra_title">Método de Envío</div>
+                                                <ul>
+                                                    <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                                        <label class="radio_container">
+                                                            <input type="radio" id="radio_2" value="$1" name="ship" class="shipping_radio" onclick="changeSrc()">
+                                                            <span class="radio_mark"></span>
+                                                            <span class="radio_text">Envío Estandard</span>
+                                                        </label>
+                                                        <div class="shipping_price ml-auto">$1</div>
+                                                    </li>
+                                                    <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                                        <label class="radio_container">
+                                                            <input type="radio" id="radio_3" value="Gratis" name="ship" class="shipping_radio" onclick="changeSrc()">
+                                                            <span class="radio_mark"></span>
+                                                            <span class="radio_text">Recoger en Sucursal</span>
+                                                        </label>
+                                                        <div class="shipping_price ml-auto">Gratis</div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-lg-6 cart_extra_col">
+                                <div class="cart_extra cart_extra_2">
+                                    <div class="cart_extra_content cart_extra_total">
+                                        <div class="cart_extra_title">Cart Total</div>
+                                        <ul class="cart_extra_total_list">
+                                            <li class="d-flex flex-row align-items-center justify-content-start">
+                                                <div class="cart_extra_total_title">Subtotal</div>
+                                                <div class="cart_extra_total_value ml-auto">$@subtotal</div>
+                                            </li>
+                                            <li class="d-flex flex-row align-items-center justify-content-start">
+                                                <div class="cart_extra_total_title">Envío</div>
+                                                <div class="cart_extra_total_value ml-auto" id="shipWe">$0</div>
+                                            </li>
                                             @if (ViewBag.descuentoGuardado != null)
                                             {
-                                                <input type="text" class="coupon_input" name="cupon" value="Ya haz canjeado un cupón" disabled>
-                                            }
-                                            else
-                                            {
-                                                <input type="text" class="coupon_input" name="cupon" required="required">
-                                                <input type="hidden" name="subtotal" value=@subtotal>
-                                                <button type="submit" class="coupon_button">Aplicar</button>
-                                            }
-                                        </div>
-                                        <div class="coupon_text">Sólo podrás utilizar un cupón por cada compra.</div>
-                                        <div class="shipping">
-                                            <div class="cart_extra_title">Método de Envío</div>
-                                            <ul>
-                                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
-                                                    <label class="radio_container">
-                                                        <input type="radio" id="radio_2" value="$1" name="ship" class="shipping_radio" onclick="changeSrc()">
-                                                        <span class="radio_mark"></span>
-                                                        <span class="radio_text">Envío Estandard</span>
-                                                    </label>
-                                                    <div class="shipping_price ml-auto">$1</div>
+                                                <li class="d-flex flex-row align-items-center justify-content-start">
+                                                    <div class="cart_extra_total_title">Cupón</div>
+                                                    <div class="cart_extra_total_value ml-auto">@(ViewBag.descuentoGuardado * 100)%</div>
                                                 </li>
-                                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
-                                                    <label class="radio_container">
-                                                        <input type="radio" id="radio_3" value="Gratis" name="ship" class="shipping_radio" onclick="changeSrc()">
-                                                        <span class="radio_mark"></span>
-                                                        <span class="radio_text">Recoger en Sucursal</span>
-                                                    </label>
-                                                    <div class="shipping_price ml-auto">Gratis</div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        <div class="col-lg-6 cart_extra_col">
-                            <div class="cart_extra cart_extra_2">
-                                <div class="cart_extra_content cart_extra_total">
-                                    <div class="cart_extra_title">Cart Total</div>
-                                    <ul class="cart_extra_total_list">
-                                        <li class="d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cart_extra_total_title">Subtotal</div>
-                                            <div class="cart_extra_total_value ml-auto">$@subtotal</div>
-                                        </li>
-                                        <li class="d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cart_extra_total_title">Envío</div>
-                                            <div class="cart_extra_total_value ml-auto" id="shipWe">$0</div>
-                                        </li>
-                                        @if (ViewBag.descuentoGuardado != null)
-                                        {
+                                            }
                                             <li class="d-flex flex-row align-items-center justify-content-start">
-                                                <div class="cart_extra_total_title">Cupón</div>
-                                                <div class="cart_extra_total_value ml-auto">@(ViewBag.descuentoGuardado * 100)%</div>
-                                            </li>
-                                        }
-                                        <li class="d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cart_extra_total_title">Total</div>
-                                            @if (ViewBag.subTotalDesc != null)
-                                            {
-                                                subTotalAux = @ViewBag.subTotalDesc;
-                                                <div class="cart_extra_total_value ml-auto">$@subTotalAux</div>
-                                            }
-                                            else
-                                            {
-                                                if (ViewBag.descuentoGuardado != null)
+                                                <div class="cart_extra_total_title">Total</div>
+                                                @if (ViewBag.subTotalDesc != null)
                                                 {
-
-                                                    //subTotalAux = ViewBag.descuentoGuardado * subtotal;
-
-                                                    subTotalAux = (subtotal - (ViewBag.descuentoGuardado * subtotal));
-
+                                                    subTotalAux = @ViewBag.subTotalDesc;
                                                     <div class="cart_extra_total_value ml-auto">$@subTotalAux</div>
                                                 }
                                                 else
                                                 {
-                                                    <div class="cart_extra_total_value ml-auto">$@subtotal</div>
+                                                    if (ViewBag.descuentoGuardado != null)
+                                                    {
+
+                                                        //subTotalAux = ViewBag.descuentoGuardado * subtotal;
+
+                                                        subTotalAux = (subtotal - (ViewBag.descuentoGuardado * subtotal));
+
+                                                        <div class="cart_extra_total_value ml-auto">$@subTotalAux</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="cart_extra_total_value ml-auto">$@subtotal</div>
+                                                    }
+
                                                 }
 
+                                            </li>
+                                        </ul>
+
+                                        @using (Html.BeginForm("PagoProducto", "Tienda", FormMethod.Get, new { id = "payment" }))
+                                        {
+
+
+                                            <input type="hidden" name="subtotal" value=@subtotal id="pago3">
+
+                                            if (subTotalAux > 0)
+                                            {
+                                                <input type="hidden" name="total" value="@subTotalAux" id="pago">
+
                                             }
+                                            else
+                                            {
 
-                                        </li>
-                                    </ul>
+                                                <input type="hidden" name="total" value="@subtotal" id="pago">
+                                            }
+                                            <input type="hidden" name="cupon" value=@ViewBag.descuentoGuardado id="pago1">
+                                            <input type="hidden" name="ship" value="" id="shipWe2">
+                                            <input type="hidden" name="ship" value="" id="shipWe2">
 
-                                    @using (Html.BeginForm("PagoProducto", "Tienda", FormMethod.Get, new { id = "payment" }))
-                                    {
 
+                                            <div class="checkout_button trans_200">
+                                                <a id=@idAux name=@idAux href="" onclick="$('#payment').submit(); return false;">
+                                                    Proceder al Pago
+                                                </a>
 
-                                        <input type="hidden" name="subtotal" value=@subtotal id="pago3">
-
-                                        if (subTotalAux > 0)
-                                        {
-                                            <input type="hidden" name="total" value="@subTotalAux" id="pago">
+                                            </div>
 
                                         }
-                                        else
-                                        {
-
-                                            <input type="hidden" name="total" value="@subtotal" id="pago">
-                                        }
-                                        <input type="hidden" name="cupon" value=@ViewBag.descuentoGuardado id="pago1">
-                                        <input type="hidden" name="ship" value="" id="shipWe2">
-                                        <input type="hidden" name="ship" value="" id="shipWe2">
 
 
-                                        <div class="checkout_button trans_200">
-                                            <a id=@idAux name=@idAux href="" onclick="$('#payment').submit(); return false;">
-                                                Proceder al Pago
-                                            </a>
-
-                                        </div>
-
-                                    }
-
-
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
                 </div>
             </div>
 
