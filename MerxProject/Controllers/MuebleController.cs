@@ -18,7 +18,6 @@ namespace MerxProject.Controllers
         private List<Mueble> _Muebles;
         private PaginadorGenerico<Mueble> _PaginadorMuebles;
 
-        [AllowAnonymous]
         [HttpGet]
         public ActionResult popUpMuebles(int? Id, string accion)
         {
@@ -68,7 +67,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaMueble");
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> popUpMuebles(int? IdMueble, Mueble muebles, string accion, HttpPostedFileBase postedFile, int[] Id, int[] Cantidad)
         {
@@ -267,7 +265,7 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaMueble(int pagina = 1)
         {
             int _TotalRegistros = 0;

@@ -231,7 +231,6 @@ namespace MerxProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popUpProductos(int? Id, string accion)
         {
@@ -268,7 +267,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaMueble");
         }
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpProductos(Producto productos, int idMueble, int idMaterial, string accion, HttpPostedFileBase postedFile)
         {
@@ -400,18 +398,15 @@ namespace MerxProject.Controllers
                 }
                 else
                 {
-                    string dir = Server.MapPath("~/Content/assets/img/Productos");
+                    string dir = Server.MapPath("~/Content/assets/img/Productos/");
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
-
-                    var originalFile = Path.GetFileName(postedFile.FileName);
-                    string fileId = Guid.NewGuid().ToString().Replace("-", "");
-                    var path = Path.Combine(dir, fileId);
+                    var path = Path.Combine(dir, postedFile.FileName);
                     postedFile.SaveAs(path + postedFile.FileName);
-                    productos.Imagen = fileId + postedFile.FileName;
-
+                    productos.Imagen = "~/Content/assets/img/Productos/" + postedFile.FileName;
+                    
 
                     if (productos != null)
                     {
@@ -470,7 +465,6 @@ namespace MerxProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popUpProductosColor(int Id, string accion)
         {
@@ -535,7 +529,6 @@ namespace MerxProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpProductosColor(int productoId, string cantidad, string newColor, string radio, string accion)
         {

@@ -10,7 +10,6 @@ using System.Web.Mvc;
 
 namespace MerxProject.Controllers
 {
-    [Authorize(Roles = "Administrador, Empleado")]
     public class MaterialController : Controller
     {
         private readonly int _RegistrosPorPagina = 10;
@@ -18,7 +17,6 @@ namespace MerxProject.Controllers
         private List<Material> _Materiales;
         private PaginadorGenerico<Material> _PaginadorMateriales;
 
-        [AllowAnonymous]
         [HttpGet]
         public ActionResult popUpMateriales(int? Id, string accion)
         {
@@ -52,7 +50,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaMaterial");
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> popUpMateriales(Material materiales, string accion, HttpPostedFileBase postedFile)
         {
