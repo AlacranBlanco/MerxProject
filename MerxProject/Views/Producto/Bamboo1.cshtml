@@ -8,6 +8,7 @@
     int h = 0;
     int idAux = 0, idAux2 = 1;
     string rutaSvg = "";
+    string SvgColor = "";
 }
 
 <title>Muebleria Merx - Tienda Virtual</title>
@@ -264,6 +265,7 @@
                                                 <input type="hidden" name="cantidadProducto" value="1" id=@idAux2>
                                                 <input type="hidden" name="namePag" value="Bamboo1" id=@idAux>
                                                 <input type="hidden" name="esCarrito" value="False" id=@idAux2>
+                                                <input type="hidden" name="SvgColor" value="" id="SvgColor">
                                                 <a href="" onclick="$('#formCarrito').submit(); return false;">
                                                     <div>
                                                         <div>
@@ -463,6 +465,10 @@
             });
             const overlay = document.getElementById("product_shape");
             overlay.style.fill = this.value;
+
+            var valuesWe = $('#product_shape').get(0).outerHTML;
+            console.log(valuesWe);
+            $("#SvgColor").val(valuesWe);
         });
     });
 

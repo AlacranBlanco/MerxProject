@@ -21,6 +21,8 @@ namespace MerxProject.Models.CarritoCompras
 
         public string Imagen { get; set; }
 
+        public string SvgColor { get; set; }
+
         public int Cantidad { get; set; }
 
         public int Stock { get; set; }

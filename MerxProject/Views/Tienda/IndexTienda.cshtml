@@ -238,7 +238,14 @@ else if (ViewBag.CupNotExit == 2)
                                             <li class="cart_item item_list d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-end justify-content-start">
                                                 <div class="product d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-start mr-auto">
                                                     <div><div class="product_number">@indiceProducto</div></div>
-                                                    <div><div class="product_image"><img src="@Url.Content(item.Imagen)" alt=""></div></div>
+                                                    <div><div class="product_image">
+                                                        <img src="@Url.Content(item.Imagen)" alt="">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="700px" height="57.13px" viewBox="0 0 700 400" style="enable-background:new 0 0 700 400;" xml:space="preserve" id="product-svg" class="svg replaced-svg">
+                                                            @Html.Raw(@item.SvgColor);
+                                                          
+                                                       @* <path d="M51.833,311.093l-1.852-34.723v-13.426v-27.777V200l-1.852-30.574                          v-23.148l3.704-5.556l6.944-2.778h4.167h1.852l38.426-5.092V99.981l3.704-4.167h21.296v-8.333V77.296V66.648v-7.87V47.667                          l1.852-6.944v-3.704h7.87c0,0,8.333,2.315,10.185,1.852s19.445,0.463,19.445,0.463l37.5,2.314c0,0,16.204,0,19.907,0                          s24.538-1.389,26.389-1.389s27.314-3.241,27.314-3.241s26.852-2.778,28.704-2.778s14.352-1.852,14.352-1.852h12.5h8.796l3.241,6.482                          v8.333v10.185v7.408v9.722v12.037L350,93.963l3.686-0.926V52.296v-3.704v-7.408v-4.629l5.556-0.463h5.092l6.944,1.852h23.148                          l34.723,0.463l25,2.315h13.426l6.481,1.852l5.093,1.389l2.314-1.389l10.186-0.463h53.24h14.353l5.555-2.778h3.704l2.777,0.463                          l1.853,3.241v4.167v15.278V81v9.259v2.315l18.981,0.463l4.166,0.926v3.241v6.481v11.574v11.111l39.815,2.314l7.87,4.167l3.704,2.777                          l2.777,6.019v6.019v11.111v41.268V301.37v5.556h-4.63h-35.647l-520.833,4.167H51.833z" id="product_shape" style="fill: rgb(65, 155, 210);"></path>*@
+                                                        </svg>
+                                                        </div></div>
                                                     <div class="product_name_container">
                                                         <div class="product_name"><a href="product.html">@item.Nombre</a></div>
                                                         <div class="product_text" style="color:green">Hay @item.Stock Disponibles</div>
@@ -266,6 +273,7 @@ else if (ViewBag.CupNotExit == 2)
                                                                 <input type="hidden" name="id" value=@item.idProducto id=@idAux>
                                                                 <input type="hidden" name="accion" value="2" id=@idAux>
                                                                 <input type="hidden" name="color" value="@item.CodigoColor" id=@idAux>
+                                                                <input type="hidden" name="SvgColor" value="@item.SvgColor" id=@idAux>
                                                                 <a onclick="$('#@idAux').submit(); return false;">-</a>
                                                             }
 
@@ -277,6 +285,7 @@ else if (ViewBag.CupNotExit == 2)
                                                                 <input type="hidden" name="accion" value="1" id=@idAux2>
                                                                 <input type="hidden" name="color" value="@item.CodigoColor" id=@idAux2>
                                                                 <input type="hidden" name="esCarrito" value="True" id=@idAux2>
+                                                                <input type="hidden" name="SvgColor" value="@item.SvgColor" id=@idAux>
                                                                 <input type="hidden" name="cantidadProducto" value="@item.Cantidad" id=@idAux2>
 
 

@@ -1401,7 +1401,8 @@ namespace MerxProject.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> AgregarProductoCarrito(int? pagi, int? cantidadProducto, string esCarrito, string color, Producto producto, int accion)
+        [ValidateInput(false)]
+        public async Task<ActionResult> AgregarProductoCarrito(int? pagi, int? cantidadProducto, string esCarrito, string color, Producto producto, int accion, string SvgColor)
         {
             var correo = User.Identity.Name;
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
@@ -1477,6 +1478,7 @@ namespace MerxProject.Controllers
                                 carritofind.Cantidad += 1;
                                 carritofind.Stock = inventario.Cantidad;
                                 precioTotal = (carritofind.Cantidad * carritofind.Precio);
+                                carritofind.SvgColor = SvgColor;
                                 carritofind.precioTotal = precioTotal;
                                 DbModel.CarritoCompras.AddOrUpdate(carritofind);
                                 DbModel.SaveChanges();
@@ -1511,6 +1513,7 @@ namespace MerxProject.Controllers
                             }
                             agregarProductoCarrito.Imagen = nombreProdcuto.Imagen;
                             agregarProductoCarrito.idProducto = producto.Id;
+                            agregarProductoCarrito.SvgColor = SvgColor;
                             agregarProductoCarrito.idPersona = persona.idPersona;
                             precioTotal = (agregarProductoCarrito.Cantidad * agregarProductoCarrito.Precio);
                             agregarProductoCarrito.precioTotal = precioTotal;
