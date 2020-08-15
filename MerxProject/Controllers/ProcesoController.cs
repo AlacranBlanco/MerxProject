@@ -304,24 +304,31 @@ namespace MerxProject.Controllers
         public async Task<ActionResult> popUpProcesos(int Id)
         {
             string resultado;
-            
-            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            if (Id != 0)
             {
-                try
+                using (ApplicationDbContext DbModel = new ApplicationDbContext())
                 {
-                    string res;
-                    res = GenerarPedido(Id);
-                    resultado = "Proceso iniciado, " + res + " es el Id";
-                    Session["res"] = resultado;
-                    Session["tipo"] = "Exito";
-                    return RedirectToAction("ListaProcesos");
+                    try
+                    {
+                        string res;
+                        res = GenerarPedido(Id);
+                        resultado = "Proceso iniciado, " + res + " es el Id";
+                        Session["res"] = resultado;
+                        Session["tipo"] = "Exito";
+                        return RedirectToAction("ListaProcesos");
+                    }
+                    catch (Exception ex)
+                    {
+                        resultado = ex.Message;
+                        Session["res"] = resultado;
+                        return RedirectToAction("ListaProcesos");
+                    }
                 }
-                catch(Exception ex)
-                {
-                    resultado = ex.Message;
-                    Session["res"] = resultado;
-                    return RedirectToAction("ListaProcesos");
-                }
+            }
+            else
+            {
+                Session["res"] = "Tienes que seleccionar un color del producto";
+                return RedirectToAction("ListaProcesos");
             }
         }
 

@@ -16,7 +16,6 @@ namespace MerxProject.Controllers
         private List<Color> _Colores;
         private PaginadorGenerico<Color> _PaginadorColores;
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpGet]
         public ActionResult popUpColores(int? Id, string accion)
         {
@@ -48,7 +47,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaColor");
         }
 
-        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> popUpColores(Color color, string accion, string Codigo)
         {

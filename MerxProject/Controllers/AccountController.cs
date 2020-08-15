@@ -228,51 +228,54 @@ namespace MerxProject.Controllers
             // El email es unico y no puede repetirse
             bool rolEmpleado = false;
             bool rolAdmin = false;
-            if (user.Roles.Count() > 0)
+            if (user != null)
             {
-                foreach (var rol in roles)
+                if (user.Roles.Count() > 0)
                 {
-                    if (user.Roles.First().RoleId == rol.Id && rol.Name == "Empleado")
+                    foreach (var rol in roles)
                     {
-                        rolEmpleado = true;
-                    }
-                    else if (user.Roles.First().RoleId == rol.Id && rol.Name == "Administrador")
-                    {
-                        rolAdmin = true;
+                        if (user.Roles.First().RoleId == rol.Id && rol.Name == "Empleado")
+                        {
+                            rolEmpleado = true;
+                        }
+                        else if (user.Roles.First().RoleId == rol.Id && rol.Name == "Administrador")
+                        {
+                            rolAdmin = true;
+                        }
                     }
                 }
-            }
 
-            if (result == SignInStatus.Success)
-            {
-                if (user != null && user.EmailConfirmed && rolEmpleado)
+                if (result == SignInStatus.Success)
                 {
-                    Session["user"] = user.UserName;
-                    return RedirectToAction("ListaProducto", "Producto");
+                    if (user != null && user.EmailConfirmed && rolEmpleado)
+                    {
+                        Session["user"] = user.UserName;
+                        return RedirectToAction("ListaProducto", "Producto");
+                    }
+                    else if (user != null && user.EmailConfirmed && rolAdmin)
+                    {
+                        Session["user"] = user.UserName;
+                        return RedirectToAction("Dashboard", "Admin");
+                    }
+                    else if (user != null && user.EmailConfirmed)
+                    {
+                        Session["user"] = user.UserName;
+                        return RedirectToAction("Index", "Home");
+                        //return RedirectToLocal(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Account", new { isEmailVerified = 3 });
+                    }
                 }
-                else if (user != null && user.EmailConfirmed && rolAdmin)
+                else if (result == SignInStatus.LockedOut)
                 {
-                    Session["user"] = user.UserName;
-                    return RedirectToAction("Dashboard", "Admin");
+                    return View("Lockout");
                 }
-                else if (user != null && user.EmailConfirmed)
+                else if (result == SignInStatus.RequiresVerification)
                 {
-                    Session["user"] = user.UserName;
-                    return RedirectToAction("Index", "Home");
-                    //return RedirectToLocal(returnUrl);
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 }
-                else
-                {
-                    return RedirectToAction("Login", "Account", new { isEmailVerified = 3 });
-                }
-            }
-            else if (result == SignInStatus.LockedOut)
-            {
-                return View("Lockout");
-            }
-            else if (result == SignInStatus.RequiresVerification)
-            {
-                return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
             }
 
             // SignInStatus.Failure:

@@ -18,7 +18,6 @@ namespace MerxProject.Controllers
         private PaginadorGenerico<Proveedor> _PaginadorProveedores;
 
 
-        [AllowAnonymous]
         [HttpGet]
         public ActionResult popUpProveedores(int? Id, string accion)
         {
@@ -53,7 +52,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaProveedor");
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult> popUpProveedores(Proveedor proveedores, string accion, HttpPostedFileBase postedFile)
         {
@@ -149,7 +147,7 @@ namespace MerxProject.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaProveedor(int pagina = 1)
         {
             int _TotalRegistros = 0;

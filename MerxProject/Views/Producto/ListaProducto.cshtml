@@ -142,7 +142,7 @@
                 @Html.DisplayFor(modelItem => item.CategoriaMaterial.Nombre)
             </td>
             <td>
-                <img src="~/Content/assets/img/Productos/@item.Imagen" width="100px" />
+                <img src="@Url.Content(item.Imagen)" width="100px" />
             </td>
             <td>
                 <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="color_@item.Id" onclick="createModalColor('@Url.Action("popUpProductosColor", "Producto" , new {id=item.Id, accion = "0"})')">Inventario</button>

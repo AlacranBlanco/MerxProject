@@ -23,7 +23,6 @@ namespace MerxProject.Controllers
         private PaginadorGenerico<Empleado> _PaginadorEmpleado;
         
 
-        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public ActionResult PopUpEmpleados(int? Id, string accion)
         {
@@ -61,7 +60,6 @@ namespace MerxProject.Controllers
             return RedirectToAction("ListaEmpleado");
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<ActionResult> PopUpEmpleados(Empleado empleados, string accion, string rol, string password)
         {
