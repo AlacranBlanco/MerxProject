@@ -65,8 +65,10 @@
                                 <label class="control-label col-md-2">Piezas usadas para armado</label>
                                 <div class="col-sm-2">
                                     <table class="table table-condensed">
-                                        @foreach (var item in ViewBag.DM)
+                                        @if (ViewBag.DM != null)
                                         {
+                                            foreach (var item in ViewBag.DM)
+                                            {
                                             <tr>
                                                 <td>
                                                     @item.Pieza.Nombre
@@ -76,6 +78,7 @@
                                                 </td>
                                             </tr>
 
+                                            }
                                         }
                                     </table>
                                 </div>

@@ -26,10 +26,11 @@ namespace MerxProject.Controllers
             {
                 if (accion == "1")
                 {
+                    var Material = new Material();
                     ViewBag.title = "Nuevo";
                     ViewBag.Accion = "1";
                     ViewBag.img = false;
-                    return View();
+                    return View(Material);
                 }
                 else if (accion == "2")
                 {

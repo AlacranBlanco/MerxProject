@@ -29,14 +29,16 @@ namespace MerxProject.Controllers
                 ViewBag.Piezas = Piezas;
                 if (accion == "1")
                 {
+                    var Mueble = new Mueble();
                     ViewBag.title = "Nuevo";
                     ViewBag.Accion = "1";
                     ViewBag.img = false;
-                    return View();
+                    return View(Mueble);
                 }
                 else if (accion == "2")
                 {
-                    var DM = DbModel.DetalleMuebles.Where(x => x.Mueble.Id == Id).ToList();
+
+                    var DM = DbModel.DetalleMuebles.Where(x => x.Mueble.Id == Id ).ToList();
                     var material = DbModel.Muebles.Find(Id);
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
@@ -156,7 +158,7 @@ namespace MerxProject.Controllers
                 else if (muebles.Id > 0 && accion == "3")
                 {
                     // Eliminación
-                    var mueble = DbModel.Muebles.Find(muebles.Id);
+                    var mueble = DbModel.Muebles.Find(IdMueble);
                     muebles.Id = mueble.Id;
 
                     if (mueble != null)
@@ -164,7 +166,7 @@ namespace MerxProject.Controllers
 
                         try
                         {
-                            var productos = DbModel.Productos.Where(x => x.CategoriaMueble == mueble).Count();
+                            var productos = DbModel.Productos.Where(x => x.CategoriaMueble.Id == mueble.Id).Count();
                             if (productos < 1)
                             {
                                 var procesosActuales = DbModel.Procesos.Where(x => x.Inventario.Producto.CategoriaMueble.Id == mueble.Id).Count();

@@ -55,7 +55,7 @@ namespace MerxProject.Controllers
 
             var email = User.Identity.Name;
 
-            if (email != "")
+            if (email != "" && email.Contains("@"))
             {
                 ViewBag.NoLogIn = 1;
                 var usuarioLoggeado = DbModel.Personas.FirstOrDefault(x => x.Correo == email);
@@ -1236,6 +1236,7 @@ namespace MerxProject.Controllers
             }
         }
 
+        [Authorize(Roles="Cliente")]
         [HttpGet]
         public ActionResult Bamboo1(int? OutStock, string name, string colorNombre = null)
         {
@@ -1399,7 +1400,6 @@ namespace MerxProject.Controllers
         }
 
 
-        [AllowAnonymous]
         [HttpPost]
         [ValidateInput(false)]
         public async Task<ActionResult> AgregarProductoCarrito(int? pagi, int? cantidadProducto, string esCarrito, string color, Producto producto, int accion, string SvgColor)

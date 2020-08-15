@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Sign Up Form by Colorlib</title>
+    <title>Merx - Inicio de sesión</title>
 
     <!-- Font Icon -->
     <link rel="stylesheet" href="~/Content/LoginColorlib/fonts/material-icon/css/material-design-iconic-font.min.css">
@@ -78,14 +78,14 @@
 
                             <div class="form-group">
                                 <label><i class="zmdi zmdi-email"></i></label>
-                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo" })
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Correo", required = "required" })
                             </div>
 
 
 
                             <div class="form-group">
                                 <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña" })
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Contraseña", required = "required" })
                             </div>
 
 

@@ -128,10 +128,11 @@ namespace MerxProject.Controllers
             {
                 if (accion == "1")
                 {
+                    var Herramienta = new Herramienta();
                     ViewBag.Title = "Nuevo";
                     ViewBag.Accion = "1";
                     ViewBag.img = false;
-                    return View();
+                    return View(Herramienta);
                 }
                 else if (accion == "2")
                 {
@@ -218,14 +219,15 @@ namespace MerxProject.Controllers
         {
             string resultado;
             
-
-
             using (var DbModel = new ApplicationDbContext())
             {
                 if (id != null)
                 {
-                    var tool = DbModel.Herramientas.Find(id);
-                    herramientas.Id = tool.Id;
+                    if (id != 0)
+                    {
+                        var tool = DbModel.Herramientas.Find(id);
+                        herramientas.Id = tool.Id;
+                    }
                 }
                 if (herramientas.Id > 0 && accion == "2")
                 {
@@ -275,7 +277,7 @@ namespace MerxProject.Controllers
                     var herramienta = DbModel.Herramientas.Find(herramientas.Id);
                     var Detalle = DbModel.DetalleHerramientas.Where(x => x.Herramienta.Id == herramienta.Id).Count();
 
-                    if (herramienta != null && Detalle < 0)
+                    if (herramienta != null && Detalle < 1)
                     {
 
                         try

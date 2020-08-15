@@ -9,7 +9,7 @@
     myList.Add(0);
     int idAux = 0, idAux2 = 6;
     int pagActual = ViewBag.pagina - 1;
-    int idxFavorito = 0, idxFavorito2 = 0;
+    int idxFavorito = 0;
 }
 <script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script>
 
@@ -173,7 +173,7 @@
                             idAux2++;
                             <div class="col-xl-4 col-md-6 grid-item new">
                                 <div class="product">
-                                    <div class="product_image"><img src="@Url.Content(Model.ProductoCollection[h].Imagen)" alt=""></div>
+                                    <div class="product_image"><img src="~/Content/assets/img/Productos/@Url.Content(Model.ProductoCollection[h].Imagen)" alt=""></div>
                                     <div class="product_content">
                                         <div class="product_info d-flex flex-row align-items-start justify-content-start">
                                             <div>
