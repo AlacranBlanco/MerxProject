@@ -8,6 +8,7 @@
     int h = 0;
     int idAux = 0, idAux2 = 1;
     string rutaSvg = "";
+    string SvgColor = "";
 }
 
 <title>Muebleria Merx - Tienda Virtual</title>
@@ -15,7 +16,7 @@
 
 @if (ViewBag.outStock == 1)
 {
-<script type="text/javascript">
+    <script type="text/javascript">
 
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire(
@@ -28,7 +29,7 @@
 
 
 
-</script>
+    </script>
 }
 
 
@@ -48,44 +49,6 @@
 </head>
 <body>
 
-    <!-- Menu -->
-
-    <div class="menu">
-
-        <!-- Search -->
-        <div class="menu_search">
-            <form action="#" id="menu_search_form" class="menu_search_form">
-                <input type="text" class="search_input" placeholder="Search Item" required="required">
-                <button class="menu_search_button"><img src="~/Content/ProductAssets/images/search.png" alt=""></button>
-            </form>
-        </div>
-        <!-- Navigation -->
-        <div class="menu_nav">
-            <ul>
-                <li><a href="#">Women</a></li>
-                <li><a href="#">Men</a></li>
-                <li><a href="#">Kids</a></li>
-                <li><a href="#">Home Deco</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </div>
-        <!-- Contact Info -->
-        <div class="menu_contact">
-            <div class="menu_phone d-flex flex-row align-items-center justify-content-start">
-                <div><div><img src="~/Content/ProductAssets/images/phone.svg" alt="https://www.flaticon.com/authors/freepik"></div></div>
-                <div>+1 912-252-7350</div>
-            </div>
-            <div class="menu_social">
-                <ul class="menu_social_list d-flex flex-row align-items-start justify-content-start">
-                    <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                    <li><a href="#"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
-                    <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                    <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
     <div class="super_container">
 
         <!-- Header -->
@@ -96,7 +59,7 @@
                 <div class="logo">
                     <a href="#">
                         <div class="d-flex flex-row align-items-center justify-content-start">
-                             <div><a href="../Home/Index"><img src="~/Content/assets/img/logo.png" alt=""  max-width="100px" height="40" ></a></div>
+                            <div><a href="../Home/Index"><img src="~/Content/assets/img/logo.png" alt="" max-width="100px" height="40"></a></div>
                         </div>
                     </a>
                 </div>
@@ -124,7 +87,7 @@
                         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
                         {
                             @Html.AntiForgeryToken()
-                            <div class="user"><a  href="javascript:document.getElementById('logoutForm').submit()"><div><img src="~/Content/ProductAssets/images/logout.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
+                            <div class="user"><a href="javascript:document.getElementById('logoutForm').submit()"><div><img src="~/Content/ProductAssets/images/logout.svg" alt="https://www.flaticon.com/authors/freepik"></div></a></div>
 
                         }
                     }
@@ -170,11 +133,11 @@
 
                             <img id="background-image" src="@Url.Content(Model.Producto.Imagen)" />
 
-                            @{ 
+                            @{
                                 rutaSvg = Url.Content(Model.Producto.Imagen).Replace(".png", ".svg");
                             }
-                            
-                            <img src=@rutaSvg  id="product-svg" class="svg" />
+
+                            <img src=@rutaSvg id="product-svg" class="svg" />
 
 
                         </div>
@@ -292,25 +255,26 @@
                                         }
 
 
-                                    <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+                                        <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
 
-                                        @using (Html.BeginForm("AgregarProductoCarrito", "Producto", FormMethod.Post, new { id = "formCarrito" }))
-                                        {
-                                            <input type="hidden" name="id" value=@Model.Producto.Id id=@idAux2>
-                                            <input type="hidden" name="accion" value="1" id=@idAux2>
-                                            <input type="hidden" name="color" value="" id="ColorId">
-                                            <input type="hidden" name="cantidadProducto" value="1" id=@idAux2>
-                                            <input type="hidden" name="namePag" value="Bamboo1" id=@idAux>
-                                            <input type="hidden" name="esCarrito" value="False" id=@idAux2>
-                                            <a href="" onclick="$('#formCarrito').submit(); return false;">
-                                                <div>
+                                            @using (Html.BeginForm("AgregarProductoCarrito", "Producto", FormMethod.Post, new { id = "formCarrito" }))
+                                            {
+                                                <input type="hidden" name="id" value=@Model.Producto.Id id=@idAux2>
+                                                <input type="hidden" name="accion" value="1" id=@idAux2>
+                                                <input type="hidden" name="color" value="" id="ColorId">
+                                                <input type="hidden" name="cantidadProducto" value="1" id=@idAux2>
+                                                <input type="hidden" name="namePag" value="Bamboo1" id=@idAux>
+                                                <input type="hidden" name="esCarrito" value="False" id=@idAux2>
+                                                <input type="hidden" name="SvgColor" value="" id="SvgColor">
+                                                <a href="" onclick="$('#formCarrito').submit(); return false;">
                                                     <div>
-                                                        <img src="~/Content/ProductAssets/images/cart_0.svg" class="svg" />
+                                                        <div>
+                                                            <img src="~/Content/ProductAssets/images/cart_0.svg" class="svg" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                        }
-                                    </div>
+                                                </a>
+                                            }
+                                        </div>
 
                                     </div>
                                 </div>
@@ -467,9 +431,9 @@
     }
 
 
-        function hexToRgb(color) {
+    function hexToRgb(color) {
         var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        color = color.replace(shorthandRegex, function(m, r, g, b) {
+        color = color.replace(shorthandRegex, function (m, r, g, b) {
             return r + r + g + g + b + b;
         });
 
@@ -479,15 +443,15 @@
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
         } : {
-            r: 0,
-            g: 0,
-            b: 0
-        };
+                r: 0,
+                g: 0,
+                b: 0
+            };
     }
     $(document).ready(function () {
 
-    // Reference the color shape that was drawn over the image
-       
+        // Reference the color shape that was drawn over the image
+
 
         $('input[type="radio"]').on("change", function () {
             $('#product-svg path').each(function () {
@@ -501,6 +465,10 @@
             });
             const overlay = document.getElementById("product_shape");
             overlay.style.fill = this.value;
+
+            var valuesWe = $('#product_shape').get(0).outerHTML;
+            console.log(valuesWe);
+            $("#SvgColor").val(valuesWe);
         });
     });
 

@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
 /******************************
@@ -550,21 +550,50 @@ section
 	color: #4a4a4a;
 	padding-left: 26px;
 }
-.svg path, .svg rect, .svg polygon
-{
-    fill: #778990;
-    -webkit-transition: all 200ms ease;
-    -moz-transition: all 200ms ease;
-    -ms-transition: all 200ms ease;
-    -o-transition: all 200ms ease;
-    transition: all 200ms ease;
+
+.svg path, .svg rect, .svg polygon {
+	fill: transparent;
+	-webkit-transition: all 200ms ease;
+	-moz-transition: all 200ms ease;
+	-ms-transition: all 200ms ease;
+	-o-transition: all 200ms ease;
+	transition: all 200ms ease;
 }
-.svg:hover path,
+
+
+#product-shape {
+	fill: transparent;
+}
+
+#background-image {
+	position: absolute;
+	top: 37px;
+	left: 15px;
+	width: 100%;
+	height: auto;
+	z-index: 1;
+}
+
+
+#product-svg {
+	position: absolute;
+	z-index: 2;
+	background-size: 1000%;
+	background-repeat: no-repeat;
+	background-position: 1000%;
+	mix-blend-mode: multiply;
+	margin-left: -201px;
+	width: -webkit-fill-available;
+	/* margin-top: -70px; */
+	/* height: 100%; */
+}
+
+/*.svg:hover path,
 .svg:hover rect,
 .svg:hover polygon
 {
 	fill: #2fce98;
-}
+}*/
 
 /*********************************
 4. Menu
@@ -853,8 +882,7 @@ section
 }
 .product_image
 {
-	width: 67px;
-	height: 75px;
+	width: 100px;
 }
 .product_image img
 {

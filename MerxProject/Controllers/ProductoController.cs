@@ -145,7 +145,7 @@ namespace MerxProject.Controllers
                 // Número total de registros de la tabla Productos
                 _TotalRegistros = DbModel.Productos.Count();
                 // Obtenemos la 'página de registros' de la tabla Productos
-                _Productos = DbModel.Inventarios.Where(x=> x.Cantidad > 0)
+                _Productos = DbModel.Inventarios.Where(x => x.Cantidad > 0)
                                                  .OrderBy(x => x.Producto.Nombre)
                                                  .Skip((pagina - 1) * _RegistrosPorPagina)
                                                  .Take(_RegistrosPorPagina)
@@ -237,7 +237,7 @@ namespace MerxProject.Controllers
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
-                var Materiales = DbModel.Materiales.Where(x =>x.Piezas == true).ToList();
+                var Materiales = DbModel.Materiales.Where(x => x.Piezas == true).ToList();
                 var Muebles = DbModel.Muebles.ToList();
                 ViewBag.Materiales = Materiales;
                 ViewBag.Muebles = Muebles;
@@ -280,7 +280,7 @@ namespace MerxProject.Controllers
                 {
                     // Edición
                     var producto = DbModel.Productos.Find(productos.Id);
-                    if (producto != null)   
+                    if (producto != null)
                     {
 
                         var material = DbModel.Materiales.Find(idMaterial);
@@ -292,7 +292,7 @@ namespace MerxProject.Controllers
                             productos.CategoriaMaterial = material;
                             productos.CategoriaMueble = mueble;
 
-                            if(postedFile != null)
+                            if (postedFile != null)
                             {
                                 string dir = Server.MapPath("~/Content/assets/img/Productos");
                                 if (!Directory.Exists(dir))
@@ -313,7 +313,7 @@ namespace MerxProject.Controllers
 
                             try
                             {
-                                
+
                                 DbModel.Productos.AddOrUpdate(productos);
                                 DbModel.SaveChanges();
                                 resultado = "Actualización realizada";
@@ -325,7 +325,7 @@ namespace MerxProject.Controllers
                             catch (Exception ex)
                             {
                                 resultado = ex.Message;
-                                Session["res"]= resultado;
+                                Session["res"] = resultado;
                                 return RedirectToAction("ListaProducto");
                             }
                         }
@@ -477,14 +477,14 @@ namespace MerxProject.Controllers
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
                 Inventario inv = new Inventario();
-                
+
                 var Colores = DbModel.Colores.ToList();
                 var ColoresHechos = new List<Inventario>();
                 var producto = DbModel.Productos.Find(Id);
                 var inventarios = DbModel.Inventarios.ToList();
                 var invId = new List<Inventario>();
 
-                foreach(var item in inventarios)
+                foreach (var item in inventarios)
                 {
                     if (item.Producto != null)
                     {
@@ -499,18 +499,18 @@ namespace MerxProject.Controllers
                     }
                 }
 
-                foreach(var item in invId)
+                foreach (var item in invId)
                 {
-                    foreach(var color in Colores)
+                    foreach (var color in Colores)
                     {
-                        if(item.Color.Id == color.Id)
+                        if (item.Color.Id == color.Id)
                         {
                             ColoresHechos.Add(item);
                         }
                     }
                 }
 
-                foreach(var item in ColoresHechos)
+                foreach (var item in ColoresHechos)
                 {
                     Colores.Remove(item.Color);
                 }
@@ -520,7 +520,7 @@ namespace MerxProject.Controllers
                 {
                     suma += item.Cantidad;
                 }
-                
+
 
                 ViewBag.Colores = Colores;
                 ViewBag.productoId = producto.Id;
@@ -529,7 +529,7 @@ namespace MerxProject.Controllers
 
                 ViewBag.title = "Inventario";
                 ViewBag.subtitle = producto.Nombre;
-                
+
 
                 return View(inv);
             }
@@ -596,7 +596,7 @@ namespace MerxProject.Controllers
                             Session["res"] = "Hay productos en proceso con este color o es un color predeterminado";
                             return RedirectToAction("ListaProducto");
                         }
-                            
+
                     }
                 }
                 catch (Exception ex)
@@ -647,11 +647,11 @@ namespace MerxProject.Controllers
         {
             return View("");
         }
-        
+
         [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult BuscarLista(string orden, string categoria, string parameter, int pagina = 1)
         {
-           
+
             int _TotalRegistros = 0;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -717,11 +717,11 @@ namespace MerxProject.Controllers
                         return View("ListaProducto", _PaginadorProducto);
                     }
                 }
-                else if(!string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden))
+                else if (!string.IsNullOrWhiteSpace(categoria) && string.IsNullOrWhiteSpace(orden))
                 {
                     orden = "Asc";
                 }
-                else if(string.IsNullOrWhiteSpace(categoria) && !string.IsNullOrWhiteSpace(orden))
+                else if (string.IsNullOrWhiteSpace(categoria) && !string.IsNullOrWhiteSpace(orden))
                 {
                     categoria = "Nombre";
                 }
@@ -734,7 +734,7 @@ namespace MerxProject.Controllers
                             if (orden == "Desc")
                             {
                                 // Número total de registros de la tabla Productos
-                                _TotalRegistros = DbModel.Productos.OrderBy(x=> x.Precio).Count();
+                                _TotalRegistros = DbModel.Productos.OrderBy(x => x.Precio).Count();
                                 // Obtenemos la 'página de registros' de la tabla Productos
                                 _Producto = DbModel.Productos.OrderByDescending(x => x.Precio)
                                                                  .Skip((pagina - 1) * _RegistrosPorPagina)
@@ -1211,7 +1211,7 @@ namespace MerxProject.Controllers
                             }
                         }
                         return View("ListaProducto", _PaginadorProducto);
-                        
+
                     default:
                         ViewBag.error = "No hay resultados";
                         _TotalRegistros = DbModel.Productos.Count();
@@ -1237,7 +1237,7 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Bamboo1(int? OutStock,  string name, string colorNombre = null)
+        public ActionResult Bamboo1(int? OutStock, string name, string colorNombre = null)
         {
 
             if (OutStock != null)
@@ -1251,7 +1251,7 @@ namespace MerxProject.Controllers
             }
 
             var email = User.Identity.Name;
-          
+
             if (name != null)
             {
 
@@ -1261,7 +1261,7 @@ namespace MerxProject.Controllers
                     var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == usuarioLoggeado.idPersona).ToList();
                     ViewBag.cantidadCarrito = cantidadCarrito.Count;
                     ViewBag.NoLogIn = 1;
-                    
+
                     var Colores = DbModel.Colores.ToList();
                     VentaViewModels ventaViewModels = new VentaViewModels();
                     ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
@@ -1290,7 +1290,7 @@ namespace MerxProject.Controllers
 
 
                     }
-                   
+
                     return View(ventaViewModels);
                 }
                 else
@@ -1305,7 +1305,7 @@ namespace MerxProject.Controllers
                         var colorDetail = DbModel.Colores.FirstOrDefault(x => x.Id == item.Color.Id);
                         ventaViewModels.ColorsCollection.Add(colorDetail);
                     }
-                    
+
                     return View(ventaViewModels);
                 }
 
@@ -1313,7 +1313,7 @@ namespace MerxProject.Controllers
             }
             else
             {
-                
+
                 return Redirect("Tienda");
             }
 
@@ -1321,9 +1321,88 @@ namespace MerxProject.Controllers
 
         }
 
+
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> AgregarProductoCarrito(int? pagi, int? cantidadProducto, string esCarrito, string color, Producto producto, int accion)
+        public ActionResult AgregarProductoFavorito(int? pagi, Producto producto, int accion)
+        {
+            var correo = User.Identity.Name;
+            if (correo != "")
+            {
+                if (accion == 1)
+                {
+                    ProductosFavoritos productosFavoritos = new ProductosFavoritos();
+                    using (this.DbModel = new ApplicationDbContext())
+                    {
+
+                        var idPersonas = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        var nombreProdcuto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                        productosFavoritos.Nombre = nombreProdcuto.Nombre;
+                        productosFavoritos.idProducto = producto.Id;
+                        productosFavoritos.idPersona = idPersonas.idPersona;
+                        DbModel.ProductosFavoritos.Add(productosFavoritos);
+                        DbModel.SaveChanges();
+                    }
+                    if (pagi != null)
+                    {
+                        return RedirectToAction("Tienda", new { pag = pagi });
+                    }
+                    else
+                    {
+
+                        using (this.DbModel = new ApplicationDbContext())
+                        {
+
+                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                            return RedirectToAction("Bamboo1", new { name = nombreProducto.Nombre });
+                        }
+                    }
+
+                }
+                else if (accion == 2)
+                {
+                    // Eliminación
+                    var productoFav = DbModel.ProductosFavoritos.FirstOrDefault(x => x.idProducto == producto.Id);
+
+                    if (productoFav != null)
+                    {
+                        DbModel.ProductosFavoritos.Remove(productoFav);
+                        DbModel.SaveChanges();
+
+                        if (pagi != null)
+                        {
+                            return RedirectToAction("Tienda", new { pag = pagi });
+                        }
+                        else
+                        {
+                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                            return RedirectToAction("Bamboo1", new { name = nombreProducto.Nombre });
+                        }
+
+                    }
+                }
+
+            }
+            else
+            {
+                // El usuario no ha sido logeado, le mandamos un mensaje
+                ViewBag.NoLogIn = 0;
+                ViewBag.pagina = 1;
+                Tienda(0, 1);
+                return View("Tienda");
+            }
+
+
+
+            return View("Tienda");
+
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateInput(false)]
+        public async Task<ActionResult> AgregarProductoCarrito(int? pagi, int? cantidadProducto, string esCarrito, string color, Producto producto, int accion, string SvgColor)
         {
             var correo = User.Identity.Name;
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
@@ -1336,7 +1415,7 @@ namespace MerxProject.Controllers
 
                     if (cantidadProducto != null)
                     {
-                        
+
                         if (color == null)
                         {
                             Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == "#FFFFFF");
@@ -1345,9 +1424,9 @@ namespace MerxProject.Controllers
                         {
                             Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
                         }
-                        
+
                         var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
-                        var carritoCantidad = DbModel.CarritoCompras.FirstOrDefault(x => x.idProducto == producto.Id && x.ColorNombre == Color.Nombre);
+                        var carritoCantidad = DbModel.CarritoCompras.FirstOrDefault(x => x.idProducto == producto.Id && x.ColorNombre == Color.Nombre && x.idPersona == persona.idPersona);
 
                         if (esCarrito == "True")
                         {
@@ -1376,7 +1455,7 @@ namespace MerxProject.Controllers
 
                                 }
                             }
-                            
+
                         }
 
 
@@ -1390,14 +1469,21 @@ namespace MerxProject.Controllers
                         var carritofind = carritoList.FirstOrDefault(x => x.idProducto == producto.Id && x.ColorNombre == Color.Nombre);
                         var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
                         double precioTotal = 0.00;
+
+
                         if (carritofind != null)
                         {
-                            carritofind.Cantidad += 1;
-                            carritofind.Stock = inventario.Cantidad;
-                            precioTotal = (carritofind.Cantidad * carritofind.Precio);
-                            carritofind.precioTotal = precioTotal;
-                            DbModel.CarritoCompras.AddOrUpdate(carritofind);
-                            DbModel.SaveChanges();
+                            if (carritofind.Cantidad + 1 <= inventario.Cantidad)
+                            {
+                                carritofind.Cantidad += 1;
+                                carritofind.Stock = inventario.Cantidad;
+                                precioTotal = (carritofind.Cantidad * carritofind.Precio);
+                                carritofind.SvgColor = SvgColor;
+                                carritofind.precioTotal = precioTotal;
+                                DbModel.CarritoCompras.AddOrUpdate(carritofind);
+                                DbModel.SaveChanges();
+                            }
+
                         }
                         else
                         {
@@ -1405,7 +1491,7 @@ namespace MerxProject.Controllers
                             agregarProductoCarrito.Precio = nombreProdcuto.Precio;
                             if (color != null && color != "")
                             {
-                               // var Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
+                                // var Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
                                 agregarProductoCarrito.ColorNombre = Color.Nombre;
                                 agregarProductoCarrito.CodigoColor = Color.Codigo;
                                 agregarProductoCarrito.idColor = Color.Id;
@@ -1418,7 +1504,7 @@ namespace MerxProject.Controllers
                                 inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
                                 //inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == 1);
 
-                               // var Color = DbModel.Colores.FirstOrDefault(x => x.Id == 1);
+                                // var Color = DbModel.Colores.FirstOrDefault(x => x.Id == 1);
                                 agregarProductoCarrito.ColorNombre = Color.Nombre;
                                 agregarProductoCarrito.CodigoColor = Color.Codigo;
                                 agregarProductoCarrito.idColor = Color.Id;
@@ -1427,17 +1513,19 @@ namespace MerxProject.Controllers
                             }
                             agregarProductoCarrito.Imagen = nombreProdcuto.Imagen;
                             agregarProductoCarrito.idProducto = producto.Id;
+                            agregarProductoCarrito.SvgColor = SvgColor;
                             agregarProductoCarrito.idPersona = persona.idPersona;
                             precioTotal = (agregarProductoCarrito.Cantidad * agregarProductoCarrito.Precio);
                             agregarProductoCarrito.precioTotal = precioTotal;
 
                             DbModel.CarritoCompras.Add(agregarProductoCarrito);
                             DbModel.SaveChanges();
+
                         }
 
-                       
-                       
-                       
+
+
+
                     }
 
 
@@ -1466,19 +1554,29 @@ namespace MerxProject.Controllers
                 else if (accion == 2)
                 {
                     // Eliminación
-                    var productoCarrito = DbModel.CarritoCompras.FirstOrDefault(x => x.CodigoColor == color && x.idProducto == producto.Id);
+                    var productoCarrito = DbModel.CarritoCompras.FirstOrDefault(x => x.CodigoColor == color && x.idProducto == producto.Id && x.idPersona == persona.idPersona);
                     Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == color);
                     var inventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
                     double precioTotal = 0.00;
 
                     if (productoCarrito != null)
                     {
-                        productoCarrito.Cantidad -= 1;
-                        productoCarrito.Stock = inventario.Cantidad;
-                        precioTotal = (productoCarrito.Cantidad * productoCarrito.Precio);
-                        productoCarrito.precioTotal = precioTotal;
-                        DbModel.CarritoCompras.AddOrUpdate(productoCarrito);
-                        DbModel.SaveChanges();
+                        if (productoCarrito.Cantidad - 1 <= 0)
+                        {
+                            DbModel.CarritoCompras.Remove(productoCarrito);
+                            DbModel.SaveChanges();
+                        }
+                        else
+                        {
+
+                            productoCarrito.Cantidad -= 1;
+                            productoCarrito.Stock = inventario.Cantidad;
+                            precioTotal = (productoCarrito.Cantidad * productoCarrito.Precio);
+                            productoCarrito.precioTotal = precioTotal;
+                            DbModel.CarritoCompras.AddOrUpdate(productoCarrito);
+                            DbModel.SaveChanges();
+                        }
+
 
                         if (pagi != null)
                         {
