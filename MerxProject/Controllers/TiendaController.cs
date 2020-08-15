@@ -28,6 +28,7 @@ namespace MerxProject.Controllers
         [Authorize(Roles ="Cliente")]
         public ActionResult IndexTienda(int? outStock)
         {
+           
 
             if (outStock != null)
             {
@@ -41,6 +42,9 @@ namespace MerxProject.Controllers
             using (this.DbModel = new ApplicationDbContext())
             {
                 var idPersona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == idPersona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
+
 
                 var model = new CarritoComprasViewModel
                 {
@@ -157,7 +161,7 @@ namespace MerxProject.Controllers
 
         [Authorize(Roles ="Cliente")]
         [HttpGet]
-        public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship)
+        public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship = "0")
         {
 
 
@@ -167,9 +171,11 @@ namespace MerxProject.Controllers
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
                 var ordenPendiente = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == persona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
                 double ships = 0;
 
-                if (ship != "Free")
+                if (ship != "Gratis")
                 {
 
                     char[] shipAux = ship.ToCharArray();
@@ -244,12 +250,16 @@ namespace MerxProject.Controllers
         public async Task<ActionResult> PagoProducto(Direcciones direccion, string subtotal, string total, string cupon, string ship)
         {
 
+       
+            
             using (this.DbModel = new ApplicationDbContext())
             {
                 var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
                 var direccionDettalle = DbModel.Direcciones.FirstOrDefault(x => x.Id == direccion.Id);
 
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
+                var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == persona.idPersona).ToList();
+                ViewBag.cantidadCarrito = cantidadCarrito.Count;
 
 
                 ViewBag.direccion = direccionDettalle.Id;
