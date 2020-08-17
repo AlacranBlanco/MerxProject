@@ -659,12 +659,11 @@ namespace MerxProject.Controllers
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
-                         if (user != null && user.EmailConfirmed)
-                        {
+                      
                             await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                             Session["user"] = info.DefaultUserName;
                             return RedirectToAction("Index", "Home");
-                        }
+                       
                     }
                 }
                 AddErrors(result);
