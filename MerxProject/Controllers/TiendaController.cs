@@ -83,8 +83,6 @@ namespace MerxProject.Controllers
             var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
             var ordenesCompra = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
 
-
-
             var cupons = DbModel.Cupon.FirstOrDefault(x => x.CodigoCupon == cupon);
 
             if (cupons.Utilizado)
@@ -166,6 +164,10 @@ namespace MerxProject.Controllers
         [HttpGet]
         public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship = "0")
         {
+            if (string.IsNullOrEmpty(ship))
+            {
+                ship = "Gratis";
+            }
 
 
             using (this.DbModel = new ApplicationDbContext())
@@ -252,7 +254,10 @@ namespace MerxProject.Controllers
         [HttpPost]
         public async Task<ActionResult> PagoProducto(Direcciones direccion, string subtotal, string total, string cupon, string ship)
         {
-
+            if(direccion.Id == 0)
+            {
+                return RedirectToAction("PagoProducto",new { subtotal = subtotal, total = subtotal, cupon = cupon, ship = ship });
+            }
        
             
             using (this.DbModel = new ApplicationDbContext())

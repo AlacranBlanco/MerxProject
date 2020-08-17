@@ -291,12 +291,15 @@
     <Content Include="Content\assets\img\Banner\img1.jpg" />
     <Content Include="Content\assets\img\Banner\img2.jpg" />
     <Content Include="Content\assets\img\Banner\promo.jpg" />
+    <Content Include="Content\assets\img\clients\Bambu-tec - Logo.png" />
     <Content Include="Content\assets\img\clients\client-1.png" />
     <Content Include="Content\assets\img\clients\client-2.png" />
     <Content Include="Content\assets\img\clients\client-3.png" />
     <Content Include="Content\assets\img\clients\client-4.png" />
     <Content Include="Content\assets\img\clients\client-5.png" />
     <Content Include="Content\assets\img\clients\client-6.png" />
+    <Content Include="Content\assets\img\clients\Misión-Logo.png" />
+    <Content Include="Content\assets\img\clients\Polyhex - Logo.png" />
     <Content Include="Content\assets\img\cta-bg.jpg" />
     <Content Include="Content\assets\img\favicon.png" />
     <Content Include="Content\assets\img\hero-bg.jpg" />
@@ -715,8 +718,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />

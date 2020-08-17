@@ -1258,6 +1258,7 @@ namespace MerxProject.Controllers
 
                     var Colores = DbModel.Colores.ToList();
                     VentaViewModels ventaViewModels = new VentaViewModels();
+                    DbModel.Muebles.ToList();
                     ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
                     ventaViewModels.InventarioCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id).ToList();
                     ventaViewModels.ColorsCollection = new List<Color>();
@@ -1409,7 +1410,7 @@ namespace MerxProject.Controllers
                     if (cantidadProducto != null)
                     {
 
-                        if (color == null)
+                        if (string.IsNullOrEmpty(color))
                         {
                             Color = DbModel.Colores.FirstOrDefault(x => x.Codigo == "#FFFFFF");
                         }

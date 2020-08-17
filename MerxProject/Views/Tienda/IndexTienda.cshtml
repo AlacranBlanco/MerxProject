@@ -136,13 +136,7 @@ else if (ViewBag.CupNotExit == 2)
                         </div>
                     </a>
                 </div>
-                <div class="hamburger"><i class="fa fa-bars" aria-hidden="true"></i></div>
-                <nav class="main_nav">
-                    <ul class="d-flex flex-row align-items-start justify-content-start">
-                        <li><a href="@Url.Action("Index","Home")">Inicio</a></li>
-                        <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
-                    </ul>
-                </nav>
+                
                 <div class="header_right d-flex flex-row align-items-center justify-content-start ml-auto">
 
 
@@ -211,12 +205,12 @@ else if (ViewBag.CupNotExit == 2)
                                 <!-- Cart Bar -->
                                 <div class="cart_bar">
                                     <ul class="cart_bar_list item_list d-flex flex-row align-items-center justify-content-end">
-                                        <li class="mr-auto">Product</li>
+                                        <li class="mr-auto">Producto</li>
                                         <li>Color</li>
                                         @*<li>Size</li>*@
-                                        <li>Price</li>
-                                        <li>Quantity</li>
-                                        <li>Total</li>
+                                        <li>Precio $MXN</li>
+                                        <li>Cantidad</li>
+                                        <li>Total $MXN</li>
                                     </ul>
                                 </div>
 
@@ -440,102 +434,72 @@ else if (ViewBag.CupNotExit == 2)
 
             <!-- Footer -->
 
-            <footer class="footer">
-                <div class="footer_content">
+            <footer id="footer">
+
+                <div class="footer-top">
                     <div class="container">
                         <div class="row">
 
-                            <!-- About -->
-                            <div class="col-lg-4 footer_col">
-                                <div class="footer_about">
-                                    <div class="footer_logo">
-                                        <a href="#">
-                                            <div class="d-flex flex-row align-items-center justify-content-start">
-                                                <div class="footer_logo_icon"><img src="~/Content/ProductAssets/images/logo_2.png" alt=""></div>
-                                                <div>Little Closet</div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="footer_about_text">
-                                        <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Fusce venenatis vel velit vel euismod.</p>
-                                    </div>
-                                </div>
+                            <div class="col-lg-3 col-md-6 footer-contact">
+                                <h3>MERX</h3>
+                                <p>
+                                    Paseo de los insurgentes 2210 <br>
+                                    San José de Piletas, León<br>
+                                    México <br><br>
+                                    <strong>Telefono:</strong> +52 477 238 6919<br>
+                                    <strong>Email:</strong>merxprojectbusiness@gmail.com<br>
+                                </p>
                             </div>
 
-                            <!-- Footer Links -->
-                            <div class="col-lg-4 footer_col">
-                                <div class="footer_menu">
-                                    <div class="footer_title">Support</div>
-                                    <ul class="footer_list">
-                                        <li>
-                                            <a href="#"><div>Customer Service<div class="footer_tag_1">online now</div></div></a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><div>Return Policy</div></a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><div>Size Guide<div class="footer_tag_2">recommended</div></div></a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><div>Terms and Conditions</div></a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><div>Contact</div></a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="col-lg-2 col-md-6 footer-links">
+                                <h4>Enlaces</h4>
+                                <ul>
+                                    <li><i class="bx bx-chevron-right"></i> <a href="@Url.Action("Index", "Home")">Home</a></li>
+                                    <li><i class="bx bx-chevron-right"></i> <a href="@Url.Action("Index", "Home")">Acerca de nosotros</a></li>
+                                    <li><i class="bx bx-chevron-right"></i> <a href="#">Servicios</a></li>
+                                    <li><i class="bx bx-chevron-right"></i> <a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
+                                </ul>
                             </div>
 
-                            <!-- Footer Contact -->
-                            <div class="col-lg-4 footer_col">
-                                <div class="footer_contact">
-                                    <div class="footer_title">Stay in Touch</div>
-                                    <div class="newsletter">
-                                        <form action="#" id="newsletter_form" class="newsletter_form">
-                                            <input type="email" class="newsletter_input" placeholder="Subscribe to our Newsletter" required="required">
-                                            <button class="newsletter_button">+</button>
-                                        </form>
-                                    </div>
-                                    <div class="footer_social">
-                                        <div class="footer_title">Social</div>
-                                        <ul class="footer_social_list d-flex flex-row align-items-start justify-content-start">
-                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                            <div class="col-lg-4 col-md-6 footer-newsletter">
+                                <h4>Registrate</h4>
+                                <p>Unete a la mejor página en la compra de muebles ecológicos.</p>
+                                <form action="" method="post">
+                                    <input type="email" name="email"><input type="submit" value="Suscribete" class="btn btn-comprar"> 
+                                </form>
                             </div>
+
                         </div>
                     </div>
                 </div>
-                <div class="footer_bar">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <div class="footer_bar_content d-flex flex-md-row flex-column align-items-center justify-content-start">
-                                    <div class="copyright order-md-1 order-2">
-                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                        Copyright &copy;
-                                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                    </div>
-                                    <nav class="footer_nav ml-md-auto order-md-2 order-1">
-                                        <ul class="d-flex flex-row align-items-center justify-content-start">
-                                            <li><a href="category.html">Women</a></li>
-                                            <li><a href="category.html">Men</a></li>
-                                            <li><a href="category.html">Kids</a></li>
-                                            <li><a href="category.html">Home Deco</a></li>
-                                            <li><a href="#">Contact</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
+
+                <div class="container d-md-flex py-4">
+
+                    <div class="mr-md-auto text-center text-md-left">
+                        <div class="copyright">
+                            &copy; Copyright <strong><span>MERX</span></strong>. All Rights Reserved
+                        </div>
+                        <div class="credits">
+                            <!-- All the links in the footer should remain intact. -->
+                            <!-- You can delete the links only if you purchased the pro version. -->
+                            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/bethany-free-onepage-bootstrap-theme/
+                    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>-->
+                            <!--<Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>-->
+
                         </div>
                     </div>
+                    <!--
+            <div class="social-links text-center text-md-right pt-3 pt-md-0">
+                <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+                <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+                -->
                 </div>
-            </footer>
+            </footer><!-- End Footer -->
         </div>
 
     </div>
