@@ -579,10 +579,16 @@ namespace MerxProject.Controllers
 
             // Si el usuario ya tiene un inicio de sesión, iniciar sesión del usuario con este proveedor de inicio de sesión externo
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+
+
+
+
+
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    Session["user"] = loginInfo.DefaultUserName;
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -616,15 +622,49 @@ namespace MerxProject.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user);
+
+                int idUsuario = 0;
+                int idPersona = 0;
+                    Usuario usuario = new Usuario();
+                    usuario.User = model.Email;
+                    usuario.Password = model.Password;
+                    usuario.Rol = "Cliente";
+                    DbModel.Usuarios.Add(usuario);
+                    DbModel.SaveChanges();
+                    idUsuario = usuario.idUsuario;
+                    Persona persona = new Persona();
+                    persona.Nombre = info.DefaultUserName;
+                    persona.Correo = model.Email;
+                    persona.idUsuario = idUsuario;
+                    DbModel.Personas.Add(persona);
+                    DbModel.SaveChanges();
+                    idPersona = persona.idPersona;
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, idPersona = idPersona, IdUsuario = idUsuario, EmailConfirmed = true };
+
+                var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+
+                    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(DbModel));
+
+                    if (!RoleManager.RoleExists("Cliente"))
+                    {
+                        var role = new IdentityRole();
+                        role.Name = "Cliente";
+                        RoleManager.Create(role);
+                    }
+                    var rol = RoleManager.FindByName("Cliente").Name;
+                    var UsuarioNuevo = UserManager.FindByEmail(model.Email).Id;
+                    UserManager.AddToRole(UsuarioNuevo, rol);
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
+                         if (user != null && user.EmailConfirmed)
+                        {
+                            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                            Session["user"] = info.DefaultUserName;
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
                 AddErrors(result);
