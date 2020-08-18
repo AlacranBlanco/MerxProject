@@ -284,6 +284,7 @@ namespace MerxProject.Controllers
         [Authorize(Roles = "Administrador")]
         public ActionResult ListaEmpleado(int pagina = 1)
         {
+            ViewBag.user = User.Identity.Name;
             int _TotalRegistros = 0;
 
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
@@ -326,6 +327,8 @@ namespace MerxProject.Controllers
         [Authorize(Roles = "Administrador")]
         public ActionResult BuscarEmpleado(string param, int pagina = 1)
         {
+            
+
             int _TotalRegistros = 0; 
             if (!string.IsNullOrWhiteSpace(param))
             {

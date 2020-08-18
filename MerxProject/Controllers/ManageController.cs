@@ -15,7 +15,7 @@ using System.IO;
 
 namespace MerxProject.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Cliente")]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
