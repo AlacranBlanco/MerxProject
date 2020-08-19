@@ -13,6 +13,8 @@ namespace MerxProject.Models
         public int Cantidad { get; set; }
 
         // Relaciones con otras tablas
+
+        public Material Material { get; set; }
         public Color Color { get; set; }
         public Producto Producto { get; set; }
 

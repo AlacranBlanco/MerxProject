@@ -473,9 +473,11 @@ namespace MerxProject.Controllers
                 Inventario inv = new Inventario();
 
                 var Colores = DbModel.Colores.ToList();
+                var Material = DbModel.Materiales.ToList();
+
                 var ColoresHechos = new List<Inventario>();
                 var producto = DbModel.Productos.Find(Id);
-                var inventarios = DbModel.Inventarios.ToList();
+                var inventarios = DbModel.Inventarios.Where(x => x.Producto.CategoriaMaterial.Id == producto.CategoriaMaterial.Id).ToList();
                 var invId = new List<Inventario>();
 
                 foreach (var item in inventarios)
