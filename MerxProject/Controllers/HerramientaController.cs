@@ -128,6 +128,7 @@ namespace MerxProject.Controllers
             {
                 if (accion == "1")
                 {
+                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
                     var Herramienta = new Herramienta();
                     ViewBag.Title = "Nuevo";
                     ViewBag.Accion = "1";
@@ -136,6 +137,7 @@ namespace MerxProject.Controllers
                 }
                 else if (accion == "2")
                 {
+                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
                     var herramienta = DbModel.Herramientas.Find(id);
                     ViewBag.Title = "Editar";
                     ViewBag.Accion = "2";

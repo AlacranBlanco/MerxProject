@@ -24,5 +24,6 @@ namespace MerxProject.Models
         [Required]
         public bool Piezas { get; set; }
         public virtual List<DetalleCompra> DetalleCompras { get; set; }
+        public int idProveedor { get; set; }
     }
 }
