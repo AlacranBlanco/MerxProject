@@ -139,6 +139,7 @@
                             <img src=@rutaSvg id="product-svg" class="svg" />
 
 
+
                         </div>
 
 
@@ -147,31 +148,58 @@
                             <div class="product_info">
                                 <div class="product_name">@Model.Producto.Nombre</div>
                                 <div class="product_category">Categoría <a href="category.html">@Model.Producto.CategoriaMueble.Nombre</a></div>
-                                <div class="product_price">$@Model.Producto.Precio</div>
-                                <div class="product_size">
-                                    <div class="product_size_title">Selecciona un color (opcional)</div>
-                                    <ul class="d-flex flex-row align-items-start justify-content-start">
-                                        @for (int i = 1; i < Model.InventarioCollection.Count; i++)
-                                        {
-                                            radio_Id++;
-                                            if (Model.InventarioCollection[i].Cantidad >= 1)
-                                            {
-                                                <li>
-                                                    <input type="radio" id="hue" name="option" value="@Model.ColorsCollection[i].Codigo" class="regular_radio" onClick="changeSrc()" style="background: @Model.ColorsCollection[i].Codigo">
-                                                    @*<label for=@radio_Id></label>*@
-                                                </li>
+                                @if (ViewBag.precioMaterial != null)
+                                {
+                                    float PrecioTotal = Model.Producto.Precio + (float)ViewBag.precioMaterial;
+                                <div class="product_price">$@PrecioTotal</div>
+                                }
+                                else
+                                {
 
-                                            }
-                                            else
-                                            {
-                                                <li>
-                                                    <input type="radio" id=@radio_Id name="option" disabled value="@Model.ColorsCollection[i].Codigo" onClick="changeSrc()" class="regular_radio" style="background: @Model.ColorsCollection[i].Codigo">
-                                                    @*<label for=@radio_Id ></label>*@
-                                                </li>
-                                            }
+                                <div class="product_price">$@Model.Producto.Precio</div>
+                                }
+                            <div class="product_size">
+                                <div class="product_size_title">Selecciona un color (opcional)</div>
+                                <ul class="d-flex flex-row align-items-start justify-content-start">
+                                    @for (int i = 1; i < Model.InventarioColorCollection.Count; i++)
+                                    {
+
+                                        radio_Id++;
+                                        if (Model.InventarioColorCollection[i].Cantidad >= 1)
+                                        {
+                                            <li>
+                                                <input type="radio" id="hue" name="option" value="@Model.InventarioColorCollection[i].Color.Codigo" class="regular_radio" onClick="changeSrc()" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
+                                                @*<label for=@radio_Id></label>*@
+                                            </li>
+
                                         }
-                                    </ul>
+                                        else
+                                        {
+                                            <li>
+                                                <input type="radio" id=@radio_Id name="option" disabled value="@Model.InventarioColorCollection[i].Color.Codigo" onClick="changeSrc()" class="regular_radio" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
+                                                @*<label for=@radio_Id ></label>*@
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                <br />
+                                <div class="product_size_title">Selecciona un material (opcional)</div>
+                                <br />
+                                <div class="product_size_title">
+                                    @using (Html.BeginForm("Bamboo1", "Producto", FormMethod.Get, new { id = idAux }))
+                                    {
+                                        string nombreProd = Model.Producto.Nombre;
+                                        @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.materialList, new { @onchange = "this.form.submit()", @name = "Id" })
+                                        <input type="hidden" value=@ViewBag.prodcutoId name="idProducto" />
+                                        @*@Html.DropDownList("Id", ViewBag.materialList as SelectList, new { @class = "Id" })*@
+                                    }
+                                    <br />
+                                    @if (ViewBag.imgRoute != null) { 
+                                    
+                                    <img src="~/Content/assets/img/Materiales/@ViewBag.imgRoute" height="100px" width="70px"/>
+                                    }
                                 </div>
+                            </div>
                                 <div class="product_text">
                                     <p>@Model.Producto.Descripcion</p>
                                 </div>
@@ -265,6 +293,8 @@
                                                 <input type="hidden" name="namePag" value="Bamboo1" id=@idAux>
                                                 <input type="hidden" name="esCarrito" value="False" id=@idAux2>
                                                 <input type="hidden" name="SvgColor" value="" id="SvgColor">
+                                                <input type="hidden" name="idMaterial" value=@ViewBag.idMaterial id="idMaterial">
+
                                                 <a href="" onclick="$('#formCarrito').submit(); return false;">
                                                     <div>
                                                         <div>

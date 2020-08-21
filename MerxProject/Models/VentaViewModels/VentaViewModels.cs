@@ -11,9 +11,12 @@ namespace MerxProject.Models.VentaViewModels
     {
         public Producto Producto { get; set; }
         public Inventario Inventario { get; set; }
-        public List<Inventario> InventarioCollection { get; set; }
+        public List<Inventario> InventarioColorCollection { get; set; }
+        public List<Inventario> InventarioMaterialCollection { get; set; }
         public Color Colors { get; set; }
+        public Material Material { get; set; }
         public List<Color> ColorsCollection { get; set; }
+        public List<Material> MaterialCollection { get; set; }
         public List<Producto> ProductoCollection { get; set; }
         public ProductosFavoritos ProductosFavorito { get; set; }
         public List<ProductosFavoritos> ProductosFavoritosColelction { get; set; }

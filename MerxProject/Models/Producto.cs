@@ -23,5 +23,8 @@ namespace MerxProject.Models
 
         [Required]
         public float Precio { get; set; }
+
+        [Required]
+        public int Cantidad { get; set; }
     }
 }

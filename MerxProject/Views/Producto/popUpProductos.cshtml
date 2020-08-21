@@ -51,11 +51,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Cantidad, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Cantidad, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 @Html.LabelFor(model => model.CategoriaMaterial, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="idMaterial", name="idMaterial" class="form-control">
-                                        @foreach (var item in ViewBag.Materiales) {
-                                        <option value="@item.Id">@item.Nombre</option>
+                                    <select id="idMaterial" , name="idMaterial" class="form-control">
+                                        @foreach (var item in ViewBag.Materiales)
+                                        {
+                                            <option value="@item.Id">@item.Nombre</option>
                                         }
                                     </select>
                                 </div>
@@ -80,7 +88,7 @@
                                     }
                                     <br />
                                     <span>Seleccionar archivo:</span>
-                                    <input type="file" name="postedFile" required/>
+                                    <input type="file" name="postedFile" required />
                                 </div>
                             </div>
                             <div class="form-group">

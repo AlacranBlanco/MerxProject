@@ -179,7 +179,7 @@
                                             <div>
                                                 <div>
                                                     @*<div class="product_name"><a href="https://localhost:44309/Producto/Bamboo1">@Model[h].Nombre</a></div>*@
-                                                    <div class="product_name"><a href="@Url.Action("Bamboo1", "Producto", new { name = Model.ProductoCollection[h].Nombre })">@Model.ProductoCollection[h].Nombre</a></div>
+                                                    <div class="product_name"><a href="@Url.Action("Bamboo1", "Producto", new { idProducto = Model.ProductoCollection[h].Id, name = Model.ProductoCollection[h].Nombre})">@Model.ProductoCollection[h].Nombre</a></div>
                                                 </div>
                                             </div>
                                             <div class="ml-auto text-right">

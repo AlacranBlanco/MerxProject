@@ -117,6 +117,9 @@
             Tipo de material
         </th>
         <th>
+            Cantidad
+        </th>
+        <th>
             Imagen
         </th>
         <th>
@@ -125,31 +128,36 @@
     </tr>
     @foreach (var item in Model.Resultado)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriaMueble.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriaMaterial.Nombre)
-            </td>
-            <td>
-                <img src="@Url.Content(item.Imagen)" width="100px" />
-            </td>
-            <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="color_@item.Id" onclick="createModalColor('@Url.Action("popUpProductosColor", "Producto" , new {id=item.Id, accion = "0"})')">Inventario</button>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "2" })')">Editar Producto</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "3" })')">Eliminar</button>
-            </td>
-        </tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Nombre)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Descripcion)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Precio)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.CategoriaMueble.Nombre)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.CategoriaMaterial.Nombre)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Cantidad)
+    </td>
+    <td>
+        <img src="@Url.Content(item.Imagen)" width="100px" />
+    </td>
+    <td>
+        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="color_@item.Id" onclick="createModalColor('@Url.Action("popUpProductosColor", "Producto" , new {id=item.Id, accion = "0"})')">Inventario</button>
+        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "2" })')">Editar Producto</button>
+        <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+    </td>
+</tr>
 
     }
 </table>
