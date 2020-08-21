@@ -332,6 +332,7 @@
     <Content Include="Content\assets\img\ico\ms-icon-70x70.png" />
     <Content Include="Content\assets\img\logo.png" />
     <Content Include="Content\assets\img\MerxWhite.png" />
+    <Content Include="Content\assets\img\MERX_WB.png" />
     <Content Include="Content\assets\img\portfolio\chair1.jpg" />
     <Content Include="Content\assets\img\portfolio\esc11.jpg" />
     <Content Include="Content\assets\img\portfolio\esc22.jpg" />
