@@ -71,6 +71,7 @@ namespace MerxProject.Controllers
                 {
                     // Edición
                     var empleado = DbModel.Empleados.Find(empleados.Id);
+                    empleados.Personass.Correo = empleado.Personass.Correo;
 
                     if (empleado != null)
                     {
@@ -83,8 +84,8 @@ namespace MerxProject.Controllers
 
                             if (empleados.Personass.Correo != empleado.Personass.Correo && empleados.Usuarioss.Rol == rol)
                             {
-                                var userDel = DbModel.Users.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
-                                var userName = userDel.UserName;
+                                var userDel = DbModel.Users.Where(x => x.UserName == empleado.Usuarioss.User).FirstOrDefault();
+                                var userName = userDel.Id;
                                 var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(DbModel));
                                 var rolDel = RoleManager.FindByName(empleados.Usuarioss.Rol).Name;
 

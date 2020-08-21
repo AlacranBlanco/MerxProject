@@ -137,16 +137,17 @@
                 @Html.DisplayFor(modelItem => item.FechaIngreso)
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
-                        onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado" , new {id=item.Id, accion = "2" })')">
-                    Editar
-                </button>
                 @if (ViewBag.user != item.Usuarioss.User)
                 {
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id"
-                        onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado", new { id = item.Id, accion = "3" })')">
-                    Eliminar
-                </button>
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                            onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado" , new {id=item.Id, accion = "2" })')">
+                        Editar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id"
+                            onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado", new { id = item.Id, accion = "3" })')">
+                        Eliminar
+                    </button>
                 }
             </td>
         </tr>

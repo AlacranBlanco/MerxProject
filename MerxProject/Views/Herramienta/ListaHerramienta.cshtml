@@ -138,14 +138,14 @@
                 {
                     <input type="hidden" name="Id" value="@item.Id" />
                     <input type="hidden" name="accion" value="6" />
-                    <input type="submit" name="name" value="Reportar herramienta" class="btn btn-primary btn-sm" />
+                    <input type="submit" name="name" value="Reportar herramienta" class="btn btn-danger btn-sm" />
                 }
             }
             @if (ViewBag.admin != null)
             {
                 if (ViewBag.admin && item.Reportada)
                 {
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalReport('@Url.Action("reportarHerramienta", "Herramienta", new { id = item.Id, accion = "7" })')">Ver reportes</button>
+                    <button type="submit" class="btn btn-warning btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalReport('@Url.Action("reportarHerramienta", "Herramienta", new { id = item.Id, accion = "7" })')">Ver reportes</button>
                 }
             }
             </td>
