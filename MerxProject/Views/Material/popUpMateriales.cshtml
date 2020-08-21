@@ -57,6 +57,20 @@
                                     @Html.ValidationMessageFor(model => model.Medida, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
+                            @if (ViewBag.Proveedores != null)
+                            {
+                                <div class="form-group">
+                                    @Html.Label("Proveedor", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownListFor(model => model.idProveedor, new SelectList(ViewBag.Proveedores, "Id", "Persona.Nombre"), "Seleccione", new { @class = "form-control" })
+                                        @if (ViewBag.Proveedor != null)
+                                        {
+                                            <input type="hidden" name="idProveedor" value="@ViewBag.Proveedor.Id" />
+                                        }
+                                    </div>
+                                </div>
+                            }
                             <div class="form-group">
                                 <label class="control-label col-md-2">¿Tiene piezas para muebles?</label>
                                 <div class="col-md-10">
@@ -75,7 +89,7 @@
                                         }
                                     }
                                     <span>Seleccionar archivo:</span>
-                                    <input type="file" name="postedFile" required/>
+                                    <input type="file" name="postedFile" required />
                                 </div>
                             </div>
 

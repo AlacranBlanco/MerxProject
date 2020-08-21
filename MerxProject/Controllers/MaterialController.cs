@@ -24,6 +24,8 @@ namespace MerxProject.Controllers
             {
                 if (accion == "1")
                 {
+                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
+
                     var Material = new Material();
                     ViewBag.title = "Nuevo";
                     ViewBag.Accion = "1";
@@ -32,6 +34,8 @@ namespace MerxProject.Controllers
                 }
                 else if (accion == "2")
                 {
+                    ViewBag.Proveedores = DbModel.Proveedores.Include("Persona").ToList();
+
                     var material = DbModel.Materiales.Find(Id);
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
@@ -51,7 +55,7 @@ namespace MerxProject.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> popUpMateriales(Material materiales, string accion, HttpPostedFileBase postedFile)
+        public async Task<ActionResult> popUpMateriales(Material materiales, string accion, int? idProv, HttpPostedFileBase postedFile)
         {
             string resultado;
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
@@ -88,6 +92,11 @@ namespace MerxProject.Controllers
                             if (material.Nombre == "Barniz" || material.Nombre == "Barniz Bambú")
                             {
                                 materiales.Nombre = material.Nombre;
+                            }
+                            if(idProv != null)
+                            {
+                                materiales.idProveedor = Convert.ToInt32(idProv);
+
                             }
                             DbModel.Materiales.AddOrUpdate(materiales);
                             DbModel.SaveChanges();

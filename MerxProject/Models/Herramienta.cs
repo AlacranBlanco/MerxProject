@@ -23,5 +23,6 @@ namespace MerxProject.Models
         public virtual List<DetalleCompra> DetalleCompras { get; set; }
         public int EnUso { get; set; }
         public bool Reportada { get; set; }
+        public int idProveedor { get; set; }
     }
 }
