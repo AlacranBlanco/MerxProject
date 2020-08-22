@@ -1,28 +1,23 @@
-﻿@model IEnumerable<MerxProject.Models.ApplicationUser>
+﻿@model IEnumerable<MerxProject.Models.Persona>
 
 @{
-    ViewBag.Title = "listaWey";
+    ViewBag.Title = "Clientes";
 
 }
 
-<h2>listaWey</h2>
-
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popupUsuarios", "Account", new { applicationUser = "", accion = "1" })'></div>
-
-<br />
+<h2>Clientes</h2>
 
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.Nombre)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Correo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            @Html.DisplayNameFor(model => model.Direccion)
         </th>
         <th>Acciones</th>
     </tr>
@@ -34,19 +29,14 @@
             <tr>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Email)
+                    @Html.DisplayFor(modelItem => item.Correo)
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popupUsuarios", "Account" , new {id=item.Id, accion = "2" })')">Editar</button>
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popupUsuarios", "Account" , new {id=item.Id, accion = "3" })')">Eliminar</button>
-
+                    @Html.DisplayFor(modelItem => item.Direccion)
                 </td>
             </tr>
        

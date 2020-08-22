@@ -309,7 +309,7 @@ namespace MerxProject.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles ="Administrador, Empleado")]
+        //[Authorize(Roles ="Administrador, Empleado")]
         public ActionResult ListaMaterial(int pagina = 1)
         {
             
