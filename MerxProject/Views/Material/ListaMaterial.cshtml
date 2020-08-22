@@ -125,8 +125,8 @@
                 {
                     <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="show_@item.Id" onclick="createModal('@Url.Action("popUpInventario", "Material" , new {id=item.Id})')">Mostrar inventario</button>
                 }
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "2" })')">Editar</button>
+                <button class="btn btn-danger btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
 
