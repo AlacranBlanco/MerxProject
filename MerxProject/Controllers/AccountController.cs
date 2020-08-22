@@ -15,6 +15,7 @@ using System.Collections.Specialized;
 using NinjaNye.SearchExtensions;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace MerxProject.Controllers
 {
@@ -98,9 +99,16 @@ namespace MerxProject.Controllers
         [AllowAnonymous]
         public ActionResult listaWey()
         {
-            var users = UserManager.Users;
+          //  var users = UserManager.Users;
+            var clientes = DbModel.Usuarios.Where(x => x.Rol == "Cliente").ToList();
+            var personas = new List<Persona>();
+            foreach (var item in clientes)
+            {
+                personas.Add(DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).First());
+            }
+            return View(personas);
 
-            return View(users);
+           // return View(users);
 
         }
 

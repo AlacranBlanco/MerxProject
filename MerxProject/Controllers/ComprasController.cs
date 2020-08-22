@@ -36,7 +36,11 @@ namespace MerxProject.Controllers
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
                     if (correo != "")
                     {
-                        var Persona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        var usuario = DbModel.Usuarios.Where(x => x.User == User.Identity.Name).FirstOrDefault();
+                        var empleado = DbModel.Empleados.Where(x => x.Usuarioss.idUsuario == usuario.idUsuario).FirstOrDefault();
+                        var Persona = DbModel.Personas.Where(x => x.idPersona == empleado.Personass.idPersona).FirstOrDefault();
+                        // var Persona = DbModel.Personas.FirstOrDefault(x => x.Correo == correo);
+                        empleado.Personass = Persona;
                         compra.Empleado = DbModel.Empleados.
                             Include("Personass").
                             FirstOrDefault(x => x.Personass.idPersona == Persona.idPersona);
@@ -51,21 +55,21 @@ namespace MerxProject.Controllers
                     compra.DS_Estatus = ((EstatusC[])(Enum.GetValues(typeof(EstatusC))))[Convert.ToInt32(compra.Estatus)].ToString();
                     ViewBag.title = "Editar";
                     ViewBag.Accion = "2";
-                    return View(compra);
+                    return View("popUpCompras", compra);
                 }
                 else if (accion == "3")
                 {
                     var compra = DbModel.Compras.Find(Id);
                     ViewBag.title = "Cancelar";
                     ViewBag.Accion = "3";
-                    return View(compra);
+                    return View("popUpCompras", compra);
                 }
                 else if (accion == "5")
                 {
                     var compra = DbModel.Compras.Find(Id);
                     ViewBag.title = "Marcar como Entregada";
                     ViewBag.Accion = "5";
-                    return View(compra);
+                    return View("popUpCompras", compra);
                 }
 
             }
@@ -237,7 +241,7 @@ namespace MerxProject.Controllers
 
                                 Session["res"] = resultado;
                                 Session["tipo"] = "Exito";
-                                return RedirectToAction("ListaDetalleCompra");
+                                return RedirectToAction("ListaCompras");
                             }
                             catch (Exception ex)
                             {
@@ -263,7 +267,7 @@ namespace MerxProject.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaCompras(int pagina = 1)
         {
             int _TotalRegistros = 0;
