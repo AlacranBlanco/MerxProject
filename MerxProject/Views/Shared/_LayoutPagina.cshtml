@@ -78,39 +78,39 @@
 
                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @style = "display:inline;" }))
                 {
-                <nav class="nav-menu d-none d-lg-block">
-                    <ul style="white-space:nowrap;">
-                        <li class="active"><a href="#header">Inicio</a></li>
-                        <li><a href="#about">Acerca de nosotros</a></li>
-                        <li><a href="#services">Servicios</a></li>
-                        <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
-                        <li><a href="@Url.Action("ConsultarPedido", "Proceso")">Pedido</a></li>
-                        <li><a href="#contact">Contacto</a></li>
-                        @if (Request.IsAuthenticated)
-                        {
-                            string Nombre = "Usuario";
-                            if (Session["user"] != null)
+                    <nav class="nav-menu d-none d-lg-block">
+                        <ul style="white-space:nowrap;">
+                            <li class="active"><a href="#header">Inicio</a></li>
+                            <li><a href="#about">Acerca de nosotros</a></li>
+                            <li><a href="#services">Servicios</a></li>
+                            <li><a href="@Url.Action("Tienda", "Producto")">Tienda</a></li>
+                            <li><a href="@Url.Action("ConsultarPedido", "Proceso")">Pedido</a></li>
+                            <li><a href="#contact">Contacto</a></li>
+                            @if (Request.IsAuthenticated)
                             {
-                                Nombre = Session["user"].ToString();
-
-                                if (Nombre.Contains('@'))
+                                string Nombre = "Usuario";
+                                if (Session["user"] != null)
                                 {
-                                    Nombre = Nombre.Substring(0, Nombre.IndexOf('@'));
+                                    Nombre = Session["user"].ToString();
+
+                                    if (Nombre.Contains('@'))
+                                    {
+                                        Nombre = Nombre.Substring(0, Nombre.IndexOf('@'));
+                                    }
                                 }
+                                <li>
+                                    @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                                </li>
+                                <li style="display: inline">
+                                    <a href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
+                                </li>
                             }
-                            <li>
-                                @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage"})
-                            </li>
-                            <li style="display: inline">
-                                <a href="javascript:document.getElementById('logoutForm').submit()">Salir</a>
-                            </li>
-                        }
-                        else
-                        {
-                        <li>@Html.ActionLink("Registrarse", "Login", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-                        }   
-                    </ul>
-                </nav><!-- .nav-menu -->
+                            else
+                            {
+                                <li>@Html.ActionLink("Registrarse", "Login", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                            }
+                        </ul>
+                    </nav><!-- .nav-menu -->
                 }
             </div><!-- End Header Container -->
         </div>
@@ -118,7 +118,8 @@
     <div>
         @RenderBody()
     </div>
-    <!-- ======= Footer ======= -->
+    <!-- Footer -->
+
     <footer id="footer">
 
         <div class="footer-top">
@@ -131,7 +132,7 @@
                             Paseo de los insurgentes 2210 <br>
                             San José de Piletas, León<br>
                             México <br><br>
-                            <strong>Telefono:</strong> +52 477 238 6919<br>
+                            <strong>Teléfono:</strong> +52 477 238 6919<br>
                             <strong>Email:</strong>merxprojectbusiness@gmail.com<br>
                         </p>
                     </div>
@@ -147,10 +148,10 @@
                     </div>
 
                     <div class="col-lg-4 col-md-6 footer-newsletter">
-                        <h4>Registrate</h4>
-                        <p>Unete a la mejor página en la compra de muebles ecologicos.</p>
+                        <h4>Regístrate</h4>
+                        <p>Únete a la mejor página en la compra de muebles ecológicos.</p>
                         <form action="" method="post">
-                            <input type="email" name="email"><input type="submit" value="Suscribete">
+                            <input type="email" name="email"><input type="submit" value="Suscríbete" class="btn btn-comprar">
                         </form>
                     </div>
 
@@ -169,53 +170,53 @@
                     <!-- You can delete the links only if you purchased the pro version. -->
                     <!-- Licensing information: https://bootstrapmade.com/license/ -->
                     <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/bethany-free-onepage-bootstrap-theme/
-            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>-->
+                    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>-->
                     <!--<Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>-->
 
                 </div>
             </div>
             <!--
-    <div class="social-links text-center text-md-right pt-3 pt-md-0">
-        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-    </div>
-        -->
+            <div class="social-links text-center text-md-right pt-3 pt-md-0">
+                <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+                <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+                -->
         </div>
     </footer><!-- End Footer -->
-            <!-- Vendor JS Files -->
-            <script src="~/Content/assets/vendor/jquery/jquery.min.js"></script>
-            <script src="~/Content/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-            <script src="~/Content/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
-            <script src="~/Content/assets/vendor/php-email-form/validate.js"></script>
-            <script src="~/Content/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
-            <script src="~/Content/assets/vendor/counterup/counterup.min.js"></script>
-            <script src="~/Content/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-            <script src="~/Content/assets/vendor/venobox/venobox.min.js"></script>
-            <script src="~/Content/assets/vendor/owl.carousel/owl.carousel.min.js"></script>
-            <script src="~/Content/assets/vendor/aos/aos.js"></script>
+    <!-- Vendor JS Files -->
+    <script src="~/Content/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Content/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+    <script src="~/Content/assets/vendor/php-email-form/validate.js"></script>
+    <script src="~/Content/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+    <script src="~/Content/assets/vendor/counterup/counterup.min.js"></script>
+    <script src="~/Content/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="~/Content/assets/vendor/venobox/venobox.min.js"></script>
+    <script src="~/Content/assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+    <script src="~/Content/assets/vendor/aos/aos.js"></script>
 
 
-            @* <script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script> *@
-            <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/popper.js"></script>
-            <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/bootstrap.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/greensock/TweenMax.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/greensock/TimelineMax.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/scrollmagic/ScrollMagic.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/greensock/animation.gsap.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/greensock/ScrollToPlugin.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
-            <script src="~/Content/ProductAssets/plugins/easing/easing.js"></script>
-            <script src="~/Content/ProductAssets/plugins/progressbar/progressbar.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/parallax-js-master/parallax.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/Isotope/isotope.pkgd.min.js"></script>
-            <script src="~/Content/ProductAssets/plugins/Isotope/fitcolumns.js"></script>
-            <script src="~/Content/ProductAssets/js/category.js"></script>
+    @* <script src="~/Content/ProductAssets/js/jquery-3.2.1.min.js"></script> *@
+    <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/popper.js"></script>
+    <script src="~/Content/ProductAssets/styles/bootstrap-4.1.2/bootstrap.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/TweenMax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/TimelineMax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/scrollmagic/ScrollMagic.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/animation.gsap.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/greensock/ScrollToPlugin.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+    <script src="~/Content/ProductAssets/plugins/easing/easing.js"></script>
+    <script src="~/Content/ProductAssets/plugins/progressbar/progressbar.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/parallax-js-master/parallax.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/Isotope/isotope.pkgd.min.js"></script>
+    <script src="~/Content/ProductAssets/plugins/Isotope/fitcolumns.js"></script>
+    <script src="~/Content/ProductAssets/js/category.js"></script>
 
-            <!-- Template Main JS File -->
-            <script src="~/Content/assets/js/main.js"></script>
+    <!-- Template Main JS File -->
+    <script src="~/Content/assets/js/main.js"></script>
 </body>
 
 </html>

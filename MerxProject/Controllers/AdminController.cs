@@ -11,6 +11,11 @@ namespace MerxProject.Controllers
     [Authorize(Roles = "Administrador")]
     public class AdminController : Controller
     {
+        private readonly int _RegistrosPorPagina = 10;
+
+        private List<Orders> _Ordenes;
+        private PaginadorGenerico<Orders> _PaginadorOrdenes;
+
         // GET: Admin
         public ActionResult Dashboard()
         {
@@ -40,6 +45,61 @@ namespace MerxProject.Controllers
                     ViewBag.nulo = true;
                     return View();
                 }
+            }
+        }
+
+        public ActionResult ListaVentas(int pagina = 1)
+        {
+            int _TotalRegistros = 0;
+
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                var Ventas = DbModel.Orders.ToList();
+                _TotalRegistros = DbModel.Orders.Count();
+                // Obtenemos la 'página de registros' de la tabla Productos
+                _Ordenes = DbModel.Orders.OrderBy(x => x.DiaOrden)
+                                                 .Skip((pagina - 1) * _RegistrosPorPagina)
+                                                 .Take(_RegistrosPorPagina)
+                                                 .ToList();
+                
+                // Número total de páginas de la tabla Productos
+                var _TotalPaginas = (int)Math.Ceiling((double)_TotalRegistros / _RegistrosPorPagina);
+                // Instanciamos la 'Clase de paginación' y asignamos los nuevos valores
+                _PaginadorOrdenes = new PaginadorGenerico<Orders>()
+                {
+                    RegistrosPorPagina = _RegistrosPorPagina,
+                    TotalRegistros = _TotalRegistros,
+                    TotalPaginas = _TotalPaginas,
+                    PaginaActual = pagina,
+                    Resultado = _Ordenes
+                };
+
+                return View(_PaginadorOrdenes);
+            }
+        }
+
+        public ActionResult PopUpOrden(int Id)
+        {
+            var Detalles = new List<Venta>();
+            using (ApplicationDbContext DbModel = new ApplicationDbContext())
+            {
+                var Detalle = DbModel.OrdersDetails.Where(x => x.idOrder == Id).ToList();
+                double total = 0;
+                ViewBag.title = "Detalles";
+                foreach (var item in Detalle)
+                {
+                    total += item.Precio;
+                    var Venta = new Venta()
+                    {
+                        Producto = DbModel.Productos.Find(item.idProducto).Nombre,
+                        Color = DbModel.Colores.Find(item.idColor).Nombre,
+                        Costo = item.Precio.ToString()
+                    };
+                    Detalles.Add(Venta);
+                }
+                ViewBag.Total = total;
+                ViewBag.Detalles = Detalles;
+                return View();
             }
         }
 
@@ -192,6 +252,13 @@ namespace MerxProject.Controllers
             public string ProcesoActual { get; set; }
             public string Horas { get; set; }
             public string Empleado { get; set; }
+        }
+
+        public class Venta
+        {
+            public string Producto { get; set; }
+            public string Color { get; set; }
+            public string Costo { get; set; }
         }
     }
 }
