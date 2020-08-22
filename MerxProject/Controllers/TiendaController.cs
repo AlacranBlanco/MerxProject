@@ -523,6 +523,7 @@ namespace MerxProject.Controllers
 
                     Proceso procesoCrear = new Proceso();
                     procesoCrear.Inventario = new Inventario();
+                    procesoCrear.Order = new Orders();
                     Inventario inventario = new Inventario();
                     inventario.Color = new Color();
                     inventario.Material = new Material();
@@ -559,6 +560,7 @@ namespace MerxProject.Controllers
                     procesoCrear.Tiempo = DateTime.Now;
                     procesoCrear.Registro = DateTime.Now;
                     procesoCrear.Inventario = DbModel.Inventarios.FirstOrDefault(x => x.Id == idInventario);
+                    procesoCrear.Order = orderId;
                     DbModel.Procesos.Add(procesoCrear);
                     DbModel.SaveChanges();
 
@@ -590,7 +592,7 @@ namespace MerxProject.Controllers
 
             //string code = await UserManager.GenerateEmailConfirmationTokenAsync(User.Identity.GetUserId());
             var callbackUrl = Url.Action("ConsultarPedido", "Proceso", new { Id = Newguid.ToString() }, protocol: Request.Url.Scheme);
-            await UserManager.SendEmailAsync(User.Identity.GetUserId(), "ID Pedido", callbackUrl);
+            await UserManager.SendEmailAsync(User.Identity.GetUserId(), "Pedido", callbackUrl);
 
             return RedirectToAction("IndexTienda", new { pagoRealizado = "True"});
         }
