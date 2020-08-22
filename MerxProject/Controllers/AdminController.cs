@@ -204,18 +204,22 @@ namespace MerxProject.Controllers
                             }
                             Ids.Add(Det.idProducto);
                             int Count = 0;
-                            var prod = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).ToList();
-                            foreach (var cant in prod)
+                            var existe = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).Count();
+                            if(existe > 0)
                             {
-                                Count += cant.Cantidad;
+                                var prod = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).ToList();
+                                foreach (var cant in prod)
+                                {
+                                    Count += cant.Cantidad;
+                                }
+                                Nombre = DbModel.Productos.Find(Det.idProducto).Nombre;
+                                var PV = new ProductoMasVendido()
+                                {
+                                    Cantidad = Count,
+                                    Producto = Nombre
+                                };
+                                ProductoDelMes.Add(PV);
                             }
-                            Nombre = DbModel.Productos.Find(Det.idProducto).Nombre;
-                            var PV = new ProductoMasVendido()
-                            {
-                                Cantidad = Count,
-                                Producto = Nombre
-                            };
-                            ProductoDelMes.Add(PV);
                         }
 
                     }
