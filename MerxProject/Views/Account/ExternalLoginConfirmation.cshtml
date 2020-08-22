@@ -136,7 +136,7 @@
                                 </div>
                                 <div class="form-group">
 
-                                    @Html.TextBoxFor(m => m.UserName, new { @class = "checkout_input", @placeholder = "Nombre Usuario" })
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "checkout_input", @readOnly = "readOnly" })
                                     @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
 
                                 </div>
