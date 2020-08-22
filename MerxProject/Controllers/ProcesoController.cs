@@ -29,7 +29,7 @@ namespace MerxProject.Controllers
             {
                 var Colores = DbModel.Colores.ToList();
                 var producto = DbModel.Productos.ToList();
-                var inventarios = DbModel.Inventarios.ToList();
+                var inventarios = DbModel.Inventarios.Where(x => x.Color.Nombre != null).ToList();
                 var invId = new List<Inventario>();
                 invId = inventarios.Where(x => x.Producto.Id == Id).ToList();
                 var colores = new List<Tuple<int, string>>();
@@ -446,8 +446,13 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConsultarPedido()
+        public ActionResult ConsultarPedido(string Id = null, string prueba = null)
         {
+            if (Id != null)
+            {
+                ViewBag.IdPedido = Id;
+            }
+            
             return View();
         }
 

@@ -254,6 +254,7 @@
     <Compile Include="Models\DetalleCompra.cs" />
     <Compile Include="Models\DetalleHerramienta.cs" />
     <Compile Include="Models\DetalleMueble.cs" />
+    <Compile Include="Models\DetallePedidos\DetallePedido.cs" />
     <Compile Include="Models\Herramienta.cs" />
     <Compile Include="Models\Color.cs" />
     <Compile Include="Models\HerramientaReporte.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using MerxProject.Models.Order;
 
 namespace MerxProject.Models
 {
@@ -23,6 +24,9 @@ namespace MerxProject.Models
         public DateTime Tiempo { get; set; }
 
         public DateTime Registro { get; set; }
+
+        public Orders Order { get; set; }
+
 
     }
 }

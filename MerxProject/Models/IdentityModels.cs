@@ -4,12 +4,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using MerxProject.Models;
 using MerxProject.Models.Direccion;
+
 using MerxProject.Models.CarritoCompras;
 using MerxProject.Models.ProductosFavorito;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using MerxProject.Models.Cupones;
 using MerxProject.Models.Order;
+using MerxProject.Models.DetallePedidos;
 
 namespace MerxProject.Models
 {
@@ -67,6 +69,8 @@ namespace MerxProject.Models
         public DbSet<ProductosFavoritos> ProductosFavoritos { get; set; }
 
         public DbSet<CarritoCompra> CarritoCompras { get; set; }
+
+        public DbSet<DetallePedido> DetallePedidos { get; set; }
 
         public DbSet<Cupon> Cupon { get; set; }
 
