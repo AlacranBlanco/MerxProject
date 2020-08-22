@@ -1,19 +1,16 @@
-﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Material>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Order.Orders>
+
 @{
-    ViewBag.Title = "Lista Material";
+    ViewBag.Title = "ListaEmpleado";
 }
 
-<h2>Lista de materiales</h2>
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpMateriales", "Material", new { applicationUser = "", accion = "1" })'></div>
-<br />
+<h2>Lista de Empleados</h2>
 
 @if (Session["res"] != null)
 {
     string color;
     string mensaje = Session["res"].ToString();
     Session.Remove("res");
-
 
     if (Session["tipo"] != null)
     {
@@ -42,6 +39,7 @@
         </table>
     </div>
     Session.Remove("tipo");
+
 }
 @if (ViewBag.error != null)
 {
@@ -66,70 +64,48 @@
         </table>
     </div>
 }
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
+     data-url='@Url.Action("PopUpEmpleados", "Empleado", new { applicationUser = "", accion = "1" })'></div>
 
-@using (Html.BeginForm("BuscarLista", "Material", FormMethod.Post))
-{
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-8">
-                <div class="input-group" style="display: inline; vertical-align: top; line-height: 28px;">
-                    <input type="text" class="form-control" name="parameter" placeholder="Search term...">
-                    <input type="submit" name="Subir" value="Buscar" class="btn btn-primary" />
-                </div>
-            </div>
-        </div>
-    </div>
-}
 <br />
+
 <table class="table">
     <tr>
         <th>
-            Nombre
+            Número de venta
         </th>
         <th>
-            Descripción
+            Cliente
         </th>
         <th>
-            Cantidad
+            Correo
         </th>
         <th>
-            Imagen
+            Fecha
         </th>
-        <th>Costo</th>
     </tr>
+
     @foreach (var item in Model.Resultado)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+                @Html.DisplayFor(modelItem => item.IdOrder)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
+                @Html.DisplayFor(modelItem => item.NombreCustomer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
-                @Html.DisplayFor(modelItem => item.Medida)
+                @Html.DisplayFor(modelItem => item.EmailCustomer)
             </td>
             <td>
-                @if (item.Imagen != null)
-                {
-                    <img src="~/Content/assets/img/Materiales/@Url.Content(item.Imagen)" width="100" />
-                }
-                else
-                {
-                    Html.Raw("Sin imagen");
-                }
+                @Html.DisplayFor(modelItem => item.DiaOrden)
             </td>
             <td>
-                @if (item.Piezas)
-                {
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="show_@item.Id" onclick="createModal('@Url.Action("popUpInventario", "Material" , new {id=item.Id})')">Mostrar inventario</button>
-                }
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "2" })')">Editar</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id" onclick="createModal('@Url.Action("popUpMateriales", "Material" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.IdOrder" onclick="createModal('@Url.Action("PopUpOrden", "Admin" , new {id= item.IdOrder})')">
+                    Detalle
+                </button>
             </td>
         </tr>
-
     }
 </table>
 
@@ -153,75 +129,50 @@ else
 }
 @if (Model.PaginaActual > 1)
 {
-    @Html.ActionLink("<<", "ListaMaterial", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default"})
     <span></span>
-    @Html.ActionLink("Anterior", "ListaMaterial", new { pagina = Model.PaginaActual - 1 },
+    @Html.ActionLink("Anterior", "ListaVentas", new { pagina = Model.PaginaActual - 1 },
         new { @class = "btn btn-sm btn-default" });
 }
 else
 {
-    @Html.ActionLink("<<", "ListaMaterial", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink("Anterior", "ListaMaterial", new { pagina = 1 },
+    @Html.ActionLink("Anterior", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
 }
 <span></span>
 @if (Model.PaginaActual < Model.TotalPaginas)
 {
-    @Html.ActionLink("Siguiente", "ListaMaterial", new { pagina = Model.PaginaActual + 1 },
+    @Html.ActionLink("Siguiente", "ListaVentas", new { pagina = Model.PaginaActual + 1 },
                     new { @class = "btn btn-sm btn-default" })
     <span></span>
-    @Html.ActionLink(">>", "ListaMaterial", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaVentas", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default" })
 }
 else
 {
-    @Html.ActionLink("Siguiente", "ListaMaterial", new { pagina = Model.TotalPaginas - 1 },
+    @Html.ActionLink("Siguiente", "ListaVentas", new { pagina = Model.TotalPaginas - 1 },
                     new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink(">>", "ListaMaterial", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaVentas", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
 
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalShow" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-
-    $(document).ready(function () {
-        $('#Nuevo').click(function () {
-            var url = $('#idModalRegistrar').data('url');
-            $.get(url, function (data) {
-                $("#idModalRegistrar").html(data);
-                $("#idModalRegistrar").modal('show');
-            });
-        });
-    });
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalShow").html(data);
-            $("#idModalShow").modal('show');
-        });
-    }
-
+    
     function createModal(url) {
         $.get(url, function (data) {
             $("#idModalUpdate").html(data);
             $("#idModalUpdate").modal('show');
         });
-    }
-
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalElminar").html(data);
-            $("#idModalElminar").modal('show');
-        });
 
     }
-
 
 </script>
 
