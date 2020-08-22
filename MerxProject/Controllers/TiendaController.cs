@@ -107,12 +107,22 @@ namespace MerxProject.Controllers
 
             var cupons = DbModel.Cupon.FirstOrDefault(x => x.CodigoCupon == cupon);
 
-            if (cupons.Utilizado)
+            if (cupons != null)
             {
-                ViewBag.CupNotExit = 2;
+                if (cupons.Utilizado)
+                {
+                    ViewBag.CupNotExit = 2;
+                    IndexTienda(null);
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.CupNotExit = 1;
                 IndexTienda(null);
                 return View();
             }
+           
 
             if (cupons != null)
             {
@@ -186,6 +196,18 @@ namespace MerxProject.Controllers
         [HttpGet]
         public async Task<ActionResult> PagoProducto(int? dire, string subtotal, string total, string cupon, string ship = "0")
         {
+            var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+            var DirExist = DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList();
+
+            if (DirExist.Count > 0)
+            {
+                ViewBag.Direxist = 1;
+            }
+            else
+            {
+                ViewBag.Direxist = 0;
+            }
+
             if (string.IsNullOrEmpty(ship))
             {
                 ship = "Gratis";
@@ -195,7 +217,7 @@ namespace MerxProject.Controllers
             using (this.DbModel = new ApplicationDbContext())
             {
 
-                var persona = DbModel.Personas.FirstOrDefault(x => x.Correo == User.Identity.Name);
+                
                 var ordenPendiente = DbModel.Orders.FirstOrDefault(x => x.idPersona == persona.idPersona && x.Estatus == "Procesando");
                 var fromDatabaseEF = new SelectList(DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).ToList(), "Id", "DirCalle");
                 var cantidadCarrito = DbModel.CarritoCompras.Where(X => X.idPersona == persona.idPersona).ToList();

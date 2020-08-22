@@ -105,67 +105,83 @@
                         <!-- Billing -->
                         <div class="col-lg-6">
                             <div class="billing">
-                                <div class="checkout_title">Billing</div>
+                                <div class="checkout_title">Destino</div>
                                 <div class="checkout_form_container">
-                                    @using (Html.BeginForm("PagoProducto", "Tienda", FormMethod.Post, new { @class = "register-form", role = "login-form" }))
+                                    @if (ViewBag.Direxist == 0)
                                     {
-                                        <div>
-                                            <!-- Country -->
-                                            @Html.DropDownListFor(m => m.Id, (IEnumerable<SelectListItem>)ViewBag.MySkills, new { @class = "dropdown_item_select checkout_input", @name = "direcciones" })
-                                        </div>
-                                        <div>
-                                            <input type="hidden" value=@ViewBag.subtotal name="subtotal" />
-                                            <input type="hidden" value=@ViewBag.total name="total" />
-                                            <input type="hidden" value=@ViewBag.cupon name="cupon" />
-                                            <input type="hidden" value=@ViewBag.ship name="ship" />
+                                        using (Html.BeginForm("Index", "Manage", FormMethod.Get, new { @class = "register-form", role = "login-form" }))
+                                        {
+                                        <input type="submit" id="setText" class="checkout_input  checkout_address_3" value="Agregar una dirección">
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    using (Html.BeginForm("PagoProducto", "Tienda", FormMethod.Post, new { @class = "register-form", role = "login-form" }))
+                                                    {
+                                            <div>
+                                                <!-- Country -->
+                                                @Html.DropDownListFor(m => m.Id, (IEnumerable<SelectListItem>)ViewBag.MySkills, new { @class = "dropdown_item_select checkout_input", @name = "direcciones" })
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <input type="hidden" value=@ViewBag.subtotal name="subtotal" />
+                                                <input type="hidden" value=@ViewBag.total name="total" />
+                                                <input type="hidden" value=@ViewBag.cupon name="cupon" />
+                                                <input type="hidden" value=@ViewBag.ship name="ship" />
 
-                                            <input type="submit" id="setText" class="checkout_input  checkout_address_3" value="Cargar Información">
-                                        </div>
-                                        <div>
-                                            <!-- Company -->
-                                            @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "checkout_input", @placeholder = "Nombre Completo", @required = "required", @disabled = "disabled" })
-                                        </div>
-                                        <div>
-                                            <!-- Address -->
-                                            @Html.TextBoxFor(m => m.DirCalle, new { @class = "checkout_input", @placeholder = "Dirección de Calle", @required = "required", @disabled = "disabled" })
-                                            @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "checkout_input checkout_address_2", @placeholder = "Código Postal", @id = "cp", @onchange = "myFunction(this.value)", @required = "required", @disabled = "disabled" })
-                                        </div>
-                                        <div>
-                                            <!-- City / Town -->
-                                            @Html.TextBoxFor(m => m.Estado, new { @class = "checkout_input checkout_address_2", @placeholder = "Estado", @id = "input", @required = "required", @disabled = "disabled" })
+                                                <input type="submit" id="setText" class="checkout_input  checkout_address_3" value="Cargar Información">
+                                            </div>
+                                                <br />
+                                            <div>
+                                                <!-- Company -->
+                                                @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "checkout_input", @placeholder = "Nombre Completo", @required = "required", @disabled = "disabled" })
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <!-- Address -->
+                                                @Html.TextBoxFor(m => m.DirCalle, new { @class = "checkout_input", @placeholder = "Dirección de Calle", @required = "required", @disabled = "disabled" })
+                                                @Html.TextBoxFor(m => m.CodigoPostal, new { @class = "checkout_input checkout_address_2", @placeholder = "Código Postal", @id = "cp", @onchange = "myFunction(this.value)", @required = "required", @disabled = "disabled" })
+                                            </div>
+                                            <div>
+                                                <!-- City / Town -->
+                                                @Html.TextBoxFor(m => m.Estado, new { @class = "checkout_input checkout_address_2", @placeholder = "Estado", @id = "input", @required = "required", @disabled = "disabled" })
 
-                                        </div>
-                                        <div>
-                                            @Html.TextBoxFor(m => m.Ciudad, new { @class = "checkout_input checkout_address_2", @placeholder = "Ciudad", @id = "input1", @required = "required", @disabled = "disabled" })
-                                        </div>
-                                        <div>
-                                            @Html.TextBoxFor(m => m.Asentamiento, new { @class = "checkout_input", @placeholder = "Asentamiento", @required = "required", @disabled = "disabled" })
-                                        </div>
-                                        <div>
-                                            <!-- Numero Telf -->
-                                            @Html.TextBoxFor(m => m.NumTelefono, new { @class = "checkout_input", @placeholder = "Num. Teléfono", @required = "required", @disabled = "disabled" })
+                                            </div>
+                                            <div>
+                                                @Html.TextBoxFor(m => m.Ciudad, new { @class = "checkout_input checkout_address_2", @placeholder = "Ciudad", @id = "input1", @required = "required", @disabled = "disabled" })
+                                            </div>
+                                            <br />
+                                            <div>
+                                                @Html.TextBoxFor(m => m.Asentamiento, new { @class = "checkout_input", @placeholder = "Asentamiento", @required = "required", @disabled = "disabled" })
+                                            </div>
+                                            <br />
+                                            <div>
+                                                <!-- Numero Telf -->
+                                                @Html.TextBoxFor(m => m.NumTelefono, new { @class = "checkout_input", @placeholder = "Num. Teléfono", @required = "required", @disabled = "disabled" })
 
-                                        </div>
+                                            </div>
 
-                                        <div class="checkout_extra">
-                                            <ul>
-                                                <li class="billing_info d-flex flex-row align-items-center justify-content-start">
-                                                    <label class="checkbox_container">
-                                                        <input type="checkbox" id="cb_1" name="billing_checkbox" class="billing_checkbox">
-                                                        <span class="checkbox_mark"></span>
-                                                        <span class="checkbox_text">Terms and conditions</span>
-                                                    </label>
-                                                </li>
-                                                <li class="billing_info d-flex flex-row align-items-center justify-content-start">
-                                                    <label class="checkbox_container">
-                                                        <input type="checkbox" id="cb_3" name="billing_checkbox" class="billing_checkbox">
-                                                        <span class="checkbox_mark"></span>
-                                                        <span class="checkbox_text">Subscribe to our newsletter</span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                            <div class="checkout_extra">
+                                                <ul>
+                                                    <li class="billing_info d-flex flex-row align-items-center justify-content-start">
+                                                        <label class="checkbox_container">
+                                                            <input type="checkbox" id="cb_1" name="billing_checkbox" class="billing_checkbox">
+                                                            <span class="checkbox_mark"></span>
+                                                            <span class="checkbox_text">Terminos and condiciones</span>
+                                                        </label>
+                                                    </li>
+                                                    <li class="billing_info d-flex flex-row align-items-center justify-content-start">
+                                                        <label class="checkbox_container">
+                                                            <input type="checkbox" id="cb_3" name="billing_checkbox" class="billing_checkbox">
+                                                            <span class="checkbox_mark"></span>
+                                                            <span class="checkbox_text">Subscribete a nuestras promociones</span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
                                     }
+
                                 </div>
                             </div>
                         </div>
@@ -174,14 +190,14 @@
                         <div class="col-lg-6 cart_col">
                             <div class="cart_total">
                                 <div class="cart_extra_content cart_extra_total">
-                                    <div class="checkout_title">Cart Total</div>
+                                    <div class="checkout_title">Carrito Total</div>
                                     <ul class="cart_extra_total_list">
                                         <li class="d-flex flex-row align-items-center justify-content-start">
                                             <div class="cart_extra_total_title">Subtotal</div>
                                             <div class="cart_extra_total_value ml-auto">@ViewBag.subtotal</div>
                                         </li>
                                         <li class="d-flex flex-row align-items-center justify-content-start">
-                                            <div class="cart_extra_total_title">Shipping</div>
+                                            <div class="cart_extra_total_title">Envío</div>
                                             <div class="cart_extra_total_value ml-auto">@ViewBag.ship</div>
                                         </li>
                                         <li class="d-flex flex-row align-items-center justify-content-start">
