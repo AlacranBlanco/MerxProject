@@ -107,12 +107,22 @@ namespace MerxProject.Controllers
 
             var cupons = DbModel.Cupon.FirstOrDefault(x => x.CodigoCupon == cupon);
 
-            if (cupons.Utilizado)
+            if (cupons != null)
             {
-                ViewBag.CupNotExit = 2;
+                if (cupons.Utilizado)
+                {
+                    ViewBag.CupNotExit = 2;
+                    IndexTienda(null);
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.CupNotExit = 1;
                 IndexTienda(null);
                 return View();
             }
+           
 
             if (cupons != null)
             {

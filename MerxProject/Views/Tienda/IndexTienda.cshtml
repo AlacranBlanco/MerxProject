@@ -107,7 +107,7 @@ else if (ViewBag.CupNotExit == 2)
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Cart</title>
+    <title>Carrito - Merx</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Little Closet template">
@@ -241,11 +241,26 @@ else if (ViewBag.CupNotExit == 2)
                                                 </div>
                                             </div>
 
+                                            @if(item.ImagenMaterial != null){
 
+                                            <div class="product_color product_text"><span>Material: </span><img src="@Url.Content(item.ImagenMaterial)" /></div>
+                                            
+                                            }
+                                            else
+                                            {
 
-                                           
-                                            <div class="product_color product_text"><span>Color: </span>@item.ColorNombre</div>
+                                            <div class="product_name"><span>Material: </span> N/A </div>
+                                            }
 
+                                            @if (item.ColorNombre != "Natural")
+                                            {
+
+                                            <div class="product_color product_text"><span>Color: </span> <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.CodigoColor;"></span></div>
+                                            }
+                                            else{
+                                            <div class="product_name"><span>Color: </span> N/A </div>
+
+                                            }
                                             @* <div class="product_size product_text"><span>Size: </span>L</div>*@
                                             <div class="product_price product_text"><span>Price: </span>$@item.Precio</div>
                                             <div class="product_quantity_container">
@@ -312,7 +327,7 @@ else if (ViewBag.CupNotExit == 2)
                                     @using (Html.BeginForm("IndexTienda", "Tienda", FormMethod.Post))
                                     {
                                         <div class="cart_extra_content cart_extra_coupon">
-                                            <div class="cart_extra_title">Coupon code</div>
+                                            <div class="cart_extra_title">Código de Cupón</div>
                                             <div class="coupon_form_container">
                                                 @if (ViewBag.descuentoGuardado != null)
                                                 {
@@ -354,7 +369,7 @@ else if (ViewBag.CupNotExit == 2)
                             <div class="col-lg-6 cart_extra_col">
                                 <div class="cart_extra cart_extra_2">
                                     <div class="cart_extra_content cart_extra_total">
-                                        <div class="cart_extra_title">Cart Total</div>
+                                        <div class="cart_extra_title">Carrito Total</div>
                                         <ul class="cart_extra_total_list">
                                             <li class="d-flex flex-row align-items-center justify-content-start">
                                                 <div class="cart_extra_total_title">Subtotal</div>

@@ -1231,20 +1231,28 @@ namespace MerxProject.Controllers
             }
         }
 
-        [Authorize(Roles="Cliente")]
+        [Authorize(Roles = "Cliente")]
         [HttpGet]
         public ActionResult Bamboo1(int? OutStock, int? Id, int? idProducto, string name, string colorNombre = null)
         {
 
-            
+
             if (Id != null)
-            {
-                var material = DbModel.Materiales.FirstOrDefault(x => x.Id == Id.Value);
-                ViewBag.precioMaterial = material.Precio;
-                ViewBag.imgRoute = material.Imagen;
-                ViewBag.idMaterial = Id.Value;
-                ViewBag.prodcutoId = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto).Id;
-                name = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto).Nombre;
+            { 
+                if (Id.Value == 0)
+                {
+                    name = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto).Nombre;
+                }
+                else
+                {
+                    var material = DbModel.Materiales.FirstOrDefault(x => x.Id == Id.Value);
+                    ViewBag.precioMaterial = material.Precio;
+                    ViewBag.imgRoute = material.Imagen;
+                    ViewBag.idMaterial = Id.Value;
+                    ViewBag.prodcutoId = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto).Id;
+                    name = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto).Nombre;
+                }
+               
             }
 
             if (OutStock != null)
@@ -1292,6 +1300,12 @@ namespace MerxProject.Controllers
                     //        ventaViewModels.MaterialCollection.Add(MaterialDetail);
                     //    }
                     //}
+
+                    Material mat = new Material();
+                    mat.Id = 0;
+                    mat.Nombre = "Sin Material";
+
+                    ventaViewModels.MaterialCollection.Add(mat);
 
                     foreach (var item in ventaViewModels.InventarioMaterialCollection)
                     {
