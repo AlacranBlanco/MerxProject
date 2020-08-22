@@ -88,12 +88,13 @@ namespace MerxProject.Controllers
                 ViewBag.title = "Detalles";
                 foreach (var item in Detalle)
                 {
-                    total += item.Precio;
+                    total += item.Precio * item.Cantidad;
                     var Venta = new Venta()
                     {
                         Producto = DbModel.Productos.Find(item.idProducto).Nombre,
                         Color = DbModel.Colores.Find(item.idColor).Nombre,
-                        Costo = item.Precio.ToString()
+                        Costo = item.Precio.ToString(),
+                        Cantidad = item.Cantidad.ToString()
                     };
                     Detalles.Add(Venta);
                 }
@@ -179,7 +180,7 @@ namespace MerxProject.Controllers
                 
                 var ProductoDelMes = new List<ProductoMasVendido>();
 
-                if (VentasDelMes.Count() < 1)
+                if (VentasDelMes.Count() > 0)
                 {
 
                     foreach (var item in VentasDelMes)
@@ -259,6 +260,7 @@ namespace MerxProject.Controllers
             public string Producto { get; set; }
             public string Color { get; set; }
             public string Costo { get; set; }
+            public string Cantidad { get; set; }
         }
     }
 }

@@ -728,7 +728,7 @@
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\listaWey.cshtml" />
+    <Content Include="Views\Account\listaCliente.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\popupUsuarios.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />

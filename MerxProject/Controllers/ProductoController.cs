@@ -511,19 +511,18 @@ namespace MerxProject.Controllers
                     Colores.Remove(item.Color);
                 }
 
-                int suma = 0;
-                foreach (var item in invId)
-                {
-                    suma += item.Cantidad;
-                }
+                //int suma = 0;
+                //foreach (var item in invId)
+                //{
+                //    suma += item.Cantidad;
+                //}
 
 
                 ViewBag.Colores = Colores;
                 ViewBag.productoId = producto.Id;
                 ViewBag.invId = invId;
-                ViewBag.total = suma;
 
-                ViewBag.title = "Inventario";
+                ViewBag.title = "Detalle";
                 ViewBag.subtitle = producto.Nombre;
 
 
@@ -532,7 +531,7 @@ namespace MerxProject.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> popUpProductosColor(int productoId, string cantidad, string newColor, string radio, string accion)
+        public async Task<ActionResult> popUpProductosColor(int productoId, string newColor, string radio, string accion)
         {
             using (ApplicationDbContext DbModel = new ApplicationDbContext())
             {
@@ -545,7 +544,6 @@ namespace MerxProject.Controllers
                         if (radio != null)
                         {
                             inv = DbModel.Inventarios.Find(Convert.ToInt16(radio));
-                            inv.Cantidad = Convert.ToInt16(cantidad);
 
                             DbModel.Inventarios.AddOrUpdate(inv);
                             DbModel.SaveChanges();
@@ -562,8 +560,7 @@ namespace MerxProject.Controllers
                             Color colour = new Color();
                             colour = DbModel.Colores.Find(Convert.ToInt16(newColor));
                             inv.Color = colour;
-
-                            inv.Cantidad = Convert.ToInt16(cantidad);
+                            
 
                             DbModel.Inventarios.Add(inv);
                             DbModel.SaveChanges();

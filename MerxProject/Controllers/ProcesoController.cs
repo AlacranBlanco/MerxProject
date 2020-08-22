@@ -98,11 +98,12 @@ namespace MerxProject.Controllers
                 var Inventarios = DbModel.Inventarios.ToList();
                 var Empleados = DbModel.Empleados.ToList();
                 var Personas = DbModel.Personas.ToList();
+                var Ordenes = DbModel.Orders.ToList();
 
                 // Número total de registros de la tabla Productos
                 _TotalRegistros = DbModel.Procesos.Count();
                 // Obtenemos la 'página de registros' de la tabla Productos
-                _Procesos = DbModel.Procesos.OrderBy(x => x.Id)
+                _Procesos = DbModel.Procesos.OrderBy(x => x.Registro)
                                                  .Skip((pagina - 1) * _RegistrosPorPagina)
                                                  .Take(_RegistrosPorPagina)
                                                  .ToList();
@@ -427,14 +428,13 @@ namespace MerxProject.Controllers
                         return RedirectToAction("ConsultarPedido");
                     }
                     else
-                    {   
-                        procesos.Inventario.Cantidad += 1;
-                        DbModel.Inventarios.AddOrUpdate(procesos.Inventario);
-                        DbModel.Procesos.Remove(procesos);
-                        DbModel.SaveChanges();
-                        Session["res"] = "Proceso finalizado";
-                        Session["tipo"] = "Exito";
-                        return RedirectToAction("ListaProcesos");
+                    {
+                            DbModel.Procesos.Remove(procesos);
+                            DbModel.SaveChanges();
+                            Session["res"] = "Proceso finalizado";
+                            Session["tipo"] = "Exito";
+                            return RedirectToAction("ListaProcesos");
+                        
                     }
                 }
                 else
@@ -463,17 +463,24 @@ namespace MerxProject.Controllers
             {
                 try
                 {
-                    var proceso = DbModel.Procesos.Find(Id);
-                    if (proceso != null)
+                    var Detalle = DbModel.DetallePedidos.Where(x => x.IdPedidoDetalle == Id).ToList();
+                    var procesos = new List<Proceso>();
+                    foreach (var item in Detalle)
+                    {
+                        procesos.Add(DbModel.Procesos.Where(x=>x.Id == item.IdProceso).First());
+                    }
+
+                    if (procesos.Count > 0)
                     {
                         var color = DbModel.Colores.ToList();
                         var catMat = DbModel.Materiales.ToList();
                         var catMue = DbModel.Muebles.ToList();
                         var producto = DbModel.Productos.ToList();
                         var inventario = DbModel.Inventarios.ToList();
+                        var Orden = DbModel.Orders.ToList();
                         Session["res"] = "Pedido encontrado";
                         Session["tipo"] = "Exito";
-                        ViewBag.proceso = proceso;
+                        ViewBag.proceso = procesos;
                         return View();
                     }
                     else

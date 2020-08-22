@@ -556,7 +556,7 @@ namespace MerxProject.Controllers
 
                     procesoCrear.Id = Guid.NewGuid().ToString();
                     procesoCrear.Nombre = "Corte";
-                    procesoCrear.Estado = "En proceso";
+                    procesoCrear.Estado = "En espera";
                     procesoCrear.Tiempo = DateTime.Now;
                     procesoCrear.Registro = DateTime.Now;
                     procesoCrear.Inventario = DbModel.Inventarios.FirstOrDefault(x => x.Id == idInventario);

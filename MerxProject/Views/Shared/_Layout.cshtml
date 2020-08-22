@@ -81,7 +81,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" style="color: black;">Usuarios</a>
                             <ul class="dropdown-menu">
-                                <li>@Html.ActionLink("Clientes", "listaWey", "Account")</li>
+                                <li>@Html.ActionLink("Clientes", "listaCliente", "Account")</li>
                                 <li>@Html.ActionLink("Empleados", "ListaEmpleado", "Empleado")</li>
                             </ul>
                         </li>
@@ -93,7 +93,8 @@
                                 Nombre = Session["user"].ToString();
                             }
                             <li>
-                                @Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", style = "color: black;" })
+                                <a style="color:black">¡Hola, @Nombre!</a>
+                                @*@Html.ActionLink("Hola " + Nombre + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage", style = "color: black;" })*@
                             </li>
                             <li><a  style="color: black;"  href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
                         }

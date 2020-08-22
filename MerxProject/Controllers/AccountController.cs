@@ -97,7 +97,7 @@ namespace MerxProject.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult listaWey()
+        public ActionResult listaCliente()
         {
           //  var users = UserManager.Users;
             var clientes = DbModel.Usuarios.Where(x => x.Rol == "Cliente").ToList();

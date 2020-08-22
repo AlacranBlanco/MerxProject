@@ -102,62 +102,77 @@
         </div>
         @if (ViewBag.proceso != null)
         {
-            var proceso = new Proceso();
+            var proceso = new List<Proceso>();
             proceso = ViewBag.proceso;
 
             if (proceso != null)
             {
+        <table class="table">
 
-                <table class="table">
-
-                    <tr>
-                        <th>
-                            Id
-                        </th>
-                        <th>
-                            Proceso
-                        </th>
-                        <th>
-                            Producto
-                        </th>
-                        <th>
-                            Tipo de Mueble
-                        </th>
-                        <th>
-                            Tipo de Material
-                        </th>
-                        <th>
-                            Color
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Inventario.Producto.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Inventario.Producto.CategoriaMueble.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Inventario.Producto.CategoriaMaterial.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => proceso.Inventario.Color.Nombre)
-                            <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @proceso.Inventario.Color.Codigo;"></span>
-                        </td>
-                        @if (proceso.Nombre == "Finalizado")
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Cliente
+                </th>
+                <th>
+                    Proceso
+                </th>
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Tipo de Material
+                </th>
+                <th>
+                    Tipo de Mueble
+                </th>
+                <th>
+                    Color
+                </th>
+            </tr>
+            @foreach (var item in proceso)
+            {
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        @item.Order.NombreCustomer
+                    </td>
+                    <td>
+                        @item.Nombre
+                    </td>
+                    <td>
+                        @item.Inventario.Producto.Nombre
+                    </td>
+                    <td>
+                        @if(item.Inventario.Material != null)
                         {
-                            <td>
-                                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@proceso.Id" data-confirm="¿Estás seguro?" onclick="confirmar('@Url.Action("TomarPedido", "Proceso", new { id = proceso.Id, cliente = 1 })')">Recibí mi pedido</button>
-                            </td>
+                            <p>@item.Inventario.Material.Nombre</p>
                         }
-                    </tr>
-                </table>
+                        else
+                        {
+                            <p>@item.Inventario.Producto.CategoriaMaterial.Nombre</p>
+                        }
+                    </td>
+                    <td>
+                        @item.Inventario.Producto.CategoriaMueble.Nombre
+                    </td>
+                    <td>
+                        @item.Inventario.Color.Nombre
+                        <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: @item.Inventario.Color.Codigo;"></span>
+                    </td>
+                    @if (item.Nombre == "Finalizado")
+                    {
+                        <td>
+                            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" data-confirm="¿Estás seguro?" onclick="confirmar('@Url.Action("TomarPedido", "Proceso", new { id = item.Id, cliente = 1 })')">Recibí mi pedido</button>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
             }
         }
     </div>

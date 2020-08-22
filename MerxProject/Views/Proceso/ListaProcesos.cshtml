@@ -77,6 +77,12 @@
             Id
         </th>
         <th>
+            Orden
+        </th>
+        <th>
+            Cliente
+        </th>
+        <th>
             Proceso
         </th>
         <th>
@@ -111,13 +117,26 @@
             @Html.DisplayFor(modelItem => item.Id)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.Order.IdOrder)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order.NombreCustomer)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.Nombre)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Inventario.Producto.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Inventario.Producto.CategoriaMueble.Nombre)
+            @if (item.Inventario.Material != null)
+            {
+                <p>@item.Inventario.Material.Nombre</p>
+            }
+            else
+            {
+                @Html.DisplayFor(modelItem => item.Inventario.Producto.CategoriaMueble.Nombre)
+            }
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Inventario.Producto.CategoriaMaterial.Nombre)
@@ -126,7 +145,15 @@
             @Html.DisplayFor(modelItem => item.Empleado)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Inventario.Color.Nombre)
+            @if (item.Inventario.Color.Nombre != null)
+            {
+                @Html.DisplayFor(modelItem => item.Inventario.Color.Nombre)
+            }
+            else
+            {
+                <p>Color natural</p>
+            }
+
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Tiempo)

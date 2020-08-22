@@ -20,13 +20,16 @@
 
                             <tr>
                                 <th>
-                                    Empleado
+                                    Producto
                                 </th>
                                 <th>
-                                    Fecha de inicio de uso
+                                    Color
                                 </th>
                                 <th>
-                                    Tiempo total
+                                    Precio
+                                </th>
+                                <th>
+                                    Cantidad
                                 </th>
                             </tr>
                             @foreach (var item in Venta)
@@ -41,19 +44,25 @@
                                     <td>
                                         @item.Costo
                                     </td>
+                                    <td>
+                                        @item.Cantidad
+                                    </td>
                                 </tr>
                             }
                         </table>
-                        <table class="table table-borderless">
-                            <tr>
-                                <th>Total</th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @ViewBag.Total
-                                </td>
-                            </tr>
-                        </table>
+                        <div>
+                            <table class="table table-info">
+                                <tr>
+                                    <th>Total</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @ViewBag.Total
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-sm-4"></div>
                     </div>
                 </div>
             </div>

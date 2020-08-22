@@ -55,7 +55,7 @@
                                     }
                                 }
                             </div>
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 @if (ViewBag.invId != null)
                                 {
                                     foreach (var item in ViewBag.invId)
@@ -73,7 +73,7 @@
                                 <div class="col-md-10">
                                     <h4> <span class="badge-light"> Este producto tiene @ViewBag.total modelos en existencia</span> </h4>
                                 </div>
-                            </div>
+                            </div>*@
                             @if (i <= 3)
                             {
                                 <div class="form-group">
@@ -88,12 +88,12 @@
                                     </div>
                                 </div>
                             }
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <label class="control-label col-md-2">Agregar/Cambiar cantidad</label>
                                 <div class="col-md-10">
                                     <input type="number" name="cantidad" value="0" min="0" class="form-control" required />
                                 </div>
-                            </div>
+                            </div>*@
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="hidden" name="productoId" value="@ViewBag.productoId" />

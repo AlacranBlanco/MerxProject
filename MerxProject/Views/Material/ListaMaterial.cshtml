@@ -95,7 +95,9 @@
         <th>
             Imagen
         </th>
-        <th>Costo</th>
+        <th>
+            Costo
+        </th>
     </tr>
     @foreach (var item in Model.Resultado)
     {
@@ -119,6 +121,9 @@
                 {
                     Html.Raw("Sin imagen");
                 }
+            </td>
+            <td>
+                @Html.DisplayFor(modeltem => item.Precio)
             </td>
             <td>
                 @if (item.Piezas)
