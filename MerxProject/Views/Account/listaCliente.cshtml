@@ -17,7 +17,13 @@
             @Html.DisplayNameFor(model => model.Correo)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Direccion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ciudad)
         </th>
         <th>Acciones</th>
     </tr>
@@ -26,19 +32,24 @@
     @foreach (var item in Model)
     {
       
-            <tr>
+    <tr>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Correo)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Direccion)
-                </td>
-            </tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Correo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Telefono)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Direccion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ciudad)
+        </td>
+    </tr>
        
     }
 

@@ -241,7 +241,7 @@ namespace MerxProject.Controllers
 
                                 Session["res"] = resultado;
                                 Session["tipo"] = "Exito";
-                                return RedirectToAction("ListaCompras");
+                                return RedirectToAction("ListaDetalleCompra", new { idCompra = compras.Id});
                             }
                             catch (Exception ex)
                             {
@@ -352,7 +352,7 @@ namespace MerxProject.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador, Empleado")]
         public ActionResult ListaDetalleCompra(int? idCompra, int pagina = 1)
         {
             int _TotalRegistros = 0;
@@ -633,7 +633,7 @@ namespace MerxProject.Controllers
 
                             Session["res"] = resultado;
                             ViewBag.res = resultado;
-                            return RedirectToAction("ListaDetalleCompra");
+                            return RedirectToAction("ListaDetalleCompra", new { idCompra });
                         }
                     }
                     resultado = "Error";
@@ -644,7 +644,7 @@ namespace MerxProject.Controllers
                     */
                 }
 
-                return RedirectToAction("ListaDetalleCompra");
+                return RedirectToAction("ListaDetalleCompra", new { idCompra });
             }
         }
 
