@@ -205,6 +205,7 @@ namespace MerxProject.Controllers
                             Ids.Add(Det.idProducto);
                             int Count = 0;
                             var existe = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).Count();
+
                             if (existe > 0)
                             {
                                 var prod = DbModel.OrdersDetails.Where(x => x.idProducto == Det.idProducto).ToList();

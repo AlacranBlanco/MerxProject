@@ -292,17 +292,14 @@ namespace MerxProject.Controllers
 
                             if (postedFile != null)
                             {
-                                string dir = Server.MapPath("~/Content/assets/img/Productos");
+                                string dir = Server.MapPath("~/Content/assets/img/Productos/");
                                 if (!Directory.Exists(dir))
                                 {
                                     Directory.CreateDirectory(dir);
                                 }
-
-                                var originalFile = Path.GetFileName(postedFile.FileName);
-                                string fileId = Guid.NewGuid().ToString().Replace("-", "");
-                                var path = Path.Combine(dir, fileId);
+                                var path = Path.Combine(dir, postedFile.FileName);
                                 postedFile.SaveAs(path + postedFile.FileName);
-                                productos.Imagen = fileId + postedFile.FileName;
+                                productos.Imagen = "~/Content/assets/img/Productos/" + postedFile.FileName;
                             }
                             else
                             {
