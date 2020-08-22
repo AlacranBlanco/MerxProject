@@ -1,10 +1,12 @@
 ﻿using MerxProject.Models;
 using MerxProject.Models.CarritoCompras;
 using MerxProject.Models.Cupones;
+using MerxProject.Models.DetallePedidos;
 using MerxProject.Models.Direccion;
 using MerxProject.Models.Order;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using PayPal.Api;
 using System;
 using System.Collections.Generic;
@@ -18,11 +20,31 @@ namespace MerxProject.Controllers
 {
     public class TiendaController : Controller
     {
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         ApplicationDbContext DbModel;
 
         public TiendaController()
         {
             this.DbModel = new ApplicationDbContext();
+        }
+
+        public TiendaController(ApplicationUserManager userManager)
+        {
+            UserManager = userManager;
+        }
+
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
         // GET: Tienda
         [Authorize(Roles = "Cliente")]
@@ -427,7 +449,7 @@ namespace MerxProject.Controllers
         private Payment payment;
 
 
-        public ActionResult PagoConPaypal(double? totalPagoPyapal, string totalship, string Cancel = null)
+        public async Task<ActionResult> PagoConPaypal(double? totalPagoPyapal, string totalship, string Cancel = null)
         {
             //getting the apiContext
             APIContext apiContext = PaypalConfiguration.GetAPIContext();
@@ -481,39 +503,78 @@ namespace MerxProject.Controllers
             var orderDetails = DbModel.OrdersDetails.Where(x => x.idOrder == orderId.IdOrder).OrderBy(x => x.idColor).ToList();
             var productos = DbModel.Productos.ToList();
             var colores = DbModel.Colores.ToList();
+            var productosList = DbModel.Productos.ToList();
             var inventarioDetail = DbModel.Inventarios.OrderBy(x => x.Producto.Id).ToList();
-            int i = 0, j = 0;
+           
 
-            while (i < inventarioDetail.Count)
+            var carritoBorrar = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).ToList();
+
+
+            Guid Newguid = Guid.NewGuid();
+
+            for (int i = 0; i < carritoBorrar.Count; i++)
             {
-                if (j < orderDetails.Count)
+                int idInventario = 0;
+                for (int j = 1; j <= carritoBorrar[i].Cantidad; j++)
                 {
-                    if (orderDetails[j].idColor == inventarioDetail[i].Color.Id)
+                    int idProducto = carritoBorrar[i].idProducto;
+                    int idColor = carritoBorrar[i].idColor;
+                    int idMaterial = carritoBorrar[i].idMaterial;
+
+                    Proceso procesoCrear = new Proceso();
+                    procesoCrear.Inventario = new Inventario();
+                    procesoCrear.Order = new Orders();
+                    Inventario inventario = new Inventario();
+                    inventario.Color = new Color();
+                    inventario.Material = new Material();
+                    inventario.Producto = new Producto();
+
+                    if (carritoBorrar[i].idMaterial > 0 && carritoBorrar[i].idColor > 0)
                     {
+                        var ExistInv = DbModel.Inventarios.Where(x => x.Id == idInventario).ToList();
 
-                        inventarioDetail[i].Id = inventarioDetail[i].Id;
-                        inventarioDetail[i].Cantidad = inventarioDetail[i].Cantidad - orderDetails[j].Cantidad;
-                        inventarioDetail[i].Color.Id = inventarioDetail[i].Color.Id;
-                        inventarioDetail[i].Producto.Id = inventarioDetail[i].Producto.Id;
+                        if (ExistInv.Count == 0)
+                        {
 
-                        DbModel.Inventarios.AddOrUpdate(inventarioDetail[i]);
-                        DbModel.SaveChanges();
-                        i++;
-                        j++;
+                            inventario.Color = DbModel.Colores.FirstOrDefault(x => x.Id == idColor);
+                            inventario.Producto = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto);
+                            inventario.Material = DbModel.Materiales.FirstOrDefault(x => x.Id == idMaterial);
+                            inventario.Cantidad = 0;
+
+                            DbModel.Inventarios.Add(inventario);
+                            DbModel.SaveChanges();
+
+                            idInventario = inventario.Id;
+
+                        }
+                     
                     }
                     else
                     {
-                        i++;
+                        idInventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == idProducto && x.Color.Id == idColor).Id;
                     }
-                }
-                else
-                {
-                    break;
-                }
 
+                    procesoCrear.Id = Guid.NewGuid().ToString();
+                    procesoCrear.Nombre = "Corte";
+                    procesoCrear.Estado = "En proceso";
+                    procesoCrear.Tiempo = DateTime.Now;
+                    procesoCrear.Registro = DateTime.Now;
+                    procesoCrear.Inventario = DbModel.Inventarios.FirstOrDefault(x => x.Id == idInventario);
+                    procesoCrear.Order = orderId;
+                    DbModel.Procesos.Add(procesoCrear);
+                    DbModel.SaveChanges();
+
+                    DetallePedido detallePedido = new DetallePedido();
+                    detallePedido.IdPedidoDetalle = Newguid.ToString();
+                    detallePedido.IdProceso = procesoCrear.Id;
+
+                    DbModel.DetallePedidos.Add(detallePedido);
+                    DbModel.SaveChanges();
+
+                }
             }
 
-            var carritoBorrar = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona).ToList();
+           
 
             foreach (var item in carritoBorrar)
             {
@@ -527,6 +588,11 @@ namespace MerxProject.Controllers
             DbModel.Orders.AddOrUpdate(orderPgado);
             DbModel.SaveChanges();
 
+
+
+            //string code = await UserManager.GenerateEmailConfirmationTokenAsync(User.Identity.GetUserId());
+            var callbackUrl = Url.Action("ConsultarPedido", "Proceso", new { Id = Newguid.ToString() }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(User.Identity.GetUserId(), "Pedido", callbackUrl);
 
             return RedirectToAction("IndexTienda", new { pagoRealizado = "True"});
         }

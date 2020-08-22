@@ -82,7 +82,16 @@
                 {
                     <div class="input-group">
                         <input type="hidden" name="cliente" value="1" />
+                        @if (ViewBag.IdPedido != null)
+                        {
+
+                        <input type="text" class="form-control list-group-item" name="Id" id="Id" placeholder="Buscar producto" value=@ViewBag.IdPedido>
+                        }
+                        else
+                        {
+
                         <input type="text" class="form-control list-group-item" name="Id" id="Id" placeholder="Buscar producto">
+                        }
                         <div class="input-group-append">
                             <input class="btn btn-primary" type="submit" value="Buscar" style="background-color:#009970; border-radius:10px;">
                             <i class="fa fa-search"></i>

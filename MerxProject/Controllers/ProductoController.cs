@@ -1485,155 +1485,155 @@ namespace MerxProject.Controllers
 
                             if (Material.Id > 0)
                             {
-                                bool aux = false, aux1 = false;
-                                var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
-                                var cantidadSuficiente = 0;
-                                foreach (var item in stockSuficiente)
-                                {
-                                    cantidadSuficiente += item.Cantidad;
-                                }
+                                //bool aux = false, aux1 = false;
+                                //var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                //var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
+                                //var cantidadSuficiente = 0;
+                                //foreach (var item in stockSuficiente)
+                                //{
+                                //    cantidadSuficiente += item.Cantidad;
+                                //}
 
-                                if (cantidadSuficiente + 1 > productoStock.Cantidad)
-                                {
-                                    if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
-                                    {
-                                        aux = true;
-                                    }
+                                //if (cantidadSuficiente + 1 > productoStock.Cantidad)
+                                //{
+                                //    if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
+                                //    {
+                                //        aux = true;
+                                //    }
 
-                                    if (carritoCantidad.Cantidad + 1 > inventarioMaterial.Cantidad)
-                                    {
+                                //    if (carritoCantidad.Cantidad + 1 > inventarioMaterial.Cantidad)
+                                //    {
 
-                                        aux1 = true;
-                                    }
+                                //        aux1 = true;
+                                //    }
 
-                                    if (aux || aux1)
-                                    {
-                                        return RedirectToAction("IndexTienda", "Tienda", new { outStock = 1 });
-                                    }
-                                }
+                                //    if (aux || aux1)
+                                //    {
+                                //        return RedirectToAction("IndexTienda", "Tienda", new { outStock = 1 });
+                                //    }
+                                //}
                             }
-                            else
-                            {
-                                if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
-                                {
-                                    return RedirectToAction("IndexTienda", "Tienda", new { outStock = 1 });
-                                }
-                            }
+                            //else
+                            //{
+                            //    if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
+                            //    {
+                            //        return RedirectToAction("IndexTienda", "Tienda", new { outStock = 1 });
+                            //    }
+                            //}
 
                         }
                         else
                         {
                             if (Material.Id > 0)
                             {
-                                string NoExistsBth = "";
-                                var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
-                                var cantidadSuficiente = 0;
-                                foreach (var item in stockSuficiente)
-                                {
-                                    cantidadSuficiente += item.Cantidad;
-                                }
+                                //string NoExistsBth = "";
+                                //var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                //var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
+                                //var cantidadSuficiente = 0;
+                                //foreach (var item in stockSuficiente)
+                                //{
+                                //    cantidadSuficiente += item.Cantidad;
+                                //}
 
-                                if (cantidadSuficiente + 1 <= productoStock.Cantidad)
-                                {
-                                    if (carritoCantidad != null)
-                                    {
-                                        bool aux = false, aux1 = false;
-                                    if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
-                                    {
+                                //if (cantidadSuficiente + 1 <= productoStock.Cantidad)
+                                //{
+                                //    if (carritoCantidad != null)
+                                //    {
+                                //        bool aux = false, aux1 = false;
+                                //    if (carritoCantidad.Cantidad + 1 > inventarioColor.Cantidad)
+                                //    {
 
-                                        NoExistsBth = carritoCantidad.ColorNombre;
-                                        aux = true;
-                                    }
+                                //        NoExistsBth = carritoCantidad.ColorNombre;
+                                //        aux = true;
+                                //    }
 
-                                    if (carritoCantidad.Cantidad + 1 > inventarioMaterial.Cantidad)
-                                    {
-                                        NoExistsBth = carritoCantidad.MaterialNombre;
-                                        aux1 = true;
-                                    }
+                                //    if (carritoCantidad.Cantidad + 1 > inventarioMaterial.Cantidad)
+                                //    {
+                                //        NoExistsBth = carritoCantidad.MaterialNombre;
+                                //        aux1 = true;
+                                //    }
 
-                                    if (aux1 && aux)
-                                    {
-                                        NoExistsBth = "";
-                                        NoExistsBth = carritoCantidad.ColorNombre + " y " + carritoCantidad.MaterialNombre;
-                                    }
+                                //    if (aux1 && aux)
+                                //    {
+                                //        NoExistsBth = "";
+                                //        NoExistsBth = carritoCantidad.ColorNombre + " y " + carritoCantidad.MaterialNombre;
+                                //    }
 
 
-                                        if (pagi != null)
-                                        {
-                                            return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = NoExistsBth });
-                                        }
-                                        else
-                                        {
-                                            if (aux || aux1)
-                                            {
-                                                var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                                return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = NoExistsBth });
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (pagi != null)
-                                    {
-                                        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                        return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = nombreProducto.Nombre });
-                                    }
-                                    else
-                                    {
-                                        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                        return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = nombreProducto.Nombre });
-                                    }
-                                }
+                                //        if (pagi != null)
+                                //        {
+                                //            return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = NoExistsBth });
+                                //        }
+                                //        else
+                                //        {
+                                //            if (aux || aux1)
+                                //            {
+                                //                var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                //                return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = NoExistsBth });
+                                //            }
+                                //        }
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (pagi != null)
+                                //    {
+                                //        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                //        return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = nombreProducto.Nombre });
+                                //    }
+                                //    else
+                                //    {
+                                //        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                //        return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = nombreProducto.Nombre });
+                                //    }
+                                //}
 
                             }
                             else
                             {
                                 //if (carritoCantidad != null)
                                 //{
-                                    var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                    var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
-                                    var cantidadSuficiente = 0;
-                                    foreach (var item in stockSuficiente)
-                                    {
-                                        cantidadSuficiente += item.Cantidad;
-                                    }
+                                    //var productoStock = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                    //var stockSuficiente = DbModel.CarritoCompras.Where(x => x.idPersona == persona.idPersona && x.idProducto == producto.Id).ToList();
+                                    //var cantidadSuficiente = 0;
+                                    //foreach (var item in stockSuficiente)
+                                    //{
+                                    //    cantidadSuficiente += item.Cantidad;
+                                    //}
 
-                                    if (cantidadSuficiente + 1 <= productoStock.Cantidad )
-                                    {
-                                    if (carritoCantidad != null)
-                                    {
-                                        if (carritoCantidad.Cantidad + cantidadProducto > inventarioColor.Cantidad)
-                                        {
+                                    //if (cantidadSuficiente + 1 <= productoStock.Cantidad )
+                                    //{
+                                    //if (carritoCantidad != null)
+                                    //{
+                                    //    if (carritoCantidad.Cantidad + cantidadProducto > inventarioColor.Cantidad)
+                                    //    {
 
-                                            if (pagi != null)
-                                            {
-                                                return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = Color.Nombre });
-                                            }
-                                            else
-                                            {
-                                                var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                                return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = Color.Nombre });
-                                            }
+                                    //        if (pagi != null)
+                                    //        {
+                                    //            return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = Color.Nombre });
+                                    //        }
+                                    //        else
+                                    //        {
+                                    //            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                    //            return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = Color.Nombre });
+                                    //        }
 
-                                        }
-                                    }
-                                    }
-                                    else
-                                    {
-                                        if (pagi != null)
-                                        {
-                                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                            return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = nombreProducto.Nombre });
-                                        }
-                                        else
-                                        {
-                                            var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
-                                            return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = nombreProducto.Nombre });
-                                        }
-                                    }
+                                    //    }
+                                    //}
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (pagi != null)
+                                    //    {
+                                    //        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                    //        return RedirectToAction("Tienda", new { Outstock = 1, pag = pagi, colorNombre = nombreProducto.Nombre });
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        var nombreProducto = DbModel.Productos.FirstOrDefault(x => x.Id == producto.Id);
+                                    //        return RedirectToAction("Bamboo1", new { Outstock = 1, name = nombreProducto.Nombre, colorNombre = nombreProducto.Nombre });
+                                    //    }
+                                    //}
 
                                    
                                 //}
@@ -1659,8 +1659,8 @@ namespace MerxProject.Controllers
                         {
                             if (carritofindMaterialWColor != null)
                             {
-                                if (carritofindMaterialWColor.Cantidad + 1 <= inventarioColor.Cantidad)
-                                {
+                                //if (carritofindMaterialWColor.Cantidad + 1 <= inventarioColor.Cantidad)
+                                //{
                                     carritofindMaterialWColor.Cantidad += 1;
                                     carritofindMaterialWColor.StockProducto = nombreProdcuto.Cantidad;
                                     carritofindMaterialWColor.StockColor = inventarioColor.Cantidad;
@@ -1669,7 +1669,7 @@ namespace MerxProject.Controllers
                                     carritofindMaterialWColor.precioTotal = precioTotal;
                                     DbModel.CarritoCompras.AddOrUpdate(carritofindMaterialWColor);
                                     DbModel.SaveChanges();
-                                }
+                                //}
                             }
                             else
                             {
@@ -1719,8 +1719,8 @@ namespace MerxProject.Controllers
                         {
                             if (carritofind != null)
                             {
-                                if (carritofind.Cantidad + 1 <= inventarioColor.Cantidad)
-                                {
+                                //if (carritofind.Cantidad + 1 <= inventarioColor.Cantidad)
+                                //{
                                     carritofind.Cantidad += 1;
                                     carritofind.StockProducto = nombreProdcuto.Cantidad;
                                     carritofind.StockColor = inventarioColor.Cantidad;
@@ -1728,7 +1728,7 @@ namespace MerxProject.Controllers
                                     carritofind.precioTotal = precioTotal;
                                     DbModel.CarritoCompras.AddOrUpdate(carritofind);
                                     DbModel.SaveChanges();
-                                }
+                                //}
 
                             }
                             else
