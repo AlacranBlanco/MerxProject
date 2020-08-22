@@ -3,6 +3,7 @@
 @{
     Layout = null;
     int i = 0;
+    int j = 0;
 }
 
 <div class="container">
@@ -35,6 +36,7 @@
                                     foreach (var item in ViewBag.invId)
                                     {
                                         i += 1;
+                                        j += 1;
 
                                         <div class="col-md-2">
                                             <label class="control-label col-md-2">Color @item.Color.Nombre</label>
@@ -45,7 +47,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: white";></span>
+                                                    <span style="height: 25px; width: 25px; border-radius: 50%; display: inline-block; background-color: white" ;></span>
                                                 }
                                             </div>
                                             <div class="col-md-10">
@@ -56,24 +58,24 @@
                                 }
                             </div>
                             @*<div class="form-group">
-                                @if (ViewBag.invId != null)
-                                {
-                                    foreach (var item in ViewBag.invId)
-                                    {
-                                        <div class="col-md-2">
-                                            @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                <span>@item.Cantidad en inventario</span>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-10">
-                                    <h4> <span class="badge-light"> Este producto tiene @ViewBag.total modelos en existencia</span> </h4>
-                                </div>
-                            </div>*@
+            @if (ViewBag.invId != null)
+            {
+                foreach (var item in ViewBag.invId)
+                {
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.Cantidad, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <span>@item.Cantidad en inventario</span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <h4> <span class="badge-light"> Este producto tiene @ViewBag.total modelos en existencia</span> </h4>
+            </div>
+        </div>*@
                             @if (i <= 3)
                             {
                                 <div class="form-group">
@@ -88,12 +90,27 @@
                                     </div>
                                 </div>
                             }
-                            @*<div class="form-group">
-                                <label class="control-label col-md-2">Agregar/Cambiar cantidad</label>
-                                <div class="col-md-10">
-                                    <input type="number" name="cantidad" value="0" min="0" class="form-control" required />
+
+                            @if (j <= 3)
+                            {
+                                <div class="form-group">
+                                    <label class="control-label col-md-2">Agregar otro material</label>
+                                    <div class="col-md-10">
+                                        <select name="newMaterial" class="form-control">
+                                            @foreach (var item in ViewBag.Materiales)
+                                            {
+                                                <option value="@item.Id">@item.Nombre</option>
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>*@
+                            }
+                            @*<div class="form-group">
+            <label class="control-label col-md-2">Agregar/Cambiar cantidad</label>
+            <div class="col-md-10">
+                <input type="number" name="cantidad" value="0" min="0" class="form-control" required />
+            </div>
+        </div>*@
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="hidden" name="productoId" value="@ViewBag.productoId" />

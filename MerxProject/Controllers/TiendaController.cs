@@ -551,30 +551,30 @@ namespace MerxProject.Controllers
                     inventario.Material = new Material();
                     inventario.Producto = new Producto();
 
-                    if (carritoBorrar[i].idMaterial > 0 && carritoBorrar[i].idColor > 0)
-                    {
-                        var ExistInv = DbModel.Inventarios.Where(x => x.Id == idInventario).ToList();
+                    //if (carritoBorrar[i].idMaterial > 0 && carritoBorrar[i].idColor > 0)
+                    //{
+                    //    var ExistInv = DbModel.Inventarios.Where(x => x.Id == idInventario).ToList();
 
-                        if (ExistInv.Count == 0)
-                        {
+                    //    if (ExistInv.Count == 0)
+                    //    {
 
-                            inventario.Color = DbModel.Colores.FirstOrDefault(x => x.Id == idColor);
-                            inventario.Producto = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto);
-                            inventario.Material = DbModel.Materiales.FirstOrDefault(x => x.Id == idMaterial);
-                            inventario.Cantidad = 0;
+                    //        inventario.Color = DbModel.Colores.FirstOrDefault(x => x.Id == idColor);
+                    //        inventario.Producto = DbModel.Productos.FirstOrDefault(x => x.Id == idProducto);
+                    //        inventario.Material = DbModel.Materiales.FirstOrDefault(x => x.Id == idMaterial);
+                    //        inventario.Cantidad = 0;
 
-                            DbModel.Inventarios.Add(inventario);
-                            DbModel.SaveChanges();
+                    //        DbModel.Inventarios.Add(inventario);
+                    //        DbModel.SaveChanges();
 
-                            idInventario = inventario.Id;
+                    //        idInventario = inventario.Id;
 
-                        }
+                    //    }
                      
-                    }
-                    else
-                    {
+                    //}
+                    //else
+                    //{
                         idInventario = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == idProducto && x.Color.Id == idColor).Id;
-                    }
+                    //}
 
                     procesoCrear.Id = Guid.NewGuid().ToString();
                     procesoCrear.Nombre = "Corte";

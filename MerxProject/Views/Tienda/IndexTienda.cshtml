@@ -239,10 +239,10 @@ else if (ViewBag.CupNotExit == 2)
                                                     <div class="product_name"><a href="product.html">@item.Nombre</a></div>
                                                     @*<div class="product_text" style="color:green">Hay @item.StockProducto Disponibles</div>*@
                                                 </div>
-
+                                            </div>
                                             @if(item.ImagenMaterial != null){
 
-                                            <div class="product_color product_text"><span>Material: </span><img src="@Url.Content(item.ImagenMaterial)" /></div>
+                                            <div class="product_color product_text"><span>Material: </span><img src="~/Content/assets/img/Materiales/@item.ImagenMaterial" /></div>
                                             
                                             }
                                             else

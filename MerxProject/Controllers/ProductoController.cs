@@ -1281,9 +1281,15 @@ namespace MerxProject.Controllers
                     ventaViewModels.Producto = DbModel.Productos.FirstOrDefault(x => x.Nombre == name);
                     ViewBag.prodcutoId = ventaViewModels.Producto.Id;
                     ventaViewModels.InventarioColorCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id && x.Material == null).ToList();
-                    ventaViewModels.InventarioMaterialCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id && x.Color == null).ToList();
+                    //ventaViewModels.InventarioMaterialCollection = DbModel.Inventarios.Where(x => x.Producto.Id == ventaViewModels.Producto.Id && x.Color == null).ToList();
                     ventaViewModels.ColorsCollection = new List<Color>();
                     ventaViewModels.MaterialCollection = new List<Material>();
+                    Material mat = new Material();
+                    mat.Id = 0;
+                    mat.Nombre = "Sin Material";
+
+                    ventaViewModels.MaterialCollection.Add(mat);
+                    var MaterialesList = DbModel.Materiales.Where(x => x.Piezas == true && x.Nombre != "Madera de Pino").ToList();
                     //foreach (var item in ventaViewModels.InventarioCollection)
                     //{
                     //    if (item.Color != null)
@@ -1298,17 +1304,11 @@ namespace MerxProject.Controllers
                     //    }
                     //}
 
-                    Material mat = new Material();
-                    mat.Id = 0;
-                    mat.Nombre = "Sin Material";
 
-                    ventaViewModels.MaterialCollection.Add(mat);
 
-                    foreach (var item in ventaViewModels.InventarioMaterialCollection)
+                    foreach (var item in MaterialesList)
                     {
-                            var MaterialDetail = DbModel.Materiales.FirstOrDefault(x => x.Id == item.Material.Id);
-                            ventaViewModels.MaterialCollection.Add(MaterialDetail);
-                        
+                            ventaViewModels.MaterialCollection.Add(item);
                     }
                     ViewBag.materialList = new SelectList(ventaViewModels.MaterialCollection, "Id", "Nombre");
                     //ViewBag.materialList = ventaViewModels.MaterialCollection;
@@ -1663,7 +1663,7 @@ namespace MerxProject.Controllers
                         var carritofind = carritoList.FirstOrDefault(x => x.idProducto == producto.Id && x.ColorNombre == Color.Nombre && x.MaterialNombre == null);
                         var carritofindMaterialWColor = carritoList.FirstOrDefault(x => x.idProducto == producto.Id && x.ColorNombre == Color.Nombre && x.MaterialNombre == Material.Nombre);
                         var inventarioColor = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Color.Id == Color.Id);
-                        var inventarioMaterialWColor = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Material.Id == Material.Id);
+                        //var inventarioMaterialWColor = DbModel.Inventarios.FirstOrDefault(x => x.Producto.Id == producto.Id && x.Material.Id == Material.Id);
                         double precioTotal = 0.00;
 
                         if (Material.Id > 0)
@@ -1675,7 +1675,6 @@ namespace MerxProject.Controllers
                                     carritofindMaterialWColor.Cantidad += 1;
                                     carritofindMaterialWColor.StockProducto = nombreProdcuto.Cantidad;
                                     carritofindMaterialWColor.StockColor = inventarioColor.Cantidad;
-                                    carritofindMaterialWColor.StockMaterial = inventarioMaterialWColor.Cantidad;
                                     precioTotal = (carritofindMaterialWColor.Cantidad * carritofindMaterialWColor.Precio);
                                     carritofindMaterialWColor.precioTotal = precioTotal;
                                     DbModel.CarritoCompras.AddOrUpdate(carritofindMaterialWColor);
@@ -1713,7 +1712,6 @@ namespace MerxProject.Controllers
                                 
                                 agregarProductoCarrito.Imagen = nombreProdcuto.Imagen;
                                 agregarProductoCarrito.StockProducto = nombreProdcuto.Cantidad;
-                                agregarProductoCarrito.StockMaterial = inventarioMaterialWColor.Cantidad;
                                 agregarProductoCarrito.MaterialNombre = Material.Nombre;
                                 agregarProductoCarrito.idMaterial = Material.Id;
                                 agregarProductoCarrito.idProducto = producto.Id;
