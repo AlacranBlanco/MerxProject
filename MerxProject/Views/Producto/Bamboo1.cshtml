@@ -151,55 +151,56 @@
                                 @if (ViewBag.precioMaterial != null)
                                 {
                                     float PrecioTotal = Model.Producto.Precio + (float)ViewBag.precioMaterial;
-                                <div class="product_price">$@PrecioTotal</div>
+                                    <div class="product_price">$@PrecioTotal</div>
                                 }
                                 else
                                 {
 
-                                <div class="product_price">$@Model.Producto.Precio</div>
+                                    <div class="product_price">$@Model.Producto.Precio</div>
                                 }
-                            <div class="product_size">
-                                <div class="product_size_title">Selecciona un color (opcional)</div>
-                                <ul class="d-flex flex-row align-items-start justify-content-start">
-                                    @for (int i = 1; i < Model.InventarioColorCollection.Count; i++)
-                                    {
-
-                                        radio_Id++;
-                                        if (Model.InventarioColorCollection[i].Cantidad >= 1)
+                                <div class="product_size">
+                                    <div class="product_size_title">Selecciona un color (opcional)</div>
+                                    <ul class="d-flex flex-row align-items-start justify-content-start">
+                                        @for (int i = 1; i < Model.InventarioColorCollection.Count; i++)
                                         {
-                                            <li>
-                                                <input type="radio" id="hue" name="option" value="@Model.InventarioColorCollection[i].Color.Codigo" class="regular_radio" onClick="changeSrc()" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
-                                                @*<label for=@radio_Id></label>*@
-                                            </li>
 
+                                            radio_Id++;
+                                            if (Model.InventarioColorCollection[i].Cantidad >= 1)
+                                            {
+                                                <li>
+                                                    <input type="radio" id="hue" name="option" value="@Model.InventarioColorCollection[i].Color.Codigo" class="regular_radio" onClick="changeSrc()" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
+                                                    @*<label for=@radio_Id></label>*@
+                                                </li>
+
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    <input type="radio" id=@radio_Id name="option" disabled value="@Model.InventarioColorCollection[i].Color.Codigo" onClick="changeSrc()" class="regular_radio" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
+                                                    @*<label for=@radio_Id ></label>*@
+                                                </li>
+                                            }
                                         }
-                                        else
-                                        {
-                                            <li>
-                                                <input type="radio" id=@radio_Id name="option" disabled value="@Model.InventarioColorCollection[i].Color.Codigo" onClick="changeSrc()" class="regular_radio" style="background: @Model.InventarioColorCollection[i].Color.Codigo">
-                                                @*<label for=@radio_Id ></label>*@
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                                <br />
-                                <div class="product_size_title">Selecciona un material (opcional)</div>
-                                <br />
-                                <div class="product_size_title">
-                                    @using (Html.BeginForm("Bamboo1", "Producto", FormMethod.Get, new { id = idAux }))
-                                    {
-                                        string nombreProd = Model.Producto.Nombre;
-                                        @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.materialList, new { @onchange = "this.form.submit()", @name = "Id" })
-                                        <input type="hidden" value=@ViewBag.prodcutoId name="idProducto" />
-                                        @*@Html.DropDownList("Id", ViewBag.materialList as SelectList, new { @class = "Id" })*@
-                                    }
+                                    </ul>
                                     <br />
-                                    @if (ViewBag.imgRoute != null) { 
-                                    
-                                    <img src="~/Content/assets/img/Materiales/@ViewBag.imgRoute" height="100px" width="70px"/>
-                                    }
+                                    <div class="product_size_title">Selecciona un material (opcional)</div>
+                                    <br />
+                                    <div class="product_size_title">
+                                        @using (Html.BeginForm("Bamboo1", "Producto", FormMethod.Get, new { id = idAux }))
+                                        {
+                                            string nombreProd = Model.Producto.Nombre;
+                                            @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.materialList, new { @onchange = "this.form.submit()", @name = "Id" })
+                                            <input type="hidden" value=@ViewBag.prodcutoId name="idProducto" />
+                                            @*@Html.DropDownList("Id", ViewBag.materialList as SelectList, new { @class = "Id" })*@
+                                        }
+                                        <br />
+                                        @if (ViewBag.imgRoute != null)
+                                        {
+
+                                            <img src="~/Content/assets/img/Materiales/@ViewBag.imgRoute" height="100px" width="70px" />
+                                        }
+                                    </div>
                                 </div>
-                            </div>
                                 <div class="product_text">
                                     <p>@Model.Producto.Descripcion</p>
                                 </div>
@@ -329,7 +330,7 @@
                                     Paseo de los insurgentes 2210 <br>
                                     San José de Piletas, León<br>
                                     México <br><br>
-                                    <strong>Telefono:</strong> +52 477 238 6919<br>
+                                    <strong>Teléfono:</strong> +52 477 238 6919<br>
                                     <strong>Email:</strong>merxprojectbusiness@gmail.com<br>
                                 </p>
                             </div>
@@ -345,10 +346,10 @@
                             </div>
 
                             <div class="col-lg-4 col-md-6 footer-newsletter">
-                                <h4>Registrate</h4>
-                                <p>Unete a la mejor página en la compra de muebles ecológicos.</p>
+                                <h4>Regístrate</h4>
+                                <p>Únete a la mejor página en la compra de muebles ecológicos.</p>
                                 <form action="" method="post">
-                                    <input type="email" name="email"><input type="submit" value="Suscribete" class="btn btn-comprar">
+                                    <input type="email" name="email"><input type="submit" value="Suscríbete" class="btn btn-comprar">
                                 </form>
                             </div>
 
