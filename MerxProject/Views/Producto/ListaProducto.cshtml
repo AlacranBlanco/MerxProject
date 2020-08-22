@@ -64,7 +64,7 @@
         </table>
     </div>
 }
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+<button class="btn btn-success btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpProductos", "Producto", new { applicationUser = "", accion = "1" })'></div>
 <br />
 @using (Html.BeginForm("BuscarLista", "Producto", FormMethod.Post))
@@ -154,8 +154,8 @@
     </td>
     <td>
         <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="color_@item.Id" onclick="createModalColor('@Url.Action("popUpProductosColor", "Producto" , new {id=item.Id, accion = "0"})')">Inventario</button>
-        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "2" })')">Editar Producto</button>
-        <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+        <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "2" })')">Editar Producto</button>
+        <button class="btn btn-danger btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpProductos", "Producto" , new {id=item.Id, accion = "3" })')">Eliminar</button>
     </td>
 </tr>
 

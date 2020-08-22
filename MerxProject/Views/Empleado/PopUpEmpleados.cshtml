@@ -18,6 +18,14 @@
                             //Informacion de persona
                         <section id="sectionEmp" style="" >
                             <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.Personass.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
                                     <div class="col-md-10">
@@ -27,10 +35,10 @@
                                 </div>
 
 
-                                        @Html.HiddenFor(model => model.Personass.idPersona, new { htmlAttributes = new { @class = "form-control",
-                                            @disabled = "disabled" }})
-                                        @Html.HiddenFor(model => model.Usuarioss.idUsuario, new { htmlAttributes = new { @class = "form-control",
-                                            @disabled = "disabled" }})
+                                @Html.HiddenFor(model => model.Personass.idPersona, new { htmlAttributes = new { @class = "form-control",
+                                    @disabled = "disabled" }})
+                                @Html.HiddenFor(model => model.Usuarioss.idUsuario, new { htmlAttributes = new { @class = "form-control",
+                                    @disabled = "disabled" }})
 
 
                                 <div class="form-group">

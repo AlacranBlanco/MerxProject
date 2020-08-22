@@ -64,7 +64,7 @@
         </table>
     </div>
 }
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+<button class="btn btn-success btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1" data-url='@Url.Action("popUpHerramienta", "Herramienta", new { applicationUser = "", accion = "1" })'></div>
 <br />
 @using (Html.BeginForm("BuscarHerramienta", "Herramienta", FormMethod.Post))
@@ -182,26 +182,26 @@
                                 {
                                     if (rep.Item2 != item.EnUso)
                                     {
-                                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                                        <button type="submit" class="btn btn-warning btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                            <button type="submit" class="btn btn-warning btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
                         }
                     }
                     else
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
+                        <button type="submit" class="btn btn-warning btn-sm" data-toggle="modal" id="@item.Id" onclick="createModalShow('@Url.Action("VerHerramienta", "Herramienta", new { id = item.Id })')">Ver detalle</button>
                     }
 
                 }
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "2" })')">Editar herramienta</button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "3" })')">Eliminar</button>
+                <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id" onclick="createModalEdit('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "2" })')">Editar herramienta</button>
+                <button class="btn btn-danger btn-sm" data-toggle="modal" id="delete_@item.Id" data-confirm="¿Estás seguro/a?" onclick="confirmar('@Url.Action("popUpHerramienta", "Herramienta" , new {id=item.Id, accion = "3" })')">Eliminar</button>
             </td>
         </tr>
 

@@ -1,4 +1,4 @@
-﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Empleado>
+﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Order.Orders>
 
 @{
     ViewBag.Title = "ListaEmpleado";
@@ -64,51 +64,24 @@
         </table>
     </div>
 }
-<button class="btn btn-success btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
      data-url='@Url.Action("PopUpEmpleados", "Empleado", new { applicationUser = "", accion = "1" })'></div>
-
-<br />
-
-@using (Html.BeginForm("BuscarEmpleado", "Empleado", FormMethod.Post))
-{
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-8">
-                <div class="input-group" style="display: inline; vertical-align: top; line-height: 28px;">
-                    <input type="text" class="form-control" name="param" placeholder="Search term...">
-                    <input type="submit" name="Subir" value="Buscar" class="btn btn-primary" />
-
-                </div>
-            </div>
-        </div>
-    </div>
-}
 
 <br />
 
 <table class="table">
     <tr>
         <th>
-            Nombre
+            Número de venta
         </th>
         <th>
-            Telefono
+            Cliente
         </th>
         <th>
             Correo
         </th>
         <th>
-            Nombre de usuario
-        </th>
-        <th>
-            Contraseña
-        </th>
-        <th>
-            Rol
-        </th>
-        <th>
-            Fecha de ingreso
+            Fecha
         </th>
     </tr>
 
@@ -116,39 +89,21 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Personass.Nombre)
+                @Html.DisplayFor(modelItem => item.IdOrder)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Personass.Telefono)
+                @Html.DisplayFor(modelItem => item.NombreCustomer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Personass.Correo)
+                @Html.DisplayFor(modelItem => item.EmailCustomer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarioss.User)
+                @Html.DisplayFor(modelItem => item.DiaOrden)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarioss.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Usuarioss.Rol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaIngreso)
-            </td>
-            <td>
-                @if (ViewBag.user != item.Usuarioss.User)
-                {
-                    <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id"
-                            onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado" , new {id=item.Id, accion = "2" })')">
-                        Editar
-                    </button>
-
-                    <button type="submit" class="btn btn-danger btn-sm" data-toggle="modal" id="delete_@item.Id"
-                            onclick="createModal('@Url.Action("PopUpEmpleados", "Empleado", new { id = item.Id, accion = "3" })')">
-                        Eliminar
-                    </button>
-                }
+                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.IdOrder" onclick="createModal('@Url.Action("PopUpOrden", "Admin" , new {id= item.IdOrder})')">
+                    Detalle
+                </button>
             </td>
         </tr>
     }
@@ -174,35 +129,35 @@ else
 }
 @if (Model.PaginaActual > 1)
 {
-    @Html.ActionLink("<<", "ListaEmpleado", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default"})
     <span></span>
-    @Html.ActionLink("Anterior", "ListaEmpleado", new { pagina = Model.PaginaActual - 1 },
+    @Html.ActionLink("Anterior", "ListaVentas", new { pagina = Model.PaginaActual - 1 },
         new { @class = "btn btn-sm btn-default" });
 }
 else
 {
-    @Html.ActionLink("<<", "ListaEmpleado", new { pagina = 1 },
+    @Html.ActionLink("<<", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink("Anterior", "ListaEmpleado", new { pagina = 1 },
+    @Html.ActionLink("Anterior", "ListaVentas", new { pagina = 1 },
         new { @class = "btn btn-sm btn-default disabled" })
 }
 <span></span>
 @if (Model.PaginaActual < Model.TotalPaginas)
 {
-    @Html.ActionLink("Siguiente", "ListaEmpleado", new { pagina = Model.PaginaActual + 1 },
+    @Html.ActionLink("Siguiente", "ListaVentas", new { pagina = Model.PaginaActual + 1 },
                     new { @class = "btn btn-sm btn-default" })
     <span></span>
-    @Html.ActionLink(">>", "ListaEmpleado", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaVentas", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default" })
 }
 else
 {
-    @Html.ActionLink("Siguiente", "ListaEmpleado", new { pagina = Model.TotalPaginas - 1 },
+    @Html.ActionLink("Siguiente", "ListaVentas", new { pagina = Model.TotalPaginas - 1 },
                     new { @class = "btn btn-sm btn-default disabled" })
     <span></span>
-    @Html.ActionLink(">>", "ListaEmpleado", new { pagina = Model.TotalPaginas },
+    @Html.ActionLink(">>", "ListaVentas", new { pagina = Model.TotalPaginas },
                     new { @class = "btn btn-sm btn-default disabled" })
 }
 
@@ -210,18 +165,7 @@ else
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-
-    $(document).ready(function () {
-        $('#Nuevo').click(function () {
-            var url = $('#idModalRegistrar').data('url');
-            $.get(url, function (data) {
-                $("#idModalRegistrar").html(data);
-                $("#idModalRegistrar").modal('show');
-            });
-        });
-    });
-
-
+    
     function createModal(url) {
         $.get(url, function (data) {
             $("#idModalUpdate").html(data);
@@ -229,16 +173,6 @@ else
         });
 
     }
-
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalElminar").html(data);
-            $("#idModalElminar").modal('show');
-        });
-
-    }
-    
-
 
 </script>
 

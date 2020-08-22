@@ -1,10 +1,69 @@
 ﻿@model MerxProject.Models.PaginadorGenerico<MerxProject.Models.Proveedor>
 
 @{
-                ViewBag.Title = "ListaProveedor";
+    ViewBag.Title = "ListaProveedor";
 }
 <h2>Proveedores</h2>
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+
+@if (Session["res"] != null)
+{
+    string color;
+    string mensaje = Session["res"].ToString();
+    Session.Remove("res");
+
+
+    if (Session["tipo"] != null)
+    {
+        color = "#18ce65";
+    }
+    else
+    {
+        color = "#cc0001";
+    }
+    <div class="panel panel-default" id="current-panel">
+        <table class="table table-hover">
+            <thead>
+                <tr style="background-color:@color">
+                    <th>
+                        <p style="text-align: center">
+                            @mensaje
+                        </p>
+                    </th>
+                    <th>
+                        <a href="#current-panel" class="close" data-dismiss="alert" aria-label="close" id="hide">
+                            &times;
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    Session.Remove("tipo");
+}
+@if (ViewBag.error != null)
+{
+    string error = ViewBag.error;
+    ViewBag.error = null;
+    <div class="panel panel-default" id="current-panel">
+        <table class="table table-hover">
+            <thead>
+                <tr style="background-color: #cc0001">
+                    <th>
+                        <p style="text-align: center">
+                            @error
+                        </p>
+                    </th>
+                    <th>
+                        <a href="#current-panel" class="close" data-dismiss="alert" aria-label="close" id="hide">
+                            &times;
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+}
+<button class="btn btn-success btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
      data-url='@Url.Action("popUpProveedores", "Proveedor", new { applicationUser = "", accion = "1" })'></div>
 <br />
@@ -72,11 +131,11 @@
                 @Html.DisplayFor(modelItem => item.Persona.Ciudad)
             </td>
             <td>
-                <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id"
                         onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "2" })')">
                     Editar
                 </button>
-                <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                <button class="btn btn-danger btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
                         onclick="createModal('@Url.Action("popUpProveedores", "Proveedor" , new {id=item.Id, accion = "3" })')">
                     Eliminar
                 </button>

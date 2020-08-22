@@ -73,6 +73,8 @@ namespace MerxProject.Controllers
                             DbModel.SaveChanges();
                             resultado = "Actualización realizada";
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
                             return RedirectToAction("ListaProveedor");
 
                         }
@@ -80,6 +82,7 @@ namespace MerxProject.Controllers
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaProveedor");
                         }
                     }
@@ -99,12 +102,15 @@ namespace MerxProject.Controllers
                             DbModel.SaveChanges();
                             resultado = "Eliminación finalizada";
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
                             return RedirectToAction("ListaProveedor");
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaProveedor");
                         }
                     }
@@ -122,12 +128,15 @@ namespace MerxProject.Controllers
                             DbModel.SaveChanges();
                             resultado = "Inserción realizada";
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
+                            Session["tipo"] = "Exito";
                             return RedirectToAction("ListaProveedor");
                         }
                         catch (Exception ex)
                         {
                             resultado = ex.Message;
                             ViewBag.res = resultado;
+                            Session["res"] = resultado;
                             return RedirectToAction("ListaProveedor");
                         }
                     }

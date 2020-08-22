@@ -4,11 +4,7 @@
     ViewBag.Title = "ListaCompras";
 }
 <h2>Compras</h2>
-<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
-     data-url='@Url.Action("popUpCompras", "Compras", new { applicationUser = "", accion = "1" })'></div>
 
-<br />
 @if (Session["res"] != null)
 {
     string color;
@@ -82,6 +78,11 @@
     </div>
 }
 <br />
+<button class="btn btn-success btn-sm pull-right" data-toggle="modal" id="Nuevo">Nuevo</button>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalRegistrar" tabindex="-1"
+     data-url='@Url.Action("popUpCompras", "Compras", new { applicationUser = "", accion = "1" })'></div>
+
+<br />
 <table class="table">
     <tr>
         <th>
@@ -128,37 +129,37 @@
             </td>
             <td>
                 @Html.ActionLink("Detalles", "ListaDetalleCompra", new { idCompra = item.Id, accion = "4" },
-                    new { @class = "btn btn-sm btn-primary" })
+                    new { @class = "btn btn-sm btn-warning" })
                 @if (item.Estatus < 2)
                 {
                     if (item.Estatus == 0)
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                        <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id"
                                 onclick="createModal('@Url.Action("popUpCompras", "Compras", new { id = item.Id, accion = "2" })')">
                             Editar
                         </button>
                     }
                     if (item.Estatus > 0)
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                        <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id"
                                 disabled>
                             Editar
                         </button>
                     }
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
                             onclick="createModal('@Url.Action("popUpCompras", "Compras", new { id = item.Id, accion = "3" })')">
                         Cancelar
                     </button>
                     if (item.Estatus > 0)
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="ent_@item.Id"
+                        <button type="submit" class="btn btn-dark btn-sm" data-toggle="modal" id="ent_@item.Id"
                                 onclick="createModal('@Url.Action("popUpCompras", "Compras", new { id = item.Id, accion = "5" })')">
                             Marcar como Entregada
                         </button>
                     }
                     if (item.Estatus == 0)
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="ent_@item.Id"
+                        <button type="submit" class="btn btn-dark btn-sm" data-toggle="modal" id="ent_@item.Id"
                                 disabled>
                             Marcar como Entregada
                         </button>
@@ -166,15 +167,15 @@
                 }
                 @if (item.Estatus >= 2)
                 {
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="edit_@item.Id"
+                    <button type="submit" class="btn btn-info btn-sm" data-toggle="modal" id="edit_@item.Id"
                             disabled>
                         Editar
                     </button>
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" id="Elimninar" id="delete_@item.Id"
                             disabled>
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary btn-sm" data-toggle="modal" id="ent_@item.Id"
+                    <button type="submit" class="btn btn-dark btn-sm" data-toggle="modal" id="ent_@item.Id"
                             disabled>
                         Marcar como Entregada
                     </button>
@@ -241,8 +242,8 @@ else
 
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalDetalles" tabindex="-1"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalEntregada" tabindex="-1"></div>
+
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -256,6 +257,7 @@ else
     });
 
 
+
     function createModal(url) {
         $.get(url, function (data) {
             $("#idModalUpdate").html(data);
@@ -265,15 +267,17 @@ else
     }
 
     function createModal(url) {
-        alert("df");
         $.get(url, function (data) {
-
+            $("#idModalElminar").html(data);
+            $("#idModalElminar").modal('show');
         });
 
     }
 
     function createModal(url) {
         $.get(url, function (data) {
+            $("#idModalEntregada").html(data);
+            $("#idModalEntregada").modal('show');
         });
 
     }
