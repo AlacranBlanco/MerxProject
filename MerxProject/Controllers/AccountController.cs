@@ -102,14 +102,52 @@ namespace MerxProject.Controllers
           //  var users = UserManager.Users;
             var clientes = DbModel.Usuarios.Where(x => x.Rol == "Cliente").ToList();
             var personas = new List<Persona>();
-            foreach (var item in clientes)
+            /*try
             {
-                personas.Add(DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).First());
+                if (clientes.Count() > 0)
+                {
+                    foreach (var item in clientes)
+                    {
+                        var persona = DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).FirstOrDefault();
+                        var direccion = DbModel.Direcciones.Where(x => x.IdPersona == persona.idPersona).FirstOrDefault();
+
+                        persona.Direccion = direccion.DirCalle + " " + direccion.Asentamiento;
+                        persona.Nombre = direccion.NombreCompleto;
+                        persona.CodigoPostal = direccion.CodigoPostal;
+                        persona.Ciudad = direccion.Ciudad;
+                        persona.Telefono = direccion.NumTelefono;
+
+                        personas.Add(persona);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                ViewBag.error = ex.Message;
+            }*/
             return View(personas);
 
-           // return View(users);
+        }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult direccionesCliente(int? idPersona)
+        {
+            if (idPersona != null)
+            {
+                try
+                {
+                    var direcciones = DbModel.Direcciones.Where(x => x.IdPersona == idPersona).ToList();
+                    ViewBag.title = "Direcciones";
+                    return View(direcciones);
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("listaCliente");
+                }
+                
+            }
+            return RedirectToAction("listaCliente");
         }
 
 
