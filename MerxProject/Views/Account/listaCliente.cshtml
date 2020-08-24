@@ -16,16 +16,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Correo)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Telefono)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Direccion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Ciudad)
-        </th>
-        <th>Acciones</th>
     </tr>
 
 
@@ -41,13 +31,10 @@
             @Html.DisplayFor(modelItem => item.Correo)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Telefono)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Direccion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Ciudad)
+            <button type="submit" class="btn btn-dark btn-sm" data-toggle="modal" id="dir_@item.idPersona"
+                    onclick="createModal('@Url.Action("direccionesCliente", "Account", new { idPersona = item.idPersona })')">
+                Direcciones
+            </button>
         </td>
     </tr>
        
@@ -55,9 +42,7 @@
 
 </table>
 
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalUpdate" tabindex="-1"></div>
-<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalElminar" tabindex="-1"></div>
-
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="idModalDir" tabindex="-1"></div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -75,18 +60,10 @@
   
     function createModal(url) {
         $.get(url, function (data) {
-            $("#idModalUpdate").html(data);
-            $("#idModalUpdate").modal('show');
+            $("#idModalDir").html(data);
+            $("#idModalDir").modal('show');
         });
     
-    }
-
-    function createModal(url) {
-        $.get(url, function (data) {
-            $("#idModalElminar").html(data);
-            $("#idModalElminar").modal('show');
-        });
-
     }
 
 

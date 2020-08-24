@@ -95,23 +95,47 @@ namespace MerxProject.Controllers
             return View();
         }
 
+
         [HttpGet]
         [AllowAnonymous]
         public ActionResult listaCliente()
         {
-          //  var users = UserManager.Users;
+            //  var users = UserManager.Users;
             var clientes = DbModel.Usuarios.Where(x => x.Rol == "Cliente").ToList();
             var personas = new List<Persona>();
             foreach (var item in clientes)
             {
-                personas.Add(DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).First());
+                if (DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).Count() > 0)
+                {
+                    personas.Add(DbModel.Personas.Where(x => x.idUsuario == item.idUsuario).First());
+                }
             }
             return View(personas);
 
-           // return View(users);
+            // return View(users);
 
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult direccionesCliente(int? idPersona)
+        {
+            if (idPersona != null)
+            {
+                try
+                {
+                    var direcciones = DbModel.Direcciones.Where(x => x.IdPersona == idPersona).ToList();
+                    ViewBag.title = "Direcciones";
+                    return View(direcciones);
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToAction("listaCliente");
+                }
+
+            }
+            return RedirectToAction("listaCliente");
+        }
 
 
         [Authorize(Roles = "Administrador, Empleado")]

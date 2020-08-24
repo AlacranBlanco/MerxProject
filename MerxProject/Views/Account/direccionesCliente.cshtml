@@ -1,0 +1,74 @@
+﻿@model IEnumerable<MerxProject.Models.Direccion.Direcciones>
+
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12" id="myModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">@ViewBag.title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Calle y número")
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Asentamiento)
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Código Postal")
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Ciudad)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Estado)
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Número de Teléfono")
+                                </th>
+                            </tr>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DirCalle)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Asentamiento)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CodigoPostal)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Ciudad)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Estado)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NumTelefono)
+                                    </td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
